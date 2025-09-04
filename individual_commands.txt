@@ -1,0 +1,89 @@
+=== NDC CONFERENCE SERVER FIX COMMANDS ===
+Copy and paste each block one by one into your server terminal.
+
+BLOCK 1 - Connect to Server:
+ssh conf@172.27.0.9
+
+BLOCK 2 - Check Current Status:
+pm2 status
+sudo systemctl status nginx
+sudo systemctl status mysql
+
+BLOCK 3 - Stop All Services:
+pm2 stop all
+pm2 delete all
+sudo pkill -f node
+sudo pkill -f next
+
+BLOCK 4 - Fix Frontend Build:
+cd /opt/ndc-frontend
+rm -rf .next
+rm -rf node_modules/.cache
+npm install
+npm run build
+
+BLOCK 5 - Start Services with PM2:
+pm2 start npm --name ndc-frontend -- start
+cd /opt/ndc-backend
+pm2 start index.js --name ndc-backend
+pm2 save
+pm2 startup
+
+BLOCK 6 - Fix Nginx Configuration:
+sudo tee /etc/nginx/sites-available/conference.health.go.ug > /dev/null << 'NGINX_EOF'
+server {
+    listen 80;
+    server_name conference.health.go.ug;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name conference.health.go.ug;
+
+    ssl_certificate /etc/letsencrypt/live/conference.health.go.ug/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/conference.health.go.ug/privkey.pem;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    location /api {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+NGINX_EOF
+
+BLOCK 7 - Enable Site and Test Nginx:
+sudo ln -sf /etc/nginx/sites-available/conference.health.go.ug /etc/nginx/sites-enabled/
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
+sudo systemctl reload nginx
+
+BLOCK 8 - Verify Everything is Working:
+pm2 status
+curl -I http://localhost:3000
+curl -I http://localhost:5000/health
+curl -I https://conference.health.go.ug
+
+BLOCK 9 - Check Logs:
+pm2 logs ndc-frontend --lines 10
+pm2 logs ndc-backend --lines 10
+
+=== END OF COMMANDS ===
