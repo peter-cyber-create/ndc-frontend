@@ -1,72 +1,54 @@
-import { NextRequest, NextResponse } from 'next/server'
-import DataManager from '@/lib/dataManager'
+import { NextRequest, NextResponse } from "next/server"
+import mysql from 'mysql2/promise'
 
-export const dynamic = 'force-dynamic'
-
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { id } = params
-    const body = await request.json()
-    const db = DataManager.getInstance()
-    
-    if (body.status) {
-      const updatedRegistration = db.updateRegistrationStatus(id, body.status)
-      
-      if (!updatedRegistration) {
-        return NextResponse.json(
-          { error: 'Registration not found' },
-          { status: 404 }
-        )
-      }
-      
-      return NextResponse.json({
-        success: true,
-        registration: updatedRegistration
-      })
-    }
-    
-    return NextResponse.json(
-      { error: 'Invalid update data' },
-      { status: 400 }
-    )
-  } catch (error) {
-    console.error('Error updating registration:', error)
-    return NextResponse.json(
-      { error: 'Failed to update registration' },
-      { status: 500 }
-    )
-  }
+const dbConfig = {
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'user',
+  password: process.env.DB_PASSWORD || 'toor',
+  database: process.env.DB_NAME || 'conf',
+  port: 3306,
 }
 
-export async function GET(
+export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params
-    const db = DataManager.getInstance()
-    const registrations = db.getRegistrations()
+    const connection = await mysql.createConnection(dbConfig)
     
-    const registration = registrations.find(reg => reg.id === id)
+    const registrationId = params.id
     
-    if (!registration) {
+    // Check if registration exists
+    const [existing] = await connection.execute(
+      'SELECT id FROM registrations WHERE id = ?',
+      [registrationId]
+    )
+    
+    if (!Array.isArray(existing) || existing.length === 0) {
+      await connection.end()
       return NextResponse.json(
         { error: 'Registration not found' },
         { status: 404 }
       )
     }
     
+    // Delete the registration
+    await connection.execute(
+      'DELETE FROM registrations WHERE id = ?',
+      [registrationId]
+    )
+    
+    await connection.end()
+    
     return NextResponse.json({
       success: true,
-      registration
+      message: 'Registration deleted successfully'
     })
+    
   } catch (error) {
-    console.error('Error fetching registration:', error)
+    console.error('Error deleting registration:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch registration' },
+      { error: 'Failed to delete registration' },
       { status: 500 }
     )
   }

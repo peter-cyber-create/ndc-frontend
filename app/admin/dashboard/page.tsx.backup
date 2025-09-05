@@ -51,6 +51,17 @@ export default function DashboardPage() {
   }, [])
 
   const loadDashboardData = async () => {
+  const refreshDashboard = () => {
+    loadDashboardData()
+  }
+    loadDashboardData()
+  const refreshDashboard = () => {
+    loadDashboardData()
+  }
+  }
+  const refreshDashboard = () => {
+    loadDashboardData()
+  }
     try {
       console.log('Starting to load dashboard data...')
       setIsLoading(true)
@@ -116,10 +127,6 @@ export default function DashboardPage() {
     }
   }
 
-  const refreshDashboard = () => {
-    loadDashboardData()
-  }
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -138,7 +145,7 @@ export default function DashboardPage() {
           <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Dashboard</div>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
-            onClick={refreshDashboard}
+            onClick={loadDashboardData}
             className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
           >
             Retry
@@ -166,15 +173,13 @@ export default function DashboardPage() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <div className="flex items-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-          <button
-            onClick={refreshDashboard}
-            className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            🔄 Refresh
-          </button>
-        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+        <button
+          onClick={refreshDashboard}
+          className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          🔄 Refresh
+        </button>
         <p className="text-gray-600">NACNDC & JASHConference 2025 - Conference Management</p>
       </div>
 

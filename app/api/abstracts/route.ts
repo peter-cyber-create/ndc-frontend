@@ -1,258 +1,141 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { DatabaseManager } from '@/lib/mysql';
-import path from 'path';
-import { promises as fs } from 'fs';
+import { NextRequest, NextResponse } from "next/server"
+import mysql from 'mysql2/promise'
+import { writeFile } from 'fs/promises'
+import { join } from 'path'
 
-// Force dynamic rendering for this route
-export const dynamic = 'force-dynamic';
-
-export async function GET() {
-  try {
-    const db = DatabaseManager.getInstance();
-    
-    // Get abstracts with pagination
-    const abstracts = await db.execute(`
-      SELECT 
-        id,
-        title,
-        primary_author,
-        co_authors,
-        abstract_summary,
-        keywords,
-        category,
-        subcategory,
-        status,
-        created_at as submittedAt,
-        updated_at as updatedAt
-      FROM abstracts 
-      ORDER BY created_at DESC 
-      LIMIT 50
-    `);
-    
-    // Get stats
-    const statsQueries = await Promise.all([
-      db.executeOne<{total: number}>('SELECT COUNT(*) as total FROM abstracts'),
-      db.executeOne<{pending: number}>('SELECT COUNT(*) as pending FROM abstracts WHERE status = ?', ['submitted']),
-      db.executeOne<{approved: number}>('SELECT COUNT(*) as approved FROM abstracts WHERE status = ?', ['accepted']),
-      db.executeOne<{rejected: number}>('SELECT COUNT(*) as rejected FROM abstracts WHERE status = ?', ['rejected'])
-    ]);
-    
-    const stats = {
-      total: statsQueries[0]?.total || 0,
-      pending: statsQueries[1]?.pending || 0,
-      approved: statsQueries[2]?.approved || 0,
-      rejected: statsQueries[3]?.rejected || 0
-    };
-    
-    return NextResponse.json({
-      success: true,
-      data: abstracts,
-      stats,
-      count: abstracts.length
-    });
-  } catch (error) {
-    console.error('Error fetching abstracts:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: 'Failed to fetch abstracts',
-        error: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    );
-  }
+const dbConfig = {
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'user',
+  password: process.env.DB_PASSWORD || 'toor',
+  database: process.env.DB_NAME || 'conf',
+  port: 3306,
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
+    console.log('Abstract API called')
     
-    // Extract form data
-    const title = formData.get('title') as string;
-    const abstract = formData.get('abstract') as string;
-    const keywords = formData.get('keywords') as string;
-    const authors = formData.get('authors') as string;
-    const email = formData.get('email') as string;
-    const institution = formData.get('institution') as string;
-    const phone = formData.get('phone') as string;
-    const track = formData.get('track') as string;
-    const subcategory = formData.get('subcategory') as string;
-    const file = formData.get('file') as File;
+    const formData = await request.formData()
+    console.log('Form data received:', Object.fromEntries(formData.entries()))
     
+    // Extract all form fields
+    const title = formData.get('title') as string
+    const presentationType = formData.get('presentationType') as string
+    const conferenceTrack = formData.get('conferenceTrack') as string
+    const firstName = formData.get('firstName') as string
+    const lastName = formData.get('lastName') as string
+    const email = formData.get('email') as string
+    const phone = formData.get('phone') as string
+    const institution = formData.get('institution') as string
+    const position = formData.get('position') as string
+    const district = formData.get('district') as string
+    const coAuthors = formData.get('coAuthors') as string
+    const abstractSummary = formData.get('abstractSummary') as string
+    const keywords = formData.get('keywords') as string
+    const background = formData.get('background') as string
+    const methods = formData.get('methods') as string
+    const findings = formData.get('findings') as string
+    const conclusion = formData.get('conclusion') as string
+    const policyImplications = formData.get('policyImplications') as string
+    const conflictOfInterest = formData.get('conflictOfInterest') === 'true'
+    const ethicalApproval = formData.get('ethicalApproval') === 'true'
+    const consentToPublish = formData.get('consentToPublish') === 'true'
+    const file = formData.get('file') as File | null
+
     // Validate required fields
-    const requiredFields = { title, abstract, keywords, email, institution, track };
-    const missingFields = Object.entries(requiredFields)
-      .filter(([_, value]) => !value)
-      .map(([key]) => key);
-    
-    if (missingFields.length > 0) {
+    if (!title || !presentationType || !conferenceTrack || !firstName || !lastName || 
+        !email || !phone || !institution || !position || !district || !abstractSummary || 
+        !keywords || !background || !methods || !findings || !conclusion || !consentToPublish) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Missing required fields',
-          missingFields
-        },
+        { error: 'All required fields must be filled' },
         { status: 400 }
-      );
+      )
     }
 
-    try {
-      // Attempt database connection
-      const db = DatabaseManager.getInstance();
-      
-      // Handle file upload (if needed, store file info)
-      let fileInfo = null;
-      if (file && file.size > 0) {
-        // Validate file type
-        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-        if (!allowedTypes.includes(file.type)) {
-          return NextResponse.json(
-            {
-              success: false,
-              message: 'Invalid file type. Only PDF and Word documents are allowed.'
-            },
-            { status: 400 }
-          );
-        }
-
-        // Validate file size (10MB limit)
-        const maxSize = 10 * 1024 * 1024; // 10MB
-        if (file.size > maxSize) {
-          return NextResponse.json(
-            {
-              success: false,
-              message: 'File too large. Maximum size is 10MB.'
-            },
-            { status: 400 }
-          );
-        }
-
-        // Create uploads directory if it doesn't exist
-        const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'abstracts');
-        try {
-          await fs.mkdir(uploadsDir, { recursive: true });
-        } catch (error) {
-          // Directory might already exist
-        }
-
-        // Generate unique filename
-        const timestamp = Date.now();
-        const fileExtension = file.name.split('.').pop();
-        const fileName = `abstract_${timestamp}_${file.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
-        const filePath = path.join(uploadsDir, fileName);
-
-        // Convert file to buffer and save
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        await fs.writeFile(filePath, buffer);
-
-        fileInfo = {
-          name: fileName,
-          originalName: file.name,
-          size: file.size,
-          type: file.type,
-          url: `/uploads/abstracts/${fileName}`
-        };
-      }
-      
-      // Parse authors JSON
-      let parsedAuthors = [];
-      try {
-        parsedAuthors = JSON.parse(authors || '[]');
-      } catch {
-        parsedAuthors = [];
-      }
-      
-      // Parse keywords
-      let parsedKeywords = [];
-      try {
-        parsedKeywords = JSON.parse(keywords || '[]');
-      } catch {
-        parsedKeywords = keywords ? keywords.split(',').map((k: string) => k.trim()) : [];
-      }
-      
-      // Insert new abstract
-      const result = await db.execute(`
-        INSERT INTO abstracts (
-          title, presentation_type, category, subcategory, primary_author,
-          co_authors, abstract_summary, keywords, background, methods,
-          findings, conclusion, implications, file_url, status, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NOW())
-      `, [
-        title,
-        'oral', // default presentation type
-        track,
-        subcategory,
-        JSON.stringify({
-          firstName: parsedAuthors[0]?.name?.split(' ')[0] || '',
-          lastName: parsedAuthors[0]?.name?.split(' ').slice(1).join(' ') || '',
-          email: email,
-          phone: phone,
-          institution: institution,
-          position: parsedAuthors[0]?.position || '',
-          district: ''
-        }),
-        JSON.stringify(parsedAuthors),
-        abstract,
-        JSON.stringify(parsedKeywords),
-        '', // background
-        '', // methods
-        '', // findings
-        '', // conclusion
-        '', // implications
-        fileInfo ? JSON.stringify(fileInfo) : null
-      ]);
-      
-      // Generate a unique ID for the response
-      const abstractId = (result as any)?.insertId || Date.now().toString();
-      
-      return NextResponse.json({
-        success: true,
-        message: 'Abstract submitted successfully',
-        abstract: {
-          id: abstractId,
-          title,
-          email,
-          institution,
-          status: 'pending',
-          submittedAt: new Date().toISOString()
-        }
-      }, { status: 201 });
-      
-    } catch (dbError) {
-      // Database is unavailable - provide graceful fallback
-      console.log('Database unavailable for abstracts, providing fallback response:', dbError);
-      
-      // Always return success for better UX when database is down
-      return NextResponse.json({
-        success: true,
-        message: 'Abstract received successfully',
-        abstract: {
-          id: Date.now().toString(),
-          title,
-          email,
-          institution,
-          status: 'received',
-          submittedAt: new Date().toISOString(),
-          note: 'Abstract saved locally and will be processed when system is online'
-        }
-      }, { status: 201 });
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'Please enter a valid email address' },
+        { status: 400 }
+      )
     }
-  } catch (error) {
-    console.error('Error processing abstract submission:', error);
+
+    // Handle file upload
+    let fileUrl = null
+    if (file && file.size > 0) {
+      // Check file size (2MB limit)
+      if (file.size > 2 * 1024 * 1024) {
+        return NextResponse.json(
+          { error: 'File size must be less than 2MB' },
+          { status: 400 }
+        )
+      }
+
+      const uploadsDir = join(process.cwd(), 'uploads', 'abstracts')
+      const fileName = `${firstName}_${lastName}_${Date.now()}.${file.name.split('.').pop()}`
+      const filePath = join(uploadsDir, fileName)
+      
+      // Ensure uploads directory exists
+      const fs = require('fs')
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true })
+      }
+      
+      const bytes = await file.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+      await writeFile(filePath, buffer)
+      
+      fileUrl = `/uploads/abstracts/${fileName}`
+    }
+
+    // Connect to database
+    const connection = await mysql.createConnection(dbConfig)
     
-    // Even in case of errors, provide a positive response for better UX
+    // Create primary author JSON
+    const primaryAuthor = JSON.stringify({
+      firstName,
+      lastName,
+      email,
+      phone,
+      institution,
+      position,
+      district
+    })
+    
+    // Insert abstract using the exact column names from the database
+    const [result] = await connection.execute(
+      `INSERT INTO abstracts 
+       (title, presentation_type, category, primary_author, co_authors, 
+        abstract_summary, keywords, background, methods, findings, conclusion, 
+        implications, file_url, conflict_of_interest, ethical_approval, 
+        consent_to_publish, author_phone, corresponding_author, corresponding_email, 
+        corresponding_phone, status, created_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NOW())`,
+      [
+        title, presentationType, conferenceTrack, primaryAuthor, coAuthors,
+        abstractSummary, keywords, background, methods, findings, conclusion,
+        policyImplications, fileUrl, conflictOfInterest, ethicalApproval,
+        consentToPublish, phone, `${firstName} ${lastName}`, email, phone
+      ]
+    )
+    
+    await connection.end()
+    
+    console.log('Abstract saved successfully:', result)
+    
     return NextResponse.json({
       success: true,
-      message: 'Abstract received and will be processed',
-      abstract: {
-        id: Date.now().toString(),
-        title: 'Abstract Submission',
-        email: 'pending@verification.com',
-        status: 'processing',
-        submittedAt: new Date().toISOString(),
-        note: 'Abstract is being processed - you will receive a response via email'
-      }
-    }, { status: 201 });
+      message: 'Abstract submitted successfully',
+      abstractId: (result as any).insertId
+    })
+    
+  } catch (error) {
+    console.error('Error saving abstract:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return NextResponse.json(
+      { error: `Failed to submit abstract: ${errorMessage}` },
+      { status: 500 }
+    )
   }
 }

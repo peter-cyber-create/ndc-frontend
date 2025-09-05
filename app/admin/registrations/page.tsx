@@ -1,20 +1,25 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Users, Search, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Check, X } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { 
+  Search, Filter, Download, Eye, Trash2, CheckCircle, XCircle, 
+  Clock, AlertCircle, User, Mail, Building, Phone, Calendar,
+  FileText, ExternalLink, RefreshCw
+} from 'lucide-react'
 
 interface Registration {
   id: number
-  first_name: string
-  last_name: string
+  firstName: string
+  lastName: string
   email: string
   phone: string
-  institution: string
-  registration_type: string
+  organization: string
+  position: string
+  registrationType: string
   status: string
-  created_at: string
-  updated_at: string
-  payment_reference?: string // Payment proof file path
+  paymentProofUrl?: string
+  createdAt: string
+  updatedAt: string
 }
 
 export default function RegistrationsPage() {
@@ -23,9 +28,13 @@ export default function RegistrationsPage() {
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [paymentFilter, setPaymentFilter] = useState('all')
+  const [typeFilter, setTypeFilter] = useState('all')
   const [viewOpen, setViewOpen] = useState(false)
-  const [selected, setSelected] = useState<Registration | null>(null)
+  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
+
+  // API URL
+  const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api`
 
   useEffect(() => {
     loadRegistrations()
@@ -35,8 +44,8 @@ export default function RegistrationsPage() {
     try {
       setLoading(true)
       setError(null)
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/registrations`)
+
+      const response = await fetch(`${API_URL}/admin/registrations`)
       
       if (response.ok) {
         const data = await response.json()
@@ -44,8 +53,7 @@ export default function RegistrationsPage() {
       } else {
         setError('Failed to load registrations')
       }
-    } catch (error) {
-      console.error('Error loading registrations:', error)
+    } catch (err) {
       setError('Failed to load registrations')
     } finally {
       setLoading(false)
@@ -53,132 +61,77 @@ export default function RegistrationsPage() {
   }
 
   const filteredRegistrations = registrations.filter(registration => {
-    const fullName = `${registration.first_name} ${registration.last_name}`.toLowerCase()
-    const matchesSearch = fullName.includes(searchTerm.toLowerCase()) ||
-                         registration.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         registration.institution.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = 
+      registration.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      registration.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      registration.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      registration.organization?.toLowerCase().includes(searchTerm.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || registration.status === statusFilter
-    const matchesPayment = paymentFilter === 'all' || 
-                          (paymentFilter === 'with_proof' && registration.payment_reference) ||
-                          (paymentFilter === 'without_proof' && !registration.payment_reference)
+    const matchesType = typeFilter === 'all' || registration.registrationType === typeFilter
     
-    return matchesSearch && matchesStatus && matchesPayment
+    return matchesSearch && matchesStatus && matchesType
   })
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'confirmed':
+      case 'approved':
         return <CheckCircle className="h-5 w-5 text-green-500" />
       case 'rejected':
         return <XCircle className="h-5 w-5 text-red-500" />
       case 'pending':
         return <Clock className="h-5 w-5 text-yellow-500" />
-      case 'cancelled':
-        return <XCircle className="h-5 w-5 text-gray-500" />
       default:
-        return <Clock className="h-5 w-5 text-gray-500" />
+        return <AlertCircle className="h-5 w-5 text-gray-500" />
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'confirmed':
+      case 'approved':
         return 'bg-green-100 text-green-800'
       case 'rejected':
         return 'bg-red-100 text-red-800'
       case 'pending':
         return 'bg-yellow-100 text-yellow-800'
-      case 'cancelled':
-        return 'bg-gray-100 text-gray-800'
       default:
         return 'bg-gray-100 text-gray-800'
     }
   }
 
-  const handleView = (registration: Registration) => {
-    setSelected(registration)
-    setViewOpen(true)
-  }
-
-  const handleStatusChange = async (id: number, newStatus: string) => {
-    try {
-      console.log(`Updating registration ${id} status to: ${newStatus}`)
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/registrations/${id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          status: newStatus
-        }),
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        console.log('Status update result:', result)
-        
-        // Update local state
-        setRegistrations(prev => prev.map(reg => 
-          reg.id === id ? { ...reg, status: newStatus } : reg
-        ))
-        
-        // Show success message
-        alert(`Status updated successfully to ${newStatus}`)
-      } else {
-        const errorData = await response.json().catch(() => ({}))
-        console.error('Status update failed:', response.status, errorData)
-        alert(`Failed to update status: ${errorData.error || 'Unknown error'}`)
-      }
-    } catch (error) {
-      console.error('Error updating status:', error)
-      alert('Failed to update status: Network error')
-    }
-  }
-
-  const handleDownloadPaymentProof = async (fileUrl: string, registration: Registration) => {
+  const handleDownloadPaymentProof = async (paymentProofUrl: string, registration: Registration) => {
     try {
       console.log('Downloading payment proof for registration:', registration.id)
-      console.log('File URL:', fileUrl)
+      console.log('Payment proof URL:', paymentProofUrl)
       
-      // Create a meaningful filename with submitter's name and registration type
-      const submitterName = `${registration.first_name}_${registration.last_name}`.replace(/[^a-zA-Z0-9]/g, '_')
-      const registrationType = registration.registration_type ? registration.registration_type.replace(/[^a-zA-Z0-9]/g, '_') : 'Registration'
-      const fileExtension = fileUrl.split('.').pop() || 'pdf'
+      // Create a meaningful filename
+      const name = `${registration.firstName}_${registration.lastName}`.replace(/[^a-zA-Z0-9]/g, '_')
+      const fileExtension = paymentProofUrl.split('.').pop() || 'pdf'
       
-      const filename = `PaymentProof_${submitterName}_${registrationType}.${fileExtension}`
+      const filename = `${name}_${registration.id}.${fileExtension}`
       
-      // Use the frontend file download endpoint
-      const downloadUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/uploads/file/${fileUrl}`
-      console.log('Downloading from backend endpoint:', downloadUrl)
-      console.log('Filename will be:', filename)
-      
-      // Fetch the file as a blob to force download
-      const response = await fetch(downloadUrl)
+      // Use the payment proof download endpoint
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/uploads/payment-proof/download?file=${encodeURIComponent(paymentProofUrl)}`);
+
       if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Download failed:', response.status, errorText)
-        throw new Error(`Download failed: ${response.status} - ${errorText}`)
+        throw new Error(`Failed to download file: ${response.statusText}`);
       }
-      
-      const blob = await response.blob()
-      
-      // Create a blob URL and trigger download
-      const blobUrl = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = blobUrl
-      link.download = filename
-      link.style.display = 'none'
-      
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      
+
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // Create a temporary link and trigger download
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
       // Clean up the blob URL
-      window.URL.revokeObjectURL(blobUrl)
+      window.URL.revokeObjectURL(blobUrl);
       
-      console.log('Payment proof downloaded successfully')
+      alert('Payment proof downloaded successfully')
     } catch (error) {
       console.error('Error downloading payment proof:', error)
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -186,23 +139,19 @@ export default function RegistrationsPage() {
     }
   }
 
-  const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
-
   const handleDelete = async (id: number) => {
     setDeleteConfirm(id)
   }
 
   const confirmDelete = async (id: number) => {
-    setDeleteConfirm(null)
-
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/registrations/${id}`, {
-        method: 'DELETE',
+      const response = await fetch(`${API_URL}/admin/registrations/${id}`, {
+        method: 'DELETE'
       })
 
       if (response.ok) {
-        // Remove from local state
-        setRegistrations(prev => prev.filter(reg => reg.id !== id))
+        setRegistrations(registrations.filter(reg => reg.id !== id))
+        setDeleteConfirm(null)
         alert('Registration deleted successfully')
       } else {
         alert('Failed to delete registration')
@@ -213,11 +162,40 @@ export default function RegistrationsPage() {
     }
   }
 
+  const handleStatusChange = async (id: number, newStatus: string) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/registrations/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      })
+
+      if (response.ok) {
+        setRegistrations(registrations.map(reg => 
+          reg.id === id ? { ...reg, status: newStatus } : reg
+        ))
+        alert(`Registration status updated to ${newStatus}`)
+      } else {
+        alert('Failed to update status')
+      }
+    } catch (error) {
+      console.error('Error updating status:', error)
+      alert('Failed to update status')
+    }
+  }
+
+  const viewRegistration = (registration: Registration) => {
+    setSelectedRegistration(registration)
+    setViewOpen(true)
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading registrations...</p>
         </div>
       </div>
@@ -230,9 +208,9 @@ export default function RegistrationsPage() {
         <div className="text-center">
           <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Registrations</div>
           <p className="text-gray-600 mb-4">{error}</p>
-          <button 
+          <button
             onClick={loadRegistrations}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
           >
             Retry
           </button>
@@ -243,139 +221,91 @@ export default function RegistrationsPage() {
 
   return (
     <div className="p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-3">
-          <Users className="h-8 w-8 text-blue-600" />
-          <h1 className="text-3xl font-bold text-gray-900">Registrations Management</h1>
-        </div>
-        <div className="flex items-center space-x-3">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-2">
-            <Download className="h-4 w-4" />
-            <span>Export</span>
-          </button>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Registrations</h1>
+        <p className="text-gray-600">Manage conference registrations</p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Users className="h-6 w-6 text-blue-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Registrations</p>
-              <p className="text-2xl font-bold text-gray-900">{registrations.length}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <CheckCircle className="h-6 w-6 text-green-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Confirmed</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {registrations.filter(r => r.status === 'confirmed').length}
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <Clock className="h-6 w-6 text-yellow-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Pending</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {registrations.filter(r => r.status === 'pending').length}
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <XCircle className="h-6 w-6 text-red-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Rejected</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {registrations.filter(r => r.status === 'rejected').length}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters and Search */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-          <div className="flex items-center space-x-4">
+      {/* Filters */}
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder="Search registrations..."
+                placeholder="Search by name, email, or organization..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            
-            <div className="flex items-center space-x-2">
-              <Filter className="h-4 w-4 text-gray-400" />
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="all">All Status</option>
-                <option value="submitted">Submitted</option>
-                <option value="under_review">Under Review</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-                <option value="waitlist">Waitlist</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
           </div>
-          
-          <div className="text-sm text-gray-500">
-            Showing {filteredRegistrations.length} of {registrations.length} registrations
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">All Types</option>
+              <option value="delegate">Delegate</option>
+              <option value="speaker">Speaker</option>
+              <option value="exhibitor">Exhibitor</option>
+            </select>
+          </div>
+
+          <div className="flex items-end">
+            <button
+              onClick={loadRegistrations}
+              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Registrations Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      {/* Results - Table layout */}
+      <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Registration
+                  Registrant
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Contact Info
+                  Contact
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Organization
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Type
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Payment
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
+                  Payment Proof
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -386,80 +316,81 @@ export default function RegistrationsPage() {
               {filteredRegistrations.map((registration) => (
                 <tr key={registration.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">{registration.first_name} {registration.last_name}</div>
-                      <div className="text-sm text-gray-500">{registration.institution}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {registration.firstName} {registration.lastName}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {registration.position}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm text-gray-900">{registration.email}</div>
-                      <div className="text-sm text-gray-500">{registration.phone}</div>
+                    <div className="text-sm text-gray-900">{registration.email}</div>
+                    <div className="text-sm text-gray-500">{registration.phone}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900 max-w-xs truncate" title={registration.organization}>
+                      {registration.organization}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {registration.registration_type}
+                      {registration.registrationType}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {registration.payment_reference ? (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        ✓ Proof Uploaded
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                        No Proof
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center">
                       {getStatusIcon(registration.status)}
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(registration.status)}`}>
+                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(registration.status)}`}>
                         {registration.status}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(registration.created_at).toLocaleDateString()}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {registration.paymentProofUrl ? (
+                      <button
+                        onClick={() => handleDownloadPaymentProof(registration.paymentProofUrl!, registration)}
+                        className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
+                      >
+                        <Download className="h-3 w-3 mr-1" />
+                        Download
+                      </button>
+                    ) : (
+                      <span className="text-gray-400 text-sm">No proof uploaded</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center space-x-2">
-                      <button 
-                        onClick={() => handleView(registration)}
-                        className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => viewRegistration(registration)}
+                        className="text-blue-600 hover:text-blue-900"
                         title="View Details"
                       >
                         <Eye className="h-4 w-4" />
                       </button>
-                      <button 
-                        onClick={() => handleStatusChange(registration.id, 'confirmed')}
-                        className="text-green-600 hover:text-green-900 p-1 rounded hover:bg-green-50 transition-colors"
-                        title="Confirm"
-                      >
-                        <Check className="h-4 w-4" />
-                      </button>
-                      <button 
-                        onClick={() => handleStatusChange(registration.id, 'rejected')}
-                        className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
-                        title="Reject"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                      {registration.payment_reference && (
-                        <button 
-                          onClick={() => registration.payment_reference && handleDownloadPaymentProof(registration.payment_reference, registration)}
-                          className="text-green-600 hover:text-green-900 p-1 rounded hover:bg-green-50 transition-colors"
-                          title="Download Payment Proof"
-                        >
-                          <Download className="h-4 w-4" />
-                        </button>
+                      
+                      {registration.status === 'pending' && (
+                        <>
+                          <button
+                            onClick={() => handleStatusChange(registration.id, 'approved')}
+                            className="text-green-600 hover:text-green-900"
+                            title="Approve Registration"
+                          >
+                            <CheckCircle className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleStatusChange(registration.id, 'rejected')}
+                            className="text-red-600 hover:text-red-900"
+                            title="Reject Registration"
+                          >
+                            <XCircle className="h-4 w-4" />
+                          </button>
+                        </>
                       )}
-                      <button 
+                      
+                      <button
                         onClick={() => handleDelete(registration.id)}
-                        className="text-gray-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
-                        title="Delete"
+                        className="text-red-600 hover:text-red-900"
+                        title="Delete Registration"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -470,94 +401,109 @@ export default function RegistrationsPage() {
             </tbody>
           </table>
         </div>
-        
-        {filteredRegistrations.length === 0 && (
-          <div className="text-center py-12">
-            <Users className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No registrations found</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              {searchTerm || statusFilter !== 'all' 
-                ? 'Try adjusting your search or filter criteria.'
-                : 'No registrations have been submitted yet.'
-              }
-            </p>
-          </div>
-        )}
       </div>
 
-      {/* View Modal */}
-      {viewOpen && selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setViewOpen(false)} />
-          <div className="relative bg-white w-full max-w-3xl rounded-lg shadow-lg border border-gray-200 p-6 mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Registration Details</h2>
-              <button onClick={() => setViewOpen(false)} className="text-gray-500 hover:text-gray-700">✕</button>
-            </div>
-            <div className="space-y-4 max-h-[70vh] overflow-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm text-gray-500">Name</div>
-                  <div className="text-base font-medium text-gray-900">{selected.first_name} {selected.last_name}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500">Email</div>
-                  <div className="text-base text-gray-900">{selected.email}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500">Phone</div>
-                  <div className="text-base text-gray-900">{selected.phone || '—'}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500">Institution</div>
-                  <div className="text-base text-gray-900">{selected.institution || '—'}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500">Registration Type</div>
-                  <div className="text-base text-gray-900">{selected.registration_type}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500">Status</div>
-                  <div className="text-base text-gray-900">{selected.status}</div>
-                </div>
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3 text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                <Trash2 className="h-6 w-6 text-red-600" />
               </div>
-              {selected.payment_reference && (
-                <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded p-3">
-                  <div className="text-sm text-gray-700 truncate">Payment proof available</div>
-                  <button
-                    onClick={() => selected.payment_reference && handleDownloadPaymentProof(selected.payment_reference, selected)}
-                    className="text-white bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded"
-                  >
-                    Download Proof
-                  </button>
-                </div>
-              )}
+              <h3 className="text-lg font-medium text-gray-900 mt-4">Delete Registration</h3>
+              <div className="mt-2 px-7 py-3">
+                <p className="text-sm text-gray-500">
+                  Are you sure you want to delete this registration? This action cannot be undone.
+                </p>
+              </div>
+              <div className="flex justify-center space-x-4 mt-4">
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => confirmDelete(deleteConfirm)}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-            <div className="mt-6 flex items-center justify-end space-x-2">
-              <button
-                onClick={() => setViewOpen(false)}
-                className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
-              >
-                Close
-              </button>
-              <button
-                onClick={() => handleStatusChange(selected.id, 'confirmed')}
-                className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-              >
-                Confirm
-              </button>
-              <button
-                onClick={() => handleStatusChange(selected.id, 'rejected')}
-                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
-              >
-                Reject
-              </button>
-              <button
-                onClick={() => handleDelete(selected.id)}
-                className="px-4 py-2 rounded bg-gray-600 text-white hover:bg-gray-700"
-              >
-                Delete
-              </button>
+          </div>
+        </div>
+      )}
+
+      {/* View Registration Modal */}
+      {viewOpen && selectedRegistration && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium text-gray-900">Registration Details</h3>
+                <button
+                  onClick={() => setViewOpen(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <XCircle className="h-6 w-6" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Name</label>
+                  <p className="text-sm text-gray-900 mt-1">
+                    {selectedRegistration.firstName} {selectedRegistration.lastName}
+                  </p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedRegistration.email}</p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Phone</label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedRegistration.phone}</p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Organization</label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedRegistration.organization}</p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Position</label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedRegistration.position}</p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Registration Type</label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedRegistration.registrationType}</p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(selectedRegistration.status)}`}>
+                    {selectedRegistration.status}
+                  </span>
+                </div>
+                
+                {selectedRegistration.paymentProofUrl && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Payment Proof</label>
+                    <button
+                      onClick={() => handleDownloadPaymentProof(selectedRegistration.paymentProofUrl!, selectedRegistration)}
+                      className="mt-2 inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
+                    >
+                      <Download className="h-3 w-3 mr-1" />
+                      Download Payment Proof
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

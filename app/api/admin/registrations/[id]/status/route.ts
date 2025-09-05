@@ -9,46 +9,51 @@ const dbConfig = {
   port: 3306,
 }
 
-export async function DELETE(
+export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const connection = await mysql.createConnection(dbConfig)
     
-    const abstractId = params.id
+    const registrationId = params.id
+    const { status } = await request.json()
     
-    // Check if abstract exists
+    console.log('Updating registration status:', { registrationId, status })
+    
+    // Check if registration exists
     const [existing] = await connection.execute(
-      'SELECT id FROM abstracts WHERE id = ?',
-      [abstractId]
+      'SELECT id FROM registrations WHERE id = ?',
+      [registrationId]
     )
     
     if (!Array.isArray(existing) || existing.length === 0) {
       await connection.end()
       return NextResponse.json(
-        { error: 'Abstract not found' },
+        { error: 'Registration not found' },
         { status: 404 }
       )
     }
     
-    // Delete the abstract
+    // Update the registration status
     await connection.execute(
-      'DELETE FROM abstracts WHERE id = ?',
-      [abstractId]
+      'UPDATE registrations SET status = ?, updated_at = NOW() WHERE id = ?',
+      [status, registrationId]
     )
     
     await connection.end()
     
+    console.log('Registration status updated successfully')
+    
     return NextResponse.json({
       success: true,
-      message: 'Abstract deleted successfully'
+      message: 'Registration status updated successfully'
     })
     
   } catch (error) {
-    console.error('Error deleting abstract:', error)
+    console.error('Error updating registration status:', error)
     return NextResponse.json(
-      { error: 'Failed to delete abstract' },
+      { error: 'Failed to update registration status' },
       { status: 500 }
     )
   }
