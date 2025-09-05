@@ -16,44 +16,44 @@ export async function PATCH(
   try {
     const connection = await mysql.createConnection(dbConfig)
     
-    const abstractId = params.id
+    const contactId = params.id
     const { status } = await request.json()
     
-    console.log('Updating abstract status:', { abstractId, status })
+    console.log('Updating contact status:', { contactId, status })
     
-    // Check if abstract exists
+    // Check if contact exists
     const [existing] = await connection.execute(
-      'SELECT id FROM abstracts WHERE id = ?',
-      [abstractId]
+      'SELECT id FROM contacts WHERE id = ?',
+      [contactId]
     )
     
     if (!Array.isArray(existing) || existing.length === 0) {
       await connection.end()
       return NextResponse.json(
-        { error: 'Abstract not found' },
+        { error: 'Contact not found' },
         { status: 404 }
       )
     }
     
-    // Update the abstract status
+    // Update the contact status
     await connection.execute(
-      'UPDATE abstracts SET status = ?, updated_at = NOW() WHERE id = ?',
-      [status, abstractId]
+      'UPDATE contacts SET status = ?, updated_at = NOW() WHERE id = ?',
+      [status, contactId]
     )
     
     await connection.end()
     
-    console.log('Abstract status updated successfully')
+    console.log('Contact status updated successfully')
     
     return NextResponse.json({
       success: true,
-      message: 'Abstract status updated successfully'
+      message: 'Contact status updated successfully'
     })
     
   } catch (error) {
-    console.error('Error updating abstract status:', error)
+    console.error('Error updating contact status:', error)
     return NextResponse.json(
-      { error: 'Failed to update abstract status' },
+      { error: 'Failed to update contact status' },
       { status: 500 }
     )
   }

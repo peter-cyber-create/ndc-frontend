@@ -16,44 +16,44 @@ export async function PATCH(
   try {
     const connection = await mysql.createConnection(dbConfig)
     
-    const abstractId = params.id
+    const sponsorshipId = params.id
     const { status } = await request.json()
     
-    console.log('Updating abstract status:', { abstractId, status })
+    console.log('Updating sponsorship status:', { sponsorshipId, status })
     
-    // Check if abstract exists
+    // Check if sponsorship exists
     const [existing] = await connection.execute(
-      'SELECT id FROM abstracts WHERE id = ?',
-      [abstractId]
+      'SELECT id FROM sponsorships WHERE id = ?',
+      [sponsorshipId]
     )
     
     if (!Array.isArray(existing) || existing.length === 0) {
       await connection.end()
       return NextResponse.json(
-        { error: 'Abstract not found' },
+        { error: 'Sponsorship not found' },
         { status: 404 }
       )
     }
     
-    // Update the abstract status
+    // Update the sponsorship status
     await connection.execute(
-      'UPDATE abstracts SET status = ?, updated_at = NOW() WHERE id = ?',
-      [status, abstractId]
+      'UPDATE sponsorships SET status = ?, updated_at = NOW() WHERE id = ?',
+      [status, sponsorshipId]
     )
     
     await connection.end()
     
-    console.log('Abstract status updated successfully')
+    console.log('Sponsorship status updated successfully')
     
     return NextResponse.json({
       success: true,
-      message: 'Abstract status updated successfully'
+      message: 'Sponsorship status updated successfully'
     })
     
   } catch (error) {
-    console.error('Error updating abstract status:', error)
+    console.error('Error updating sponsorship status:', error)
     return NextResponse.json(
-      { error: 'Failed to update abstract status' },
+      { error: 'Failed to update sponsorship status' },
       { status: 500 }
     )
   }

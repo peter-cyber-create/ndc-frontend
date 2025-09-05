@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Calendar, MapPin, Users } from 'lucide-react'
 import HomeSlideshow from '../../components/HomeSlideshow'
 import { Navbar } from '../../components/Navbar'
+import CountdownTimer from '../../components/CountdownTimer'
 
 export const metadata = {
   title: 'NATIONAL ANNUAL COMMUNICABLE AND NON COMMUNICABLE DISEASES (NACNDC) AND 19TH JOINT SCIENTIFIC HEALTH(JASH) CONFERENCE 2025',
@@ -40,6 +41,11 @@ export default function HomePage() {
           <p className="text-primary-200 text-sm sm:text-base md:text-lg lg:text-xl font-medium mb-4 sm:mb-6 animate-fade-in delay-200 text-center max-w-3xl px-2">
             3rd - 7th November, 2025 • Speke Resort Munyonyo, Uganda
           </p>
+          
+          {/* Countdown Timer */}
+          <div className="mb-6 animate-fade-in delay-300 max-w-2xl w-full px-4">
+            <CountdownTimer />
+          </div>
           <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center items-center animate-fade-in delay-300 w-full max-w-lg sm:max-w-none px-4">
             <Link href="/register" className="relative inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-sm sm:text-base min-h-[52px] border border-primary-600 hover:border-primary-700 w-full xs:w-auto text-center min-w-[160px]">
               <span className="text-lg">🎫</span>

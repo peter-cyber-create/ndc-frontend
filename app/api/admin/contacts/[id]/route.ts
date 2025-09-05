@@ -9,51 +9,46 @@ const dbConfig = {
   port: 3306,
 }
 
-export async function PATCH(
+export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const connection = await mysql.createConnection(dbConfig)
     
-    const abstractId = params.id
-    const { status } = await request.json()
+    const contactId = params.id
     
-    console.log('Updating abstract status:', { abstractId, status })
-    
-    // Check if abstract exists
+    // Check if contact exists
     const [existing] = await connection.execute(
-      'SELECT id FROM abstracts WHERE id = ?',
-      [abstractId]
+      'SELECT id FROM contacts WHERE id = ?',
+      [contactId]
     )
     
     if (!Array.isArray(existing) || existing.length === 0) {
       await connection.end()
       return NextResponse.json(
-        { error: 'Abstract not found' },
+        { error: 'Contact not found' },
         { status: 404 }
       )
     }
     
-    // Update the abstract status
+    // Delete the contact
     await connection.execute(
-      'UPDATE abstracts SET status = ?, updated_at = NOW() WHERE id = ?',
-      [status, abstractId]
+      'DELETE FROM contacts WHERE id = ?',
+      [contactId]
     )
     
     await connection.end()
     
-    console.log('Abstract status updated successfully')
-    
     return NextResponse.json({
       success: true,
-      message: 'Abstract status updated successfully'
+      message: 'Contact deleted successfully'
     })
     
   } catch (error) {
-    console.error('Error updating abstract status:', error)
+    console.error('Error deleting contact:', error)
     return NextResponse.json(
-      { error: 'Failed to update abstract status' },
+      { error: 'Failed to delete contact' },
       { status: 500 }
     )
   }

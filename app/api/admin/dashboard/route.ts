@@ -1,49 +1,62 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { DatabaseManager } from '@/lib/mysql'
+import { NextRequest, NextResponse } from "next/server"
+import mysql from 'mysql2/promise'
 
-export const dynamic = 'force-dynamic'
+const dbConfig = {
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'user',
+  password: process.env.DB_PASSWORD || 'toor',
+  database: process.env.DB_NAME || 'conf',
+  port: 3306,
+}
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const db = DatabaseManager.getInstance()
+    const connection = await mysql.createConnection(dbConfig)
     
     // Get all data
-    const registrations = await db.execute('SELECT * FROM registrations') as any[]
-    const abstracts = await db.execute('SELECT * FROM abstracts') as any[]
-    const contacts = await db.execute('SELECT * FROM contacts') as any[]
-    const sponsorships = await db.execute('SELECT * FROM sponsorships') as any[]
+    const [registrations] = await connection.execute('SELECT * FROM registrations')
+    const [abstracts] = await connection.execute('SELECT * FROM abstracts')
+    const [contacts] = await connection.execute('SELECT * FROM contacts')
+    const [sponsorships] = await connection.execute('SELECT * FROM sponsorships')
+    
+    await connection.end()
 
     // Calculate statistics
+    const registrationsArray = registrations as any[]
+    const abstractsArray = abstracts as any[]
+    const contactsArray = contacts as any[]
+    const sponsorshipsArray = sponsorships as any[]
+    
     const stats = {
-      totalRegistrations: registrations.length,
-      totalAbstracts: abstracts.length,
-      totalContacts: contacts.length,
-      totalSponsorships: sponsorships.length,
-      recentRegistrations: registrations
-        .filter((r: any) => r.status === 'submitted')
-        .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      totalRegistrations: registrationsArray.length,
+      totalAbstracts: abstractsArray.length,
+      totalContacts: contactsArray.length,
+      totalSponsorships: sponsorshipsArray.length,
+      recentRegistrations: registrationsArray
+        .filter((r: any) => r.status === 'pending')
+        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 5)
         .map((r: any) => ({
           id: r.id,
-          name: `${r.first_name} ${r.last_name}`,
+          name: `${r.firstName} ${r.lastName}`,
           email: r.email,
           organization: r.organization,
           status: r.status,
-          submittedAt: r.created_at
+          submittedAt: r.createdAt
         })),
-      recentAbstracts: abstracts
+      recentAbstracts: abstractsArray
         .filter((a: any) => a.status === 'submitted')
         .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         .slice(0, 5)
         .map((a: any) => ({
           id: a.id,
           title: a.title,
-          author: a.primary_author ? JSON.parse(a.primary_author).firstName + ' ' + JSON.parse(a.primary_author).lastName : 'Unknown',
+          author: a.primary_author || 'Unknown',
           status: a.status,
           submittedAt: a.created_at
         })),
-      recentContacts: contacts
-        .filter((c: any) => c.status === 'submitted')
+      recentContacts: contactsArray
+        .filter((c: any) => c.status === 'new')
         .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         .slice(0, 5)
         .map((c: any) => ({
@@ -54,8 +67,8 @@ export async function GET(request: NextRequest) {
           status: c.status,
           submittedAt: c.created_at
         })),
-      recentSponsorships: sponsorships
-        .filter((s: any) => s.status === 'submitted')
+      recentSponsorships: sponsorshipsArray
+        .filter((s: any) => s.status === 'pending')
         .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         .slice(0, 5)
         .map((s: any) => ({

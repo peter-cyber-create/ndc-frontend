@@ -9,51 +9,46 @@ const dbConfig = {
   port: 3306,
 }
 
-export async function PATCH(
+export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const connection = await mysql.createConnection(dbConfig)
     
-    const abstractId = params.id
-    const { status } = await request.json()
+    const sponsorshipId = params.id
     
-    console.log('Updating abstract status:', { abstractId, status })
-    
-    // Check if abstract exists
+    // Check if sponsorship exists
     const [existing] = await connection.execute(
-      'SELECT id FROM abstracts WHERE id = ?',
-      [abstractId]
+      'SELECT id FROM sponsorships WHERE id = ?',
+      [sponsorshipId]
     )
     
     if (!Array.isArray(existing) || existing.length === 0) {
       await connection.end()
       return NextResponse.json(
-        { error: 'Abstract not found' },
+        { error: 'Sponsorship not found' },
         { status: 404 }
       )
     }
     
-    // Update the abstract status
+    // Delete the sponsorship
     await connection.execute(
-      'UPDATE abstracts SET status = ?, updated_at = NOW() WHERE id = ?',
-      [status, abstractId]
+      'DELETE FROM sponsorships WHERE id = ?',
+      [sponsorshipId]
     )
     
     await connection.end()
     
-    console.log('Abstract status updated successfully')
-    
     return NextResponse.json({
       success: true,
-      message: 'Abstract status updated successfully'
+      message: 'Sponsorship deleted successfully'
     })
     
   } catch (error) {
-    console.error('Error updating abstract status:', error)
+    console.error('Error deleting sponsorship:', error)
     return NextResponse.json(
-      { error: 'Failed to update abstract status' },
+      { error: 'Failed to delete sponsorship' },
       { status: 500 }
     )
   }

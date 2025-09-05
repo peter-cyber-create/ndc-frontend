@@ -2,74 +2,72 @@
 
 import React, { useState, useEffect } from 'react'
 import { 
-  Search, Filter, Download, Eye, Trash2, CheckCircle, XCircle, 
+  Search, Filter, Eye, Trash2, CheckCircle, XCircle, 
   Clock, AlertCircle, User, Mail, Building, Phone, Calendar,
-  FileText, ExternalLink
+  Package, Star, Award, Shield, Zap, Download
 } from 'lucide-react'
 
-interface Abstract {
+interface Sponsorship {
   id: number
-  title: string
-  primary_author: string
-  corresponding_email: string
-  organization: string
-  abstract_summary: string
-  keywords: string
-  category: string
+  company_name: string
+  contact_person: string
+  email: string
+  phone: string
+  selected_package: string
   status: string
-  submittedAt: string
-  file_url?: string
+  submitted_at: string
+  created_at: string
+  payment_proof_url?: string
 }
 
-export default function AbstractsPage() {
-  const [abstracts, setAbstracts] = useState<Abstract[]>([])
+export default function SponsorshipsPage() {
+  const [sponsorships, setSponsorships] = useState<Sponsorship[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [categoryFilter, setCategoryFilter] = useState('all')
+  const [packageFilter, setPackageFilter] = useState('all')
   const [viewOpen, setViewOpen] = useState(false)
-  const [selectedAbstract, setSelectedAbstract] = useState<Abstract | null>(null)
+  const [selectedSponsorship, setSelectedSponsorship] = useState<Sponsorship | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
 
   // API URL
   const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api`
 
   useEffect(() => {
-    loadAbstracts()
+    loadSponsorships()
   }, [])
 
-  const loadAbstracts = async () => {
+  const loadSponsorships = async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/admin/abstracts`)
+      const response = await fetch(`${API_URL}/admin/sponsorships`)
       
       if (response.ok) {
         const data = await response.json()
-        setAbstracts(data.data || [])
+        setSponsorships(data.data || [])
       } else {
-        setError('Failed to load abstracts')
+        setError('Failed to load sponsorships')
       }
     } catch (err) {
-      setError('Failed to load abstracts')
+      setError('Failed to load sponsorships')
     } finally {
       setLoading(false)
     }
   }
 
-  const filteredAbstracts = abstracts.filter(abstract => {
+  const filteredSponsorships = sponsorships.filter(sponsorship => {
     const matchesSearch = 
-      abstract.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      abstract.primary_author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      abstract.corresponding_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      abstract.organization?.toLowerCase().includes(searchTerm.toLowerCase())
+      sponsorship.company_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sponsorship.contact_person?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sponsorship.email?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    const matchesStatus = statusFilter === 'all' || abstract.status === statusFilter
-    const matchesCategory = categoryFilter === 'all' || abstract.category === categoryFilter
+    const matchesStatus = statusFilter === 'all' || sponsorship.status === statusFilter
+    const matchesPackage = packageFilter === 'all' || sponsorship.selected_package === packageFilter
     
-    return matchesSearch && matchesStatus && matchesCategory
+    return matchesSearch && matchesStatus && matchesPackage
   })
 
   const getStatusIcon = (status: string) => {
@@ -78,7 +76,7 @@ export default function AbstractsPage() {
         return <CheckCircle className="h-5 w-5 text-green-500" />
       case 'rejected':
         return <XCircle className="h-5 w-5 text-red-500" />
-      case 'submitted':
+      case 'pending':
         return <Clock className="h-5 w-5 text-yellow-500" />
       default:
         return <AlertCircle className="h-5 w-5 text-gray-500" />
@@ -91,26 +89,106 @@ export default function AbstractsPage() {
         return 'bg-green-100 text-green-800'
       case 'rejected':
         return 'bg-red-100 text-red-800'
-      case 'submitted':
+      case 'pending':
         return 'bg-yellow-100 text-yellow-800'
       default:
         return 'bg-gray-100 text-gray-800'
     }
   }
 
-  const handleDownloadAbstract = async (fileUrl: string, abstract: Abstract) => {
+  const getPackageIcon = (packageType: string) => {
+    switch (packageType) {
+      case 'platinum':
+        return <Star className="h-5 w-5 text-yellow-500" />
+      case 'gold':
+        return <Award className="h-5 w-5 text-yellow-600" />
+      case 'silver':
+        return <Shield className="h-5 w-5 text-gray-500" />
+      case 'bronze':
+        return <Zap className="h-5 w-5 text-orange-500" />
+      default:
+        return <Package className="h-5 w-5 text-gray-500" />
+    }
+  }
+
+  const getPackageColor = (packageType: string) => {
+    switch (packageType) {
+      case 'platinum':
+        return 'bg-gray-100 text-gray-800'
+      case 'gold':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'silver':
+        return 'bg-gray-100 text-gray-700'
+      case 'bronze':
+        return 'bg-orange-100 text-orange-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const handleDelete = async (id: number) => {
+    setDeleteConfirm(id)
+  }
+
+  const confirmDelete = async (id: number) => {
     try {
-      console.log('Downloading abstract file for abstract:', abstract.id)
-      console.log('File URL:', fileUrl)
+      const response = await fetch(`${API_URL}/admin/sponsorships/${id}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        setSponsorships(sponsorships.filter(sponsorship => sponsorship.id !== id))
+        setDeleteConfirm(null)
+        alert('Sponsorship deleted successfully')
+      } else {
+        alert('Failed to delete sponsorship')
+      }
+    } catch (error) {
+      console.error('Error deleting sponsorship:', error)
+      alert('Failed to delete sponsorship')
+    }
+  }
+
+  const handleStatusChange = async (id: number, newStatus: string) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/sponsorships/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      })
+
+      if (response.ok) {
+        setSponsorships(sponsorships.map(sponsorship => 
+          sponsorship.id === id ? { ...sponsorship, status: newStatus } : sponsorship
+        ))
+        alert(`Sponsorship status updated to ${newStatus}`)
+      } else {
+        alert('Failed to update status')
+      }
+    } catch (error) {
+      console.error('Error updating status:', error)
+      alert('Failed to update status')
+    }
+  }
+
+  const viewSponsorship = (sponsorship: Sponsorship) => {
+    setSelectedSponsorship(sponsorship)
+    setViewOpen(true)
+  }
+
+  const handleDownloadPaymentProof = async (paymentProofUrl: string, sponsorship: Sponsorship) => {
+    try {
+      console.log('Downloading payment proof for sponsorship:', sponsorship.id)
+      console.log('Payment proof URL:', paymentProofUrl)
       
-      // Create a meaningful filename
-      const authorName = abstract.primary_author.replace(/[^a-zA-Z0-9]/g, '_')
-      const fileExtension = fileUrl.split('.').pop() || 'pdf'
+      // Create meaningful parameters for download
+      const personName = `${sponsorship.contact_person}_${sponsorship.company_name}`
+      const paymentType = 'Sponsorship'
       
-      const filename = `Abstract_${authorName}_${abstract.id}.${fileExtension}`
-      
-      // Use the frontend file download endpoint
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/abstracts/download/${abstract.id}`);
+      // Use the frontend file download endpoint with person name and payment type
+      const response = await fetch(`/api/uploads/payment-proof/download?file=${encodeURIComponent(paymentProofUrl)}&name=${encodeURIComponent(personName)}&type=${encodeURIComponent(paymentType)}`)
 
       if (!response.ok) {
         throw new Error(`Failed to download file: ${response.statusText}`);
@@ -122,72 +200,17 @@ export default function AbstractsPage() {
       // Create a temporary link and trigger download
       const link = document.createElement("a");
       link.href = blobUrl;
-      link.download = filename;
+      // The filename is now set by the API response headers
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
       // Clean up the blob URL
       window.URL.revokeObjectURL(blobUrl);
-      
-      alert('Abstract file downloaded successfully')
     } catch (error) {
-      console.error('Error downloading abstract file:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      alert(`Failed to download abstract file: ${errorMessage}`)
+      console.error('Error downloading payment proof:', error);
+      setError('Failed to download payment proof');
     }
-  }
-
-  const handleDelete = async (id: number) => {
-    setDeleteConfirm(id)
-  }
-
-  const confirmDelete = async (id: number) => {
-    try {
-      const response = await fetch(`${API_URL}/admin/abstracts/${id}`, {
-        method: 'DELETE'
-      })
-
-      if (response.ok) {
-        setAbstracts(abstracts.filter(abs => abs.id !== id))
-        setDeleteConfirm(null)
-        alert('Abstract deleted successfully')
-      } else {
-        alert('Failed to delete abstract')
-      }
-    } catch (error) {
-      console.error('Error deleting abstract:', error)
-      alert('Failed to delete abstract')
-    }
-  }
-
-  const handleStatusChange = async (id: number, newStatus: string) => {
-    try {
-      const response = await fetch(`${API_URL}/admin/abstracts/${id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
-      })
-
-      if (response.ok) {
-        setAbstracts(abstracts.map(abs => 
-          abs.id === id ? { ...abs, status: newStatus } : abs
-        ))
-        alert(`Abstract status updated to ${newStatus}`)
-      } else {
-        alert('Failed to update status')
-      }
-    } catch (error) {
-      console.error('Error updating status:', error)
-      alert('Failed to update status')
-    }
-  }
-
-  const viewAbstract = (abstract: Abstract) => {
-    setSelectedAbstract(abstract)
-    setViewOpen(true)
   }
 
   if (loading) {
@@ -195,7 +218,7 @@ export default function AbstractsPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading abstracts...</p>
+          <p className="mt-4 text-gray-600">Loading sponsorships...</p>
         </div>
       </div>
     )
@@ -205,10 +228,10 @@ export default function AbstractsPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Abstracts</div>
+          <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Sponsorships</div>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
-            onClick={loadAbstracts}
+            onClick={loadSponsorships}
             className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
           >
             Retry
@@ -221,8 +244,8 @@ export default function AbstractsPage() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Abstracts</h1>
-        <p className="text-gray-600">Manage conference abstracts</p>
+        <h1 className="text-3xl font-bold text-gray-900">Sponsorships</h1>
+        <p className="text-gray-600">Manage sponsorship applications</p>
       </div>
 
       {/* Filters */}
@@ -234,7 +257,7 @@ export default function AbstractsPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder="Search by title, author, or organization..."
+                placeholder="Search by company, contact, or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -250,54 +273,52 @@ export default function AbstractsPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Statuses</option>
-              <option value="submitted">Submitted</option>
+              <option value="pending">Pending</option>
               <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Package</label>
             <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
+              value={packageFilter}
+              onChange={(e) => setPackageFilter(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="all">All Categories</option>
-              <option value="research">Research</option>
-              <option value="policy">Policy</option>
-              <option value="practice">Practice</option>
+              <option value="all">All Packages</option>
+              <option value="platinum">Platinum</option>
+              <option value="gold">Gold</option>
+              <option value="silver">Silver</option>
+              <option value="bronze">Bronze</option>
             </select>
           </div>
         </div>
       </div>
 
-      {/* Results - Original table layout */}
+      {/* Results */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Title
+                  Company
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Author
+                  Contact
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Organization
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Category
+                  Package
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  File
+                  Date
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Submitted
+                  Payment Proof
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -305,77 +326,80 @@ export default function AbstractsPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredAbstracts.map((abstract) => (
-                <tr key={abstract.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900 max-w-xs truncate" title={abstract.title}>
-                      {abstract.title}
-                    </div>
-                  </td>
+              {filteredSponsorships.map((sponsorship) => (
+                <tr key={sponsorship.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{abstract.primary_author}</div>
-                    <div className="text-sm text-gray-500">{abstract.corresponding_email}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900 max-w-xs truncate" title={abstract.organization}>
-                      {abstract.organization}
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-10 w-10">
+                        <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                          <Building className="h-5 w-5 text-gray-600" />
+                        </div>
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">{sponsorship.company_name}</div>
+                        <div className="text-sm text-gray-500">{sponsorship.email}</div>
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {abstract.category}
-                    </span>
+                    <div className="text-sm text-gray-900">{sponsorship.contact_person}</div>
+                    <div className="text-sm text-gray-500">{sponsorship.phone}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      {getStatusIcon(abstract.status)}
-                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(abstract.status)}`}>
-                        {abstract.status}
+                      {getPackageIcon(sponsorship.selected_package)}
+                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPackageColor(sponsorship.selected_package)}`}>
+                        {sponsorship.selected_package}
                       </span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {abstract.file_url ? (
+                    <div className="flex items-center">
+                      {getStatusIcon(sponsorship.status)}
+                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(sponsorship.status)}`}>
+                        {sponsorship.status}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(sponsorship.submitted_at).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {sponsorship.payment_proof_url ? (
                       <button
-                        onClick={() => handleDownloadAbstract(abstract.file_url!, abstract)}
+                        onClick={() => handleDownloadPaymentProof(sponsorship.payment_proof_url!, sponsorship)}
                         className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
                       >
                         <Download className="h-3 w-3 mr-1" />
                         Download
                       </button>
                     ) : (
-                      <span className="text-gray-400 text-sm">No file</span>
+                      <span className="text-gray-400 text-sm">No proof uploaded</span>
                     )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div>{new Date(abstract.submittedAt).toLocaleDateString()}</div>
-                    <div className="text-xs text-gray-400">
-                      {new Date(abstract.submittedAt).toLocaleTimeString()}
-                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => viewAbstract(abstract)}
+                        onClick={() => viewSponsorship(sponsorship)}
                         className="text-blue-600 hover:text-blue-900"
                         title="View Details"
                       >
                         <Eye className="h-4 w-4" />
                       </button>
                       
-                      {abstract.status === 'submitted' && (
+                      {sponsorship.status === 'pending' && (
                         <>
                           <button
-                            onClick={() => handleStatusChange(abstract.id, 'approved')}
+                            onClick={() => handleStatusChange(sponsorship.id, 'approved')}
                             className="text-green-600 hover:text-green-900"
-                            title="Approve Abstract"
+                            title="Approve Sponsorship"
                           >
                             <CheckCircle className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => handleStatusChange(abstract.id, 'rejected')}
+                            onClick={() => handleStatusChange(sponsorship.id, 'rejected')}
                             className="text-red-600 hover:text-red-900"
-                            title="Reject Abstract"
+                            title="Reject Sponsorship"
                           >
                             <XCircle className="h-4 w-4" />
                           </button>
@@ -383,9 +407,9 @@ export default function AbstractsPage() {
                       )}
                       
                       <button
-                        onClick={() => handleDelete(abstract.id)}
+                        onClick={() => handleDelete(sponsorship.id)}
                         className="text-red-600 hover:text-red-900"
-                        title="Delete Abstract"
+                        title="Delete Sponsorship"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -406,10 +430,10 @@ export default function AbstractsPage() {
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
                 <Trash2 className="h-6 w-6 text-red-600" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mt-4">Delete Abstract</h3>
+              <h3 className="text-lg font-medium text-gray-900 mt-4">Delete Sponsorship</h3>
               <div className="mt-2 px-7 py-3">
                 <p className="text-sm text-gray-500">
-                  Are you sure you want to delete this abstract? This action cannot be undone.
+                  Are you sure you want to delete this sponsorship? This action cannot be undone.
                 </p>
               </div>
               <div className="flex justify-center space-x-4 mt-4">
@@ -431,13 +455,13 @@ export default function AbstractsPage() {
         </div>
       )}
 
-      {/* View Abstract Modal */}
-      {viewOpen && selectedAbstract && (
+      {/* View Sponsorship Modal */}
+      {viewOpen && selectedSponsorship && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div className="mt-3">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">Abstract Details</h3>
+                <h3 className="text-lg font-medium text-gray-900">Sponsorship Details</h3>
                 <button
                   onClick={() => setViewOpen(false)}
                   className="text-gray-400 hover:text-gray-600"
@@ -448,59 +472,41 @@ export default function AbstractsPage() {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Title</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.title}</p>
+                  <label className="block text-sm font-medium text-gray-700">Company Name</label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedSponsorship.company_name}</p>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Author</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.primary_author}</p>
+                  <label className="block text-sm font-medium text-gray-700">Contact Person</label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedSponsorship.contact_person}</p>
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.corresponding_email}</p>
+                  <p className="text-sm text-gray-900 mt-1">{selectedSponsorship.email}</p>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Organization</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.organization}</p>
+                  <label className="block text-sm font-medium text-gray-700">Phone</label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedSponsorship.phone}</p>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Category</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.category}</p>
+                  <label className="block text-sm font-medium text-gray-700">Selected Package</label>
+                  <div className="flex items-center mt-1">
+                    {getPackageIcon(selectedSponsorship.selected_package)}
+                    <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPackageColor(selectedSponsorship.selected_package)}`}>
+                      {selectedSponsorship.selected_package}
+                    </span>
+                  </div>
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Status</label>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(selectedAbstract.status)}`}>
-                    {selectedAbstract.status}
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(selectedSponsorship.status)}`}>
+                    {selectedSponsorship.status}
                   </span>
                 </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Keywords</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.keywords}</p>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Abstract</label>
-                  <p className="text-sm text-gray-900 mt-1 whitespace-pre-wrap">{selectedAbstract.abstract_summary}</p>
-                </div>
-                
-                {selectedAbstract.file_url && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Abstract File</label>
-                    <button
-                      onClick={() => handleDownloadAbstract(selectedAbstract.file_url!, selectedAbstract)}
-                      className="mt-2 inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
-                    >
-                      <Download className="h-3 w-3 mr-1" />
-                      Download Abstract File
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
           </div>

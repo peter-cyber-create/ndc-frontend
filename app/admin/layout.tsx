@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { 
   LayoutDashboard, Users, FileText, MessageSquare, 
-  LogOut, Menu, X, Shield
+  LogOut, Menu, X, Shield, CreditCard
 } from 'lucide-react'
 
 interface AdminLayoutProps {
@@ -64,6 +64,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Abstracts', href: '/admin/abstracts', icon: FileText },
     { name: 'Contacts', href: '/admin/contacts', icon: MessageSquare },
     { name: 'Sponsorships', href: '/admin/sponsorships', icon: Users },
+    { name: 'Payments', href: '/admin/payments', icon: CreditCard },
   ]
 
   return (

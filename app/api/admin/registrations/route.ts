@@ -16,19 +16,19 @@ export async function GET(request: NextRequest) {
     const [rows] = await connection.execute(
       `SELECT 
         id,
-        first_name as firstName,
-        last_name as lastName,
+        firstName,
+        lastName,
         email,
         phone,
         organization,
         position,
-        registration_type as registrationType,
-        payment_proof_url as paymentProofUrl,
+        registrationType,
+        paymentProofUrl,
         status,
-        created_at as createdAt,
-        updated_at as updatedAt
+        createdAt,
+        updatedAt
        FROM registrations 
-       ORDER BY created_at DESC`
+       ORDER BY createdAt DESC`
     )
     
     await connection.end()

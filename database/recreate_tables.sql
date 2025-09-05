@@ -1,11 +1,14 @@
--- National Digital Health Conference 2025 Database Schema
--- Created for NACNDC & JASH Conference 2025
-
--- Create database
-CREATE DATABASE IF NOT EXISTS conf CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- Recreate tables to match server schema exactly
 USE conf;
 
--- Registrations table
+-- Drop existing tables
+DROP TABLE IF EXISTS registrations;
+DROP TABLE IF EXISTS abstracts;
+DROP TABLE IF EXISTS contacts;
+DROP TABLE IF EXISTS sponsorships;
+DROP TABLE IF EXISTS file_uploads;
+
+-- Create registrations table with server schema
 CREATE TABLE registrations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(100) NOT NULL,
@@ -21,7 +24,7 @@ CREATE TABLE registrations (
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Abstracts table
+-- Create abstracts table with server schema
 CREATE TABLE abstracts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(500) NOT NULL,
@@ -56,7 +59,7 @@ CREATE TABLE abstracts (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Contacts table
+-- Create contacts table with server schema
 CREATE TABLE contacts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -70,7 +73,7 @@ CREATE TABLE contacts (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Sponsorships table
+-- Create sponsorships table with server schema
 CREATE TABLE sponsorships (
     id INT AUTO_INCREMENT PRIMARY KEY,
     company_name VARCHAR(255) NOT NULL,
