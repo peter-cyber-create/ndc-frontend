@@ -17,12 +17,13 @@ export async function POST(request: NextRequest) {
     const safePhone = phone || null
     const safeOrganization = organization || null
     const safeInquiryType = inquiry_type || null
+    const safeSubject = subject || 'General Inquiry'
     
     const connection = await mysql.createConnection(dbConfig)
     await connection.execute(`
       INSERT INTO contacts (name, email, phone, organization, inquiry_type, subject, message, status, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, 'new', NOW())
-    `, [name, email, safePhone, safeOrganization, safeInquiryType, subject, message])
+    `, [name, email, safePhone, safeOrganization, safeInquiryType, safeSubject, message])
     
     await connection.end()
     
