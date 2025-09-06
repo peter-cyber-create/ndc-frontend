@@ -13,18 +13,18 @@ interface Exhibitor {
   contact_person: string
   email: string
   phone: string
-  website: string
-  organization_type: string
-  description: string
-  products_services: string
-  target_audience: string
-  previous_exhibitions: string
-  collaboration_interest: string
   selected_package: string
-  amount: number
-  payment_proof_url: string
+  booth_preference?: string
+  special_requirements?: string
+  additional_info?: string
+  address?: string
+  city?: string
+  country?: string
+  payment_proof_url?: string
   status: string
+  submitted_at: string
   created_at: string
+  updated_at: string
 }
 
 export default function ExhibitorsPage() {
@@ -373,18 +373,22 @@ export default function ExhibitorsPage() {
                     <span className="text-sm text-gray-600">Package:</span>
                     <span className="text-sm font-medium text-gray-900 capitalize">{exhibitor.selected_package}</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Amount:</span>
-                    <span className="text-lg font-bold text-green-600">${exhibitor.amount.toLocaleString()}</span>
-                  </div>
+                  {exhibitor.booth_preference && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Booth Preference:</span>
+                      <span className="text-sm font-medium text-gray-900">{exhibitor.booth_preference}</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Description */}
-                <div className="mb-4">
-                  <p className="text-sm text-gray-700 line-clamp-2">
-                    {exhibitor.description || exhibitor.products_services}
-                  </p>
-                </div>
+                {/* Additional Info */}
+                {exhibitor.additional_info && (
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-700 line-clamp-2">
+                      {exhibitor.additional_info}
+                    </p>
+                  </div>
+                )}
 
                 {/* Actions */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-200">
