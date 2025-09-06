@@ -19,7 +19,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Check authentication
+    // Skip authentication check for login page
+    if (pathname === '/admin/login') {
+      setIsAuthenticated(false)
+      setIsLoading(false)
+      return
+    }
+    
+    // Check authentication for other admin pages
     const checkAuth = () => {
       const token = localStorage.getItem('admin_token')
       const session = localStorage.getItem('admin_session')
@@ -53,7 +60,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     }
     
     checkAuth()
-  }, [])
+  }, [pathname])
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token')
@@ -70,6 +77,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
       </div>
     )
+  }
+
+  // Show login page content if on login route
+  if (pathname === '/admin/login') {
+    return <>{children}</>
   }
 
   if (!isAuthenticated) {
