@@ -25,3 +25,4 @@ CREATE INDEX idx_exhibitors_status ON exhibitors(status);
 CREATE INDEX idx_exhibitors_package ON exhibitors(selected_package);
 CREATE INDEX idx_exhibitors_created_at ON exhibitors(created_at);
 
+

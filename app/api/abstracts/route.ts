@@ -43,6 +43,27 @@ export async function POST(request: NextRequest) {
     const file = formData.get('abstract_file') as File | null
 
     // Validate required fields
+    console.log('Validation check:', {
+      title: !!title,
+      presentationType: !!presentationType,
+      conferenceTrack: !!conferenceTrack,
+      firstName: !!firstName,
+      lastName: !!lastName,
+      email: !!email,
+      phone: !!phone,
+      institution: !!institution,
+      position: !!position,
+      district: !!district,
+      abstractSummary: !!abstractSummary,
+      keywords: !!keywords,
+      background: !!background,
+      methods: !!methods,
+      findings: !!findings,
+      conclusion: !!conclusion,
+      consentToPublish: !!consentToPublish,
+      file: !!file
+    })
+    
     if (!title || !presentationType || !conferenceTrack || !firstName || !lastName || 
         !email || !phone || !institution || !position || !district || !abstractSummary || 
         !keywords || !background || !methods || !findings || !conclusion || !consentToPublish || !file) {

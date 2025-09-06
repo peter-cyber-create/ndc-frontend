@@ -171,3 +171,4 @@
 **All confirmed payments from sponsorships and registrations are automatically moved to the payments page where they can be filtered, sorted, and combined for comprehensive audit purposes!** 📊✨
 
 
+

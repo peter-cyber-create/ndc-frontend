@@ -4,8 +4,8 @@ import mysql from 'mysql2/promise'
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'ndc_conference',
+  password: process.env.DB_PASSWORD || 'toor',
+  database: process.env.DB_NAME || 'conf',
   port: parseInt(process.env.DB_PORT || '3306'),
 }
 
@@ -32,4 +32,5 @@ export async function GET(request: NextRequest) {
     )
   }
 }
+
 

@@ -27,6 +27,18 @@ interface Exhibitor {
   updated_at: string
 }
 
+// Helper function to get exhibition amount based on package
+const getExhibitionAmount = (packageType: string): number => {
+  const amounts: { [key: string]: number } = {
+    'platinum': 5000,
+    'gold': 3000,
+    'silver': 2000,
+    'bronze': 1000,
+    'non-profit': 500
+  }
+  return amounts[packageType] || 0
+}
+
 export default function ExhibitorsPage() {
   const [exhibitors, setExhibitors] = useState<Exhibitor[]>([])
   const [loading, setLoading] = useState(true)
@@ -262,7 +274,7 @@ export default function ExhibitorsPage() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  ${exhibitors.filter(e => e.status === 'approved').reduce((sum, e) => sum + e.amount, 0).toLocaleString()}
+                  ${exhibitors.filter(e => e.status === 'approved').reduce((sum, e) => sum + getExhibitionAmount(e.selected_package), 0).toLocaleString()}
                 </p>
               </div>
             </div>
@@ -470,44 +482,36 @@ export default function ExhibitorsPage() {
                       <p className="text-gray-700">{selectedExhibitor.phone}</p>
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Website</h3>
-                      <p className="text-gray-700">
-                        {selectedExhibitor.website ? (
-                          <a href={selectedExhibitor.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
-                            {selectedExhibitor.website}
-                          </a>
-                        ) : 'Not provided'}
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Organization Type</h3>
-                      <p className="text-gray-700 capitalize">{selectedExhibitor.organization_type || 'Not specified'}</p>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Package</h3>
+                      <p className="text-gray-700 capitalize">{selectedExhibitor.selected_package}</p>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
-                    <p className="text-gray-700 leading-relaxed">{selectedExhibitor.description || 'Not provided'}</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Additional Information</h3>
+                    <p className="text-gray-700 leading-relaxed">{selectedExhibitor.additional_info || 'Not provided'}</p>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Products/Services</h3>
-                    <p className="text-gray-700 leading-relaxed">{selectedExhibitor.products_services || 'Not provided'}</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Booth Preference</h3>
+                    <p className="text-gray-700 leading-relaxed">{selectedExhibitor.booth_preference || 'Not specified'}</p>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Target Audience</h3>
-                    <p className="text-gray-700 leading-relaxed">{selectedExhibitor.target_audience || 'Not provided'}</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Special Requirements</h3>
+                    <p className="text-gray-700 leading-relaxed">{selectedExhibitor.special_requirements || 'None'}</p>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Previous Exhibitions</h3>
-                    <p className="text-gray-700 leading-relaxed">{selectedExhibitor.previous_exhibitions || 'Not provided'}</p>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Collaboration Interests</h3>
-                    <p className="text-gray-700 leading-relaxed">{selectedExhibitor.collaboration_interest || 'Not provided'}</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Address</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      {selectedExhibitor.address ? (
+                        <>
+                          {selectedExhibitor.address}<br />
+                          {selectedExhibitor.city}, {selectedExhibitor.country}
+                        </>
+                      ) : 'Not provided'}
+                    </p>
                   </div>
 
                   <div className="flex items-center justify-between pt-6 border-t border-gray-200">
@@ -524,7 +528,7 @@ export default function ExhibitorsPage() {
                       </span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-lg font-bold text-green-600">${selectedExhibitor.amount.toLocaleString()}</span>
+                      <span className="text-lg font-bold text-green-600">${getExhibitionAmount(selectedExhibitor.selected_package).toLocaleString()}</span>
                       {selectedExhibitor.payment_proof_url && (
                         <button
                           onClick={() => handleDownloadPaymentProof(selectedExhibitor.payment_proof_url, selectedExhibitor)}

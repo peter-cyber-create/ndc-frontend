@@ -3,7 +3,7 @@ import mysql from 'mysql2/promise'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'user',
+  user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || 'toor',
   database: process.env.DB_NAME || 'conf',
   port: 3306,
@@ -43,7 +43,7 @@ export async function GET() {
           id: r.id,
           name: `${r.firstName} ${r.lastName}`,
           email: r.email,
-          organization: r.organization,
+          organization: r.institution,
           status: r.status,
           submittedAt: r.createdAt
         })),

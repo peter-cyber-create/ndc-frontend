@@ -55,3 +55,4 @@ INSERT IGNORE INTO sponsorships (company_name, contact_person, email, phone, sel
 ('Health Innovations Inc', 'Tom Anderson', 'tom.anderson@healthinnov.com', '+256700000007', 'platinum', 'approved');
 
 
+

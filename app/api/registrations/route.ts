@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const position = formData.get('position') as string
     const country = formData.get('country') as string
     const city = formData.get('city') as string
-    const registrationType = formData.get('selected_package') as string // Changed from 'registrationType' to 'selected_package'
+    const registrationType = formData.get('registrationType') as string
     const specialRequirements = formData.get('specialRequirements') as string
     const paymentProof = formData.get('paymentProof') as File | null
 
