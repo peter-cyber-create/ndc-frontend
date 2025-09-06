@@ -15,7 +15,7 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(pathname !== '/admin')
+  const [isLoading, setIsLoading] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
@@ -66,7 +66,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       setIsLoading(false)
     }
     
-    // Run authentication check immediately
+    // Set loading state and run authentication check
+    setIsLoading(true)
     checkAuth()
   }, [pathname])
 
