@@ -117,7 +117,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 className="w-full flex items-center px-3 py-3 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200"
               >
                 <LogOut className="h-5 w-5 mr-3" />
-                Sign Out
+                Logout
               </button>
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               className="w-full flex items-center px-3 py-3 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200"
             >
               <LogOut className="h-5 w-5 mr-3" />
-              Sign Out
+              Logout
             </button>
           </div>
         </div>

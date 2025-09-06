@@ -73,9 +73,9 @@ export async function POST(request: NextRequest) {
     // Insert registration
     const [result] = await connection.execute(
       `INSERT INTO registrations 
-       (first_name, last_name, email, phone, organization, position, country, city, registration_type, special_requirements, payment_proof_url, status, created_at) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NOW())`,
-      [firstName, lastName, email, phone, organization, position, country, city, registrationType, specialRequirements, paymentProofUrl]
+       (firstName, lastName, email, phone, organization, position, registrationType, paymentProofUrl, status, createdAt) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())`,
+      [firstName, lastName, email, phone, organization, position, registrationType, paymentProofUrl]
     )
     
     await connection.end()

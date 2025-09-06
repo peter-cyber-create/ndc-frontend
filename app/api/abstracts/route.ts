@@ -20,8 +20,8 @@ export async function POST(request: NextRequest) {
     
     // Extract all form fields
     const title = formData.get('title') as string
-    const presentationType = formData.get('presentationType') as string
-    const conferenceTrack = formData.get('conferenceTrack') as string
+    const presentationType = formData.get('presentation_type') as string
+    const conferenceTrack = formData.get('conference_track') as string
     const firstName = formData.get('firstName') as string
     const lastName = formData.get('lastName') as string
     const email = formData.get('email') as string
@@ -29,18 +29,18 @@ export async function POST(request: NextRequest) {
     const institution = formData.get('institution') as string
     const position = formData.get('position') as string
     const district = formData.get('district') as string
-    const coAuthors = formData.get('coAuthors') as string
-    const abstractSummary = formData.get('abstractSummary') as string
+    const coAuthors = formData.get('co_authors') as string
+    const abstractSummary = formData.get('abstract_summary') as string
     const keywords = formData.get('keywords') as string
     const background = formData.get('background') as string
     const methods = formData.get('methods') as string
     const findings = formData.get('findings') as string
     const conclusion = formData.get('conclusion') as string
-    const policyImplications = formData.get('policyImplications') as string
-    const conflictOfInterest = formData.get('conflictOfInterest') === 'true'
-    const ethicalApproval = formData.get('ethicalApproval') === 'true'
-    const consentToPublish = formData.get('consentToPublish') === 'true'
-    const file = formData.get('file') as File | null
+    const policyImplications = formData.get('policy_implications') as string
+    const conflictOfInterest = formData.get('conflict_of_interest') === 'true'
+    const ethicalApproval = formData.get('ethical_approval') === 'true'
+    const consentToPublish = formData.get('consent_to_publish') === 'true'
+    const file = formData.get('abstract_file') as File | null
 
     // Validate required fields
     if (!title || !presentationType || !conferenceTrack || !firstName || !lastName || 
