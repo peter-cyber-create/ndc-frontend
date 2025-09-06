@@ -105,7 +105,7 @@ export default function AbstractsPage() {
 
   const handleDownloadAbstract = async (fileUrl: string, abstract: Abstract) => {
     try {
-      const response = await fetch(`${API_URL}/abstracts/download/${abstract.id}`)
+      const response = await fetch(`${API_URL}/api/abstracts/download/${abstract.id}`)
       
       if (response.ok) {
         const blob = await response.blob()

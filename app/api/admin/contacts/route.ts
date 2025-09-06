@@ -11,7 +11,13 @@ const dbConfig = {
 
 export async function GET() {
   try {
+    console.log('Admin contacts API - DB Config:', dbConfig)
     const connection = await mysql.createConnection(dbConfig)
+    
+    // First, let's check the total count
+    const [countResult] = await connection.execute(`SELECT COUNT(*) as total FROM contacts`)
+    console.log('Total contacts in database:', (countResult as any[])[0].total)
+    
     // Check if phone column exists
     const [phoneCheck] = await connection.execute(`
       SELECT COUNT(*) as count FROM information_schema.columns 
@@ -25,6 +31,8 @@ export async function GET() {
       FROM contacts ORDER BY created_at DESC
     `)
     await connection.end()
+    
+    console.log('Returning contacts count:', (rows as any[]).length)
     
     return NextResponse.json({
       success: true,
