@@ -69,10 +69,10 @@ export function Navbar() {
       </div>
       
       <nav className={
-        `floating-nav bg-white sm:bg-white/80 shadow-md sm:backdrop-blur-md border-b border-primary-200 fixed top-[12px] sm:top-[32px] left-0 sm:left-1/2 sm:-translate-x-1/2 rounded-none sm:rounded-2xl max-w-full sm:max-w-[98vw] lg:max-w-[1600px] w-full mx-auto z-40 transition-all duration-300 py-3 sm:py-2 px-0 sm:px-6 flex items-center`
+        `floating-nav bg-white sm:bg-white/80 shadow-md sm:backdrop-blur-md border-b border-primary-200 fixed top-[12px] sm:top-[32px] left-0 sm:left-1/2 sm:-translate-x-1/2 rounded-none sm:rounded-2xl max-w-full sm:max-w-[98vw] lg:max-w-[1600px] w-full mx-auto z-40 transition-all duration-300 py-3 sm:py-2 px-0 sm:px-6`
       }>
-      <div className="flex justify-between items-center w-full flex-nowrap">
-        <div className="flex justify-between items-center min-h-[3.5rem] sm:min-h-[4.5rem] py-1 sm:py-2 w-full flex-nowrap gap-1 sm:gap-2">
+      <div className="flex justify-between items-center w-full min-h-[3.5rem] sm:min-h-[4.5rem]">
+        <div className="flex items-center flex-shrink-0">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
             <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center">
@@ -114,8 +114,12 @@ export function Navbar() {
                 {item.name === 'About' && (
                   <div className="h-6 w-px bg-gradient-to-b from-primary-300 to-primary-500 mx-2" />
                 )}
+                {/* Special separator between Contact and Exhibitors */}
+                {item.name === 'Contact' && (
+                  <div className="h-6 w-px bg-gradient-to-b from-primary-300 to-primary-500 mx-2" />
+                )}
                 {/* Regular separators for other nav links except the last one */}
-                {item.name !== 'About' && index < navigation.length - 1 && (
+                {item.name !== 'About' && item.name !== 'Contact' && index < navigation.length - 1 && (
                   <div className="h-6 w-px bg-primary-300 mx-1" />
                 )}
               </React.Fragment>
@@ -124,19 +128,19 @@ export function Navbar() {
             {/* Main Separator before Form Links */}
             <div className="h-6 w-px bg-gradient-to-b from-primary-400 to-primary-600 mx-3" />
             
-            {/* Form Links - enhanced styling */}
-            <div className="flex items-center space-x-3">
+            {/* Form Links - compact styling */}
+            <div className="flex items-center space-x-2">
               {formLinks.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm shadow-lg hover:shadow-xl min-w-[140px] h-12 text-center ${
+                  className={`relative inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 text-xs shadow-lg hover:shadow-xl min-w-[110px] h-10 text-center ${
                     pathname === item.href 
                       ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white ring-2 ring-primary-400 shadow-xl scale-105' 
                       : 'bg-gradient-to-r from-primary-100 to-primary-200 text-primary-800 hover:from-primary-200 hover:to-primary-300 border border-primary-300 hover:border-primary-400 focus:ring-primary-400'
                   }`}
                 >
-                  <span className="text-sm font-semibold">{item.name}</span>
+                  <span className="text-xs font-semibold">{item.name}</span>
                 </Link>
               ))}
             </div>

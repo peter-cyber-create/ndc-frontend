@@ -84,6 +84,22 @@ CREATE TABLE sponsorships (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- Exhibitors table
+CREATE TABLE exhibitors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    company_name VARCHAR(255) NOT NULL,
+    contact_person VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    selected_package ENUM('platinum', 'gold', 'silver', 'bronze', 'non-profit') NOT NULL,
+    booth_preference VARCHAR(100),
+    special_requirements TEXT,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_registrations_email ON registrations(email);
 CREATE INDEX idx_registrations_status ON registrations(status);
@@ -93,6 +109,8 @@ CREATE INDEX idx_contacts_status ON contacts(status);
 CREATE INDEX idx_contacts_inquiry_type ON contacts(inquiry_type);
 CREATE INDEX idx_sponsorships_status ON sponsorships(status);
 CREATE INDEX idx_sponsorships_package ON sponsorships(selected_package);
+CREATE INDEX idx_exhibitors_status ON exhibitors(status);
+CREATE INDEX idx_exhibitors_package ON exhibitors(selected_package);
 
 -- Insert sample data for testing
 INSERT INTO registrations (firstName, lastName, email, phone, organization, position, registrationType, status) VALUES
