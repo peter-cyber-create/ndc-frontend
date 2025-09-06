@@ -34,12 +34,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         return
       }
       
-      const token = localStorage.getItem('admin_token')
-      const session = localStorage.getItem('admin_session')
-      
-      if (token && session) {
-        // Verify token is still valid (basic check)
-        try {
+      try {
+        const token = localStorage.getItem('admin_token')
+        const session = localStorage.getItem('admin_session')
+        
+        if (token && session) {
+          // Verify token is still valid (basic check)
           const sessionData = JSON.parse(session)
           const now = new Date().getTime()
           
@@ -52,20 +52,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             localStorage.removeItem('admin_session')
             setIsAuthenticated(false)
           }
-        } catch (error) {
-          // Invalid session data, clear storage
-          localStorage.removeItem('admin_token')
-          localStorage.removeItem('admin_session')
+        } else {
           setIsAuthenticated(false)
         }
-      } else {
+      } catch (error) {
+        // Invalid session data, clear storage
+        localStorage.removeItem('admin_token')
+        localStorage.removeItem('admin_session')
         setIsAuthenticated(false)
       }
       
       setIsLoading(false)
     }
     
-    checkAuth()
+    // Add a small delay to ensure client-side rendering is complete
+    const timeoutId = setTimeout(checkAuth, 100)
+    
+    return () => clearTimeout(timeoutId)
   }, [pathname])
 
   const handleLogout = () => {
