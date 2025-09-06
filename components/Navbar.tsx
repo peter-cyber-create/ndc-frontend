@@ -124,20 +124,19 @@ export function Navbar() {
             {/* Main Separator before Form Links */}
             <div className="h-6 w-px bg-gradient-to-b from-primary-400 to-primary-600 mx-3" />
             
-            {/* Form Links - consistent government styling */}
+            {/* Form Links - compact styling */}
             <div className="flex items-center space-x-2">
               {formLinks.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm shadow-md hover:shadow-lg min-w-[140px] text-center ${
+                  className={`relative inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm shadow-sm hover:shadow-md min-w-[120px] h-10 text-center ${
                     pathname === item.href 
-                      ? 'bg-primary-600 text-white ring-2 ring-primary-400 shadow-lg' 
+                      ? 'bg-primary-600 text-white ring-2 ring-primary-400 shadow-md' 
                       : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border border-primary-300 hover:border-primary-400 focus:ring-primary-400'
                   }`}
                 >
-                  <span className="text-lg">{item.icon}</span>
-                  <span className="relative z-10 text-sm font-medium">{item.name}</span>
+                  <span className="text-sm font-medium">{item.name}</span>
                 </Link>
               ))}
             </div>
@@ -198,17 +197,14 @@ export function Navbar() {
                     <Link
                       key={item.name}
                       href={item.href}
-                      className={`relative block px-4 py-3 rounded-lg font-semibold text-center transition-all duration-300 text-sm shadow-md border ${
+                      className={`relative block px-4 py-2 rounded-md font-medium text-center transition-all duration-300 text-sm shadow-sm border h-10 flex items-center justify-center ${
                         pathname === item.href
-                          ? 'bg-primary-600 text-white border-primary-600 shadow-lg'
+                          ? 'bg-primary-600 text-white border-primary-600 shadow-md'
                           : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border-primary-300 hover:border-primary-400'
                       }`}
                       onClick={() => setIsOpen(false)}
                     >
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="text-lg">{item.icon}</span>
-                        <span className="relative z-10 text-sm font-medium">{item.name}</span>
-                      </div>
+                      <span className="text-sm font-medium">{item.name}</span>
                     </Link>
                   ))}
                 </div>
