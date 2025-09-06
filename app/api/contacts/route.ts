@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from 'next/server'
 import mysql from 'mysql2/promise'
 
 const dbConfig = {
@@ -11,13 +11,13 @@ const dbConfig = {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, phone, organization, inquiry_type, message } = await request.json()
+    const { name, email, phone, organization, inquiry_type, subject, message } = await request.json()
     
     const connection = await mysql.createConnection(dbConfig)
     await connection.execute(`
-      INSERT INTO contacts (name, email, phone, organization, inquiry_type, message, status, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, 'new', NOW())
-    `, [name, email, phone, organization, inquiry_type, message])
+      INSERT INTO contacts (name, email, phone, organization, inquiry_type, subject, message, status, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'new', NOW())
+    `, [name, email, phone, organization, inquiry_type, subject, message])
     
     await connection.end()
     
@@ -31,6 +31,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to submit contact" }, { status: 500 })
   }
 }
-
-
-

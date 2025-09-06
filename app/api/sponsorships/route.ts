@@ -26,6 +26,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 })
     }
 
+    // Calculate amount based on package
+    const getSponsorshipAmount = (packageType: string): number => {
+      const amounts: { [key: string]: number } = {
+        'platinum': 10000, 'gold': 7500, 'silver': 5000, 'bronze': 2500
+      }
+      return amounts[packageType] || 0
+    }
+    const amount = getSponsorshipAmount(selected_package)
+
     // Handle file upload
     let paymentProofUrl = null
     if (paymentProof && paymentProof.size > 0) {
@@ -48,9 +57,9 @@ export async function POST(request: NextRequest) {
     
     const connection = await mysql.createConnection(dbConfig)
     await connection.execute(`
-      INSERT INTO sponsorships (company_name, contact_person, email, phone, selected_package, payment_proof_url, status, submitted_at, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, 'pending', NOW(), NOW())
-    `, [company_name, contact_person, email, phone, selected_package, paymentProofUrl])
+      INSERT INTO sponsorships (company_name, contact_person, email, phone, selected_package, amount, payment_proof_url, status, submitted_at, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NOW(), NOW())
+    `, [company_name, contact_person, email, phone, selected_package, amount, paymentProofUrl])
     
     await connection.end()
     
