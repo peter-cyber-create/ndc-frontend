@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 const partners = [
   {
     name: 'Makerere University School of Public Health (MakSPH)',
-    logo: '/images/partners/Logo-with-Text.png',
+    logo: '/images/makCHS-logo-1.png',
     description: 'Makerere University School of Public Health (MakSPH) is a premier institution in Sub-Saharan Africa, renowned for public health training, research, and community engagement. Established in 1954, MakSPH pioneered postgraduate public health education in the region and has grown into a stand-alone school as of 2025, reflecting its outstanding impact and leadership in advancing health in Uganda and beyond.',
     website: '#'
   },

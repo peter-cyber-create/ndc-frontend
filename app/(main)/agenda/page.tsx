@@ -229,7 +229,7 @@ export default function AgendaPage() {
           {agenda.map((day) => (
             <div key={day.day} className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
               {/* Day Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+              <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white p-6">
                 <h2 className="text-2xl font-bold">Day {day.day} - {day.date}</h2>
               </div>
 
@@ -283,12 +283,12 @@ export default function AgendaPage() {
         </div>
 
         {/* Call to Action */}
-        <div className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white">
+        <div className="mt-16 bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-8 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Don't Miss Out!</h2>
           <p className="text-xl mb-8 opacity-90">
             Secure your spot at The Communicable and Non-Communicable Diseases Conference.
           </p>
-          <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+          <button className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
             Register Now
           </button>
         </div>

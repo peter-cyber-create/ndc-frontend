@@ -360,7 +360,7 @@ export default function AbstractsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-indigo-600 to-indigo-700 text-white">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-primary-600 to-primary-700 text-white">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center text-lg">
                 <Award className="h-5 w-5 mr-3" />
@@ -370,15 +370,15 @@ export default function AbstractsPage() {
             <CardContent>
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <div className="w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center mr-3 text-xs font-bold">1</div>
+                  <div className="w-6 h-6 bg-white text-primary-600 rounded-full flex items-center justify-center mr-3 text-xs font-bold">1</div>
                   <span className="text-sm">Submit Abstract</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 text-xs font-bold">2</div>
+                  <div className="w-6 h-6 bg-white text-primary-600 rounded-full flex items-center justify-center mr-3 text-xs font-bold">2</div>
                   <span className="text-sm">Expert Review</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-3 text-xs font-bold">3</div>
+                  <div className="w-6 h-6 bg-white text-primary-600 rounded-full flex items-center justify-center mr-3 text-xs font-bold">3</div>
                   <span className="text-sm">Notification</span>
                 </div>
               </div>
