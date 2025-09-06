@@ -61,3 +61,4 @@ echo "   2. Type 'TypeScript: Restart TS Server'"
 echo "   3. Press Enter"
 echo ""
 echo "🎉 Your app is ready for production! 🚀"
+

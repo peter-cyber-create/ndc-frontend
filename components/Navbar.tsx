@@ -24,6 +24,7 @@ export function Navbar() {
     { name: 'Abstracts', href: '/abstracts' },
     { name: 'Partners', href: '/partners' },
     { name: 'Sponsors', href: '/sponsors' },
+    { name: 'Exhibitors', href: '/exhibitors' },
     { name: 'Contact', href: '/contact' },
   ]
 
@@ -55,9 +56,17 @@ export function Navbar() {
   }, [])
 
   return (
-    <nav className={
-      `floating-nav bg-white sm:bg-white/80 shadow-md sm:backdrop-blur-md border-b border-primary-200 fixed top-[0px] sm:top-[20px] left-0 sm:left-1/2 sm:-translate-x-1/2 rounded-none sm:rounded-2xl max-w-full sm:max-w-[98vw] lg:max-w-[1600px] w-full mx-auto z-40 transition-all duration-300 py-3 sm:py-2 px-0 sm:px-6 flex items-center`
-    }>
+    <>
+      {/* Uganda Flag Stripe */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-3 flex flex-col">
+        <div className="h-1 bg-uganda-black"></div>
+        <div className="h-1 bg-uganda-yellow"></div>
+        <div className="h-1 bg-uganda-red"></div>
+      </div>
+      
+      <nav className={
+        `floating-nav bg-white sm:bg-white/80 shadow-md sm:backdrop-blur-md border-b border-primary-200 fixed top-[12px] sm:top-[32px] left-0 sm:left-1/2 sm:-translate-x-1/2 rounded-none sm:rounded-2xl max-w-full sm:max-w-[98vw] lg:max-w-[1600px] w-full mx-auto z-40 transition-all duration-300 py-3 sm:py-2 px-0 sm:px-6 flex items-center`
+      }>
       <div className="flex justify-between items-center w-full flex-nowrap">
         <div className="flex justify-between items-center min-h-[3.5rem] sm:min-h-[4.5rem] py-1 sm:py-2 w-full flex-nowrap gap-1 sm:gap-2">
           {/* Logo */}
@@ -93,6 +102,25 @@ export function Navbar() {
                   {item.name}
                 </Link>
               ))}
+            </div>
+            {/* Form Links */}
+            <div className="flex items-center space-x-2">
+              <Link
+                href="/register"
+                className={`px-4 py-2 rounded-xl font-semibold transition-all duration-150 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${pathname === '/register' ? 'bg-primary-600 text-white shadow-md scale-105 ring-2 ring-primary-400' : shouldUseBlackText ? 'text-gray-900' : 'text-primary-100'}`}
+              >
+                Register
+              </Link>
+            </div>
+            {/* Separator */}
+            <div className="h-8 w-px bg-primary-200 mx-4 hidden lg:block" />
+            <div className="flex items-center">
+              <Link
+                href="/abstracts"
+                className={`px-4 py-2 rounded-xl font-semibold transition-all duration-150 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${pathname === '/abstracts' ? 'bg-primary-600 text-white shadow-md scale-105 ring-2 ring-primary-400' : shouldUseBlackText ? 'text-gray-900' : 'text-primary-100'}`}
+              >
+                Submit Abstract
+              </Link>
             </div>
             {/* Separator */}
             <div className="h-8 w-px bg-primary-200 mx-4 hidden lg:block" />
@@ -195,5 +223,6 @@ export function Navbar() {
         )}
       </div>
     </nav>
+    </>
   )
 }

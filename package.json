@@ -10,8 +10,14 @@
     "moh": "next build && next export && sudo cp -r ./out/* /var/www/ndc-frontend"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.3",
     "@types/uuid": "^10.0.0",
     "axios": "^1.11.0",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
@@ -21,8 +27,12 @@
     "next-auth": "^4.24.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.62.0",
     "recharts": "^3.1.0",
-    "uuid": "^11.1.0"
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
+    "uuid": "^11.1.0",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",

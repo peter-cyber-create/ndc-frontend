@@ -43,10 +43,10 @@ export default function LoginPage() {
           <img src="/images/uganda-coat-of-arms.png" alt="Uganda Coat of Arms" className="w-16 h-16" />
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Admin Login
+          Conference Admin Access
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          NACNDC & JASHConference 2025
+          NACNDC & JASH Conference 2025
         </p>
       </div>
 

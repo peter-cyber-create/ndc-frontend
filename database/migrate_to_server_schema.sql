@@ -53,3 +53,4 @@ INSERT IGNORE INTO contacts (name, email, phone, organization, inquiry_type, mes
 INSERT IGNORE INTO sponsorships (company_name, contact_person, email, phone, selected_package, status) VALUES
 ('Tech Solutions Ltd', 'Mary Davis', 'mary.davis@techsolutions.com', '+256700000006', 'gold', 'pending'),
 ('Health Innovations Inc', 'Tom Anderson', 'tom.anderson@healthinnov.com', '+256700000007', 'platinum', 'approved');
+

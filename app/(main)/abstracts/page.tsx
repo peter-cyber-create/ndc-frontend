@@ -3,22 +3,157 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { 
-  FileText, Upload, User, Mail, Building, Tag, 
-  CheckCircle, AlertCircle, Loader2, Calendar
+  FileText, Upload, Calendar, AlertCircle, CheckCircle, 
+  Loader2, Clock, Users, Award, Target, Shield, Globe, Building2
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+
+interface FormData {
+  title: string
+  presentation_type: string
+  conference_track: string
+  subcategory: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  institution: string
+  position: string
+  district: string
+  co_authors: string
+  abstract_summary: string
+  keywords: string
+  background: string
+  methods: string
+  findings: string
+  conclusion: string
+  policy_implications: string
+  abstract_file: File | null
+  conflict_of_interest: boolean
+  ethical_approval: boolean
+  consent_to_publish: boolean
+}
+
+const conferenceTracks = [
+  {
+    value: 'integrated-diagnostics',
+    label: 'Integrated Diagnostics, AMR, and Epidemic Readiness',
+    description: 'Strengthening diagnostic systems to support integrated care, AMR, and outbreak preparedness and response.',
+    subcategories: [
+      'Diagnostic Technologies',
+      'Antimicrobial Resistance',
+      'Epidemic Preparedness',
+      'Laboratory Systems',
+      'Point-of-Care Testing'
+    ]
+  },
+  {
+    value: 'digital-health',
+    label: 'Digital Health, Data, and Innovation',
+    description: 'Harnessing digital tools, AI, and data systems to transform public health delivery and surveillance.',
+    subcategories: [
+      'Health Information Systems',
+      'Artificial Intelligence in Health',
+      'Telemedicine',
+      'Health Data Analytics',
+      'Mobile Health Applications'
+    ]
+  },
+  {
+    value: 'community-engagement',
+    label: 'Community Engagement for Disease Prevention and Elimination',
+    description: 'Driving public health gains through localized leadership, equity, and participation.',
+    subcategories: [
+      'Community Health Workers',
+      'Health Education',
+      'Behavioral Change',
+      'Community-Based Interventions',
+      'Health Promotion'
+    ]
+  },
+  {
+    value: 'health-system-resilience',
+    label: 'Health System Resilience and Emergency Preparedness and Response',
+    description: 'Building flexible, shock-ready systems capable of sustaining essential care during Public Health crises.',
+    subcategories: [
+      'Emergency Response Systems',
+      'Health System Strengthening',
+      'Disaster Preparedness',
+      'Supply Chain Management',
+      'Workforce Development'
+    ]
+  },
+  {
+    value: 'policy-financing',
+    label: 'Policy, Financing and Cross-Sector Integration',
+    description: 'Mobilizing sustainable financing and multi-sectoral collaboration to achieve UHC.',
+    subcategories: [
+      'Health Financing',
+      'Policy Development',
+      'Universal Health Coverage',
+      'Cross-Sectoral Collaboration',
+      'Health Economics'
+    ]
+  },
+  {
+    value: 'one-health',
+    label: 'One Health',
+    description: 'Integrated responses to interconnected agriculture, environmental, human, and animal health risks.',
+    subcategories: [
+      'Zoonotic Diseases',
+      'Environmental Health',
+      'Food Safety',
+      'Vector-Borne Diseases',
+      'Ecosystem Health'
+    ]
+  },
+  {
+    value: 'care-treatment',
+    label: 'Care, Treatment & Rehabilitation',
+    description: 'Building people-centered models of care that blend biomedical and culturally rooted practices.',
+    subcategories: [
+      'Clinical Care Models',
+      'Rehabilitation Services',
+      'Palliative Care',
+      'Mental Health Services',
+      'Traditional Medicine Integration'
+    ]
+  }
+]
 
 export default function AbstractsPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: '',
-    primary_author: '',
-    corresponding_email: '',
-    organization: '',
+    presentation_type: '',
+    conference_track: '',
+    subcategory: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    institution: '',
+    position: '',
+    district: '',
+    co_authors: '',
     abstract_summary: '',
     keywords: '',
-    category: 'research',
-    file: null as File | null
+    background: '',
+    methods: '',
+    findings: '',
+    conclusion: '',
+    policy_implications: '',
+    abstract_file: null,
+    conflict_of_interest: false,
+    ethical_approval: false,
+    consent_to_publish: false
   })
 
   const [submitResult, setSubmitResult] = useState<{
@@ -27,7 +162,7 @@ export default function AbstractsPage() {
     message: string;
   }>({ type: null, title: '', message: '' })
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev: any) => ({
       ...prev,
@@ -35,29 +170,76 @@ export default function AbstractsPage() {
     }))
   }
 
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleCheckboxChange = (name: string, checked: boolean) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      [name]: checked
+    }))
+  }
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null
     setFormData((prev: any) => ({
       ...prev,
-      file: file
+      abstract_file: file
     }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitResult({ type: null, title: '', message: '' })
+
+    // Validate required fields
+    if (!formData.title || !formData.presentation_type || !formData.conference_track || 
+        !formData.subcategory || !formData.firstName || !formData.lastName || !formData.email || 
+        !formData.phone || !formData.institution || !formData.position || 
+        !formData.district || !formData.abstract_summary || !formData.keywords ||
+        !formData.background || !formData.methods || !formData.findings || 
+        !formData.conclusion || !formData.consent_to_publish) {
+      setSubmitResult({
+        type: 'error',
+        title: 'Missing Information',
+        message: 'Please fill in all required fields marked with *.'
+      })
+      setIsSubmitting(false)
+      return
+    }
 
     try {
       const formDataToSend = new FormData()
       formDataToSend.append('title', formData.title)
-      formDataToSend.append('primary_author', formData.primary_author)
-      formDataToSend.append('corresponding_email', formData.corresponding_email)
-      formDataToSend.append('organization', formData.organization)
+      formDataToSend.append('presentation_type', formData.presentation_type)
+      formDataToSend.append('conference_track', formData.conference_track)
+      formDataToSend.append('subcategory', formData.subcategory)
+      formDataToSend.append('firstName', formData.firstName)
+      formDataToSend.append('lastName', formData.lastName)
+      formDataToSend.append('email', formData.email)
+      formDataToSend.append('phone', formData.phone)
+      formDataToSend.append('institution', formData.institution)
+      formDataToSend.append('position', formData.position)
+      formDataToSend.append('district', formData.district)
+      formDataToSend.append('co_authors', formData.co_authors)
       formDataToSend.append('abstract_summary', formData.abstract_summary)
       formDataToSend.append('keywords', formData.keywords)
-      formDataToSend.append('category', formData.category)
-      if (formData.file) {
-        formDataToSend.append('file', formData.file)
+      formDataToSend.append('background', formData.background)
+      formDataToSend.append('methods', formData.methods)
+      formDataToSend.append('findings', formData.findings)
+      formDataToSend.append('conclusion', formData.conclusion)
+      formDataToSend.append('policy_implications', formData.policy_implications)
+      formDataToSend.append('conflict_of_interest', formData.conflict_of_interest.toString())
+      formDataToSend.append('ethical_approval', formData.ethical_approval.toString())
+      formDataToSend.append('consent_to_publish', formData.consent_to_publish.toString())
+      
+      if (formData.abstract_file) {
+        formDataToSend.append('abstract_file', formData.abstract_file)
       }
 
       const response = await fetch('/api/abstracts', {
@@ -71,17 +253,32 @@ export default function AbstractsPage() {
         setSubmitResult({
           type: 'success',
           title: 'Abstract Submitted Successfully!',
-          message: 'Thank you for submitting your abstract! Your submission has been received and will be reviewed by our committee. You will receive a confirmation email shortly.'
+          message: 'Thank you for your abstract submission! We will review it and get back to you by September 25, 2025.'
         })
         setFormData({
           title: '',
-          primary_author: '',
-          corresponding_email: '',
-          organization: '',
+          presentation_type: '',
+          conference_track: '',
+          subcategory: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          institution: '',
+          position: '',
+          district: '',
+          co_authors: '',
           abstract_summary: '',
           keywords: '',
-          category: 'research',
-          file: null
+          background: '',
+          methods: '',
+          findings: '',
+          conclusion: '',
+          policy_implications: '',
+          abstract_file: null,
+          conflict_of_interest: false,
+          ethical_approval: false,
+          consent_to_publish: false
         })
       } else {
         const errorMessage = result.error || result.message || 'Abstract submission failed. Please try again.'
@@ -92,11 +289,10 @@ export default function AbstractsPage() {
         })
       }
     } catch (error) {
-      console.error('Error submitting abstract:', error)
       setSubmitResult({
         type: 'error',
-        title: 'Submission Failed',
-        message: 'An error occurred while submitting your abstract. Please try again.'
+        title: 'Network Error',
+        message: 'Could not connect to the server. Please try again later.'
       })
     } finally {
       setIsSubmitting(false)
@@ -104,253 +300,541 @@ export default function AbstractsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-primary-950 py-16 px-2 sm:px-0 text-white">
-      <div className="flex justify-center mb-10">
-        <div className="h-1 w-32 bg-gradient-to-r from-primary-500 via-primary-400 to-primary-700 rounded-full opacity-80" />
-      </div>
-      
-      <div className="max-w-4xl mx-auto rounded-2xl shadow-lg bg-white p-8 sm:p-16 border border-primary-200 transition-all duration-200 hover:scale-[1.01]">
-        <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 tracking-tight text-primary-900 drop-shadow-lg text-center">
-          Abstract Submission
-        </h1>
-        <p className="text-center text-primary-700 mb-8">
-          Submit your research abstract for the National Digital Health Conference 2025
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Simple Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Abstract Submission Form</h1>
+          <p className="text-lg text-gray-600">National Digital Health Conference 2025</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Abstract Title */}
-          <div className="bg-primary-50 border border-primary-200 rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-primary-900 mb-6">Abstract Details</h2>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="title" className="font-semibold text-primary-900">
-                Abstract Title *
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required
-                className="rounded-lg px-4 py-3 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400"
-                placeholder="Enter your abstract title"
-              />
-            </div>
-          </div>
-
-          {/* Author Information */}
-          <div className="bg-primary-50 border border-primary-200 rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-primary-900 mb-6">Author Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col gap-2">
-                <label htmlFor="primary_author" className="font-semibold text-primary-900">
-                  Primary Author *
-                </label>
-                <input
-                  type="text"
-                  id="primary_author"
-                  name="primary_author"
-                  value={formData.primary_author}
-                  onChange={handleInputChange}
-                  required
-                  className="rounded-lg px-4 py-3 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400"
-                  placeholder="Enter primary author name"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label htmlFor="corresponding_email" className="font-semibold text-primary-900">
-                  Corresponding Email *
-                </label>
-                <input
-                  type="email"
-                  id="corresponding_email"
-                  name="corresponding_email"
-                  value={formData.corresponding_email}
-                  onChange={handleInputChange}
-                  required
-                  className="rounded-lg px-4 py-3 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400"
-                  placeholder="Enter corresponding email"
-                />
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <label htmlFor="organization" className="font-semibold text-primary-900">
-                Organization *
-              </label>
-              <input
-                type="text"
-                id="organization"
-                name="organization"
-                value={formData.organization}
-                onChange={handleInputChange}
-                required
-                className="w-full mt-2 rounded-lg px-4 py-3 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400"
-                placeholder="Enter your organization"
-              />
-            </div>
-          </div>
-
-          {/* Abstract Content */}
-          <div className="bg-primary-50 border border-primary-200 rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-primary-900 mb-6">Abstract Content</h2>
-            <div className="space-y-6">
-              <div className="flex flex-col gap-2">
-                <label htmlFor="abstract_summary" className="font-semibold text-primary-900">
-                  Abstract Summary *
-                </label>
-                <textarea
-                  id="abstract_summary"
-                  name="abstract_summary"
-                  value={formData.abstract_summary}
-                  onChange={handleInputChange}
-                  required
-                  rows={6}
-                  className="rounded-lg px-4 py-3 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400"
-                  placeholder="Enter your abstract summary (maximum 500 words)"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label htmlFor="keywords" className="font-semibold text-primary-900">
-                  Keywords *
-                </label>
-                <input
-                  type="text"
-                  id="keywords"
-                  name="keywords"
-                  value={formData.keywords}
-                  onChange={handleInputChange}
-                  required
-                  className="rounded-lg px-4 py-3 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400"
-                  placeholder="Enter keywords separated by commas"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label htmlFor="category" className="font-semibold text-primary-900">
-                  Category *
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  required
-                  className="rounded-lg px-4 py-3 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400"
-                >
-                  <option value="research">Research</option>
-                  <option value="policy">Policy</option>
-                  <option value="practice">Practice</option>
-                  <option value="innovation">Innovation</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* File Upload */}
-          <div className="bg-primary-50 border border-primary-200 rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-primary-900 mb-6">Document Upload</h2>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="file" className="font-semibold text-primary-900">
-                Abstract Document (Optional)
-              </label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-primary-400 transition-colors">
-                <div className="space-y-1 text-center">
-                  <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                  <div className="flex text-sm text-gray-600">
-                    <label
-                      htmlFor="file"
-                      className="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
-                    >
-                      <span>Upload document</span>
-                      <input
-                        id="file"
-                        name="file"
-                        type="file"
-                        accept=".pdf,.doc,.docx,.txt"
-                        onChange={handleFileChange}
-                        className="sr-only"
-                      />
-                    </label>
-                    <p className="pl-1">or drag and drop</p>
+        {/* Important Information Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-primary-600 to-primary-700 text-white">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-lg">
+                <Calendar className="h-5 w-5 mr-3" />
+                Important Deadlines
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Submission Deadline</span>
+                    <span className="font-bold text-yellow-300">September 15, 2025</span>
                   </div>
-                  <p className="text-xs text-gray-500">PDF, DOC, DOCX, TXT up to 10MB</p>
-                  {formData.file && (
-                    <p className="text-sm text-green-600 flex items-center justify-center">
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      {formData.file.name}
-                    </p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Notification Date</span>
+                    <span className="font-bold text-green-300">September 25, 2025</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-slate-700 to-slate-800 text-white">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-lg">
+                <Target className="h-5 w-5 mr-3" />
+                Submission Requirements
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg p-2">
+                  <CheckCircle className="h-4 w-4 text-green-400 mr-2" />
+                  <span className="text-sm">Maximum 300 words</span>
+                </div>
+                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg p-2">
+                  <CheckCircle className="h-4 w-4 text-green-400 mr-2" />
+                  <span className="text-sm">Maximum file size: 2MB</span>
+                </div>
+                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg p-2">
+                  <CheckCircle className="h-4 w-4 text-green-400 mr-2" />
+                  <span className="text-sm">PDF, DOC, or DOCX format</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-indigo-600 to-indigo-700 text-white">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-lg">
+                <Award className="h-5 w-5 mr-3" />
+                Review Process
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <div className="w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center mr-3 text-xs font-bold">1</div>
+                  <span className="text-sm">Submit Abstract</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 text-xs font-bold">2</div>
+                  <span className="text-sm">Expert Review</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-3 text-xs font-bold">3</div>
+                  <span className="text-sm">Notification</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Submission Form */}
+        <Card className="border-0 shadow-xl bg-white">
+          <CardHeader className="bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-t-lg">
+            <CardTitle className="flex items-center text-xl">
+              <FileText className="h-6 w-6 mr-3" />
+              Abstract Submission Form
+            </CardTitle>
+            <CardDescription className="text-primary-100">
+              Complete all required fields below. All submissions are subject to review by the Scientific Committee.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-8">
+            {submitResult.type && (
+              <div className={`mb-6 p-4 rounded-lg border-2 ${
+                submitResult.type === 'success' 
+                  ? 'bg-green-50 border-green-200 text-green-800' 
+                  : 'bg-red-50 border-red-200 text-red-800'
+              }`}>
+                <div className="flex items-center">
+                  {submitResult.type === 'success' ? (
+                    <CheckCircle className="h-5 w-5 mr-3" />
+                  ) : (
+                    <AlertCircle className="h-5 w-5 mr-3" />
+                  )}
+                  <div>
+                    <h3 className="font-semibold">{submitResult.title}</h3>
+                    <p className="text-sm">{submitResult.message}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Abstract Details Section */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <FileText className="h-5 w-5 mr-2 text-primary-600" />
+                  Abstract Details
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="title" className="text-sm font-medium text-gray-700">Abstract Title *</Label>
+                    <Input
+                      id="title"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleInputChange}
+                      required
+                      className="h-11"
+                      placeholder="Enter a clear, descriptive title for your research"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="presentation_type" className="text-sm font-medium text-gray-700">Presentation Type *</Label>
+                      <Select value={formData.presentation_type} onValueChange={(value) => handleSelectChange('presentation_type', value)}>
+                        <SelectTrigger className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400">
+                          <SelectValue placeholder="Select presentation type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="oral">Oral Presentation</SelectItem>
+                          <SelectItem value="poster">Poster Presentation</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="conference_track" className="text-sm font-medium text-gray-700">Conference Track *</Label>
+                      <Select value={formData.conference_track} onValueChange={(value) => {
+                        handleSelectChange('conference_track', value)
+                        setFormData(prev => ({ ...prev, subcategory: '' })) // Reset subcategory when track changes
+                      }}>
+                        <SelectTrigger className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400">
+                          <SelectValue placeholder="Choose the most relevant category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {conferenceTracks.map((track) => (
+                            <SelectItem key={track.value} value={track.value}>
+                              <span className="font-medium">{track.label}</span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {formData.conference_track && (
+                    <div className="space-y-2">
+                      <Label htmlFor="subcategory" className="text-sm font-medium text-gray-700">Subcategory *</Label>
+                      <Select value={formData.subcategory} onValueChange={(value) => handleSelectChange('subcategory', value)}>
+                        <SelectTrigger className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400">
+                          <SelectValue placeholder="Select a subcategory" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {conferenceTracks.find(track => track.value === formData.conference_track)?.subcategories.map((subcategory) => (
+                            <SelectItem key={subcategory} value={subcategory}>
+                              {subcategory}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   )}
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Submit Button */}
-          <div className="pt-6">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-primary-500 to-primary-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:from-primary-600 hover:to-primary-800 transform hover:scale-105 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:scale-105 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Submitting Abstract...
-                </>
-              ) : (
-                <>
-                  <FileText className="w-5 h-5" />
-                  Submit Abstract
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
+              {/* Author Information Section */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <Users className="h-5 w-5 mr-2 text-primary-600" />
+                  Author Information
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">First Name *</Label>
+                    <Input
+                      id="firstName"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      required
+                      className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="Enter your first name"
+                    />
+                  </div>
 
-      {/* Success/Error Modal */}
-      {submitResult.type && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all duration-300 scale-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                {submitResult.type === 'success' ? (
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-6 h-6 text-green-600" />
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">Last Name *</Label>
+                    <Input
+                      id="lastName"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      required
+                      className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="Enter your last name"
+                    />
                   </div>
-                ) : (
-                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                    <AlertCircle className="w-6 h-6 text-red-600" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address *</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="Official correspondence will be sent to this email"
+                    />
                   </div>
-                )}
-                <h3 className="text-lg font-bold text-gray-900">{submitResult.title}</h3>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone Number *</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                      className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="Include country code (e.g., +256)"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="institution" className="text-sm font-medium text-gray-700">Institution/Organization *</Label>
+                    <Input
+                      id="institution"
+                      name="institution"
+                      value={formData.institution}
+                      onChange={handleInputChange}
+                      required
+                      className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="Full name of your institution"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="position" className="text-sm font-medium text-gray-700">Position/Title *</Label>
+                    <Input
+                      id="position"
+                      name="position"
+                      value={formData.position}
+                      onChange={handleInputChange}
+                      required
+                      className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="Enter your position or title"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="district" className="text-sm font-medium text-gray-700">District/Region *</Label>
+                  <Input
+                    id="district"
+                    name="district"
+                    value={formData.district}
+                    onChange={handleInputChange}
+                    required
+                    className="h-11"
+                    placeholder="District where you are based in Uganda"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="co_authors" className="text-sm font-medium text-gray-700">Co-Authors (Optional)</Label>
+                  <Textarea
+                    id="co_authors"
+                    name="co_authors"
+                    value={formData.co_authors}
+                    onChange={handleInputChange}
+                    rows={3}
+                    placeholder="List all co-authors with their institutions (one per line)"
+                  />
+                </div>
               </div>
-              <button
-                onClick={() => setSubmitResult({ type: null, title: '', message: '' })}
-                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <AlertCircle className="w-5 h-5 text-gray-500" />
-              </button>
-            </div>
-            <p className="text-gray-600 mb-6 leading-relaxed">{submitResult.message}</p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setSubmitResult({ type: null, title: '', message: '' })}
-                className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
-                  submitResult.type === 'success'
-                    ? 'bg-green-600 hover:bg-green-700 text-white'
-                    : 'bg-red-600 hover:bg-red-700 text-white'
-                }`}
-              >
-                {submitResult.type === 'success' ? 'Great!' : 'Try Again'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
+              {/* Abstract Content Section */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <Globe className="h-5 w-5 mr-2 text-primary-600" />
+                  Abstract Content
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="abstract_summary" className="text-sm font-medium text-gray-700">Abstract Summary *</Label>
+                    <Textarea
+                      id="abstract_summary"
+                      name="abstract_summary"
+                      value={formData.abstract_summary}
+                      onChange={handleInputChange}
+                      required
+                      rows={4}
+                      className="text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="Provide a concise summary of your research (100-150 words)"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="keywords" className="text-sm font-medium text-gray-700">Keywords *</Label>
+                    <Input
+                      id="keywords"
+                      name="keywords"
+                      value={formData.keywords}
+                      onChange={handleInputChange}
+                      required
+                      className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="3-6 keywords separated by commas"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="background" className="text-sm font-medium text-gray-700">Background *</Label>
+                      <Textarea
+                        id="background"
+                        name="background"
+                        value={formData.background}
+                        onChange={handleInputChange}
+                        required
+                        rows={3}
+                        className="text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                        placeholder="Brief background and context for your research"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="methods" className="text-sm font-medium text-gray-700">Methods *</Label>
+                      <Textarea
+                        id="methods"
+                        name="methods"
+                        value={formData.methods}
+                        onChange={handleInputChange}
+                        required
+                        rows={3}
+                        className="text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                        placeholder="Brief description of methods used"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="findings" className="text-sm font-medium text-gray-700">Findings *</Label>
+                      <Textarea
+                        id="findings"
+                        name="findings"
+                        value={formData.findings}
+                        onChange={handleInputChange}
+                        required
+                        rows={3}
+                        className="text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                        placeholder="Key findings of your research"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="conclusion" className="text-sm font-medium text-gray-700">Conclusion *</Label>
+                      <Textarea
+                        id="conclusion"
+                        name="conclusion"
+                        value={formData.conclusion}
+                        onChange={handleInputChange}
+                        required
+                        rows={3}
+                        className="text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                        placeholder="Conclusions drawn from your research"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="policy_implications" className="text-sm font-medium text-gray-700">Policy/Practice Implications (Optional)</Label>
+                    <Textarea
+                      id="policy_implications"
+                      name="policy_implications"
+                      value={formData.policy_implications}
+                      onChange={handleInputChange}
+                      rows={3}
+                      className="text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="How your research can inform policy or practice"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Document Upload Section */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <Upload className="h-5 w-5 mr-2 text-primary-600" />
+                  Document Upload
+                </h3>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="abstract_file" className="text-sm font-medium text-gray-700">Upload Abstract Document</Label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors bg-gray-50 hover:bg-primary-50">
+                    <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600 mb-4">
+                      PDF, DOC, or DOCX files only. Maximum size: 2MB
+                    </p>
+                    <input
+                      type="file"
+                      id="abstract_file"
+                      name="abstract_file"
+                      onChange={handleFileChange}
+                      accept=".pdf,.doc,.docx"
+                      className="hidden"
+                    />
+                    <Label
+                      htmlFor="abstract_file"
+                      className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 cursor-pointer transition-all duration-200 transform hover:scale-105 shadow-md"
+                    >
+                      Choose File
+                    </Label>
+                    {formData.abstract_file && (
+                      <p className="text-sm text-green-600 mt-3 font-medium">
+                        Selected: {formData.abstract_file.name}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Declarations Section */}
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <Shield className="h-5 w-5 mr-2 text-primary-600" />
+                  Official Declarations
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <Checkbox
+                      id="conflict_of_interest"
+                      checked={formData.conflict_of_interest}
+                      onCheckedChange={(checked) => handleCheckboxChange('conflict_of_interest', checked as boolean)}
+                      className="mt-1"
+                    />
+                    <Label htmlFor="conflict_of_interest" className="text-sm text-gray-700 leading-relaxed">
+                      <strong>Conflict of Interest Declaration:</strong> I declare that there are no conflicts of interest related to this research that could influence the outcome or interpretation of the findings.
+                    </Label>
+                  </div>
+
+                  <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <Checkbox
+                      id="ethical_approval"
+                      checked={formData.ethical_approval}
+                      onCheckedChange={(checked) => handleCheckboxChange('ethical_approval', checked as boolean)}
+                      className="mt-1"
+                    />
+                    <Label htmlFor="ethical_approval" className="text-sm text-gray-700 leading-relaxed">
+                      <strong>Ethical Approval:</strong> This research has obtained necessary ethical approvals from the relevant institutional review board (where applicable) and complies with all applicable ethical guidelines.
+                    </Label>
+                  </div>
+
+                  <div className="flex items-start space-x-3 p-4 bg-primary-50 rounded-lg border border-primary-200">
+                    <Checkbox
+                      id="consent_to_publish"
+                      checked={formData.consent_to_publish}
+                      onCheckedChange={(checked) => handleCheckboxChange('consent_to_publish', checked as boolean)}
+                      className="mt-1"
+                      required
+                    />
+                    <Label htmlFor="consent_to_publish" className="text-sm text-gray-700 leading-relaxed">
+                      <strong>Consent to Publish:</strong> I consent to the publication of this abstract in conference proceedings, related materials, and any subsequent publications by the Ministry of Health, Republic of Uganda. *
+                    </Label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="pt-6 flex justify-center">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-80 h-14 text-lg font-bold bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white rounded-xl shadow-xl transform hover:scale-105 hover:shadow-2xl transition-all duration-300 border-2 border-primary-600 hover:border-primary-700"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-6 w-6 mr-3 animate-spin" />
+                      Processing Submission...
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="h-6 w-6 mr-3" />
+                      Submit Abstract
+                    </>
+                  )}
+                </Button>
+              </div>
+              
+              <p className="text-center text-gray-600 mt-4 text-sm">
+                By submitting this form, you agree to the conference terms and conditions.
+              </p>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

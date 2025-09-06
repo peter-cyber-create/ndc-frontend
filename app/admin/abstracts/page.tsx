@@ -48,41 +48,93 @@ export default function AbstractsPage() {
       
       if (response.ok) {
         const data = await response.json()
-        setAbstracts(data.data || [])
+        setAbstracts(data.abstracts || [])
       } else {
         setError('Failed to load abstracts')
       }
     } catch (err) {
-      setError('Failed to load abstracts')
+      setError('Network error occurred')
     } finally {
       setLoading(false)
     }
   }
 
-  const filteredAbstracts = abstracts.filter(abstract => {
-    const matchesSearch = 
-      abstract.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      abstract.primary_author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      abstract.corresponding_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      abstract.organization?.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesStatus = statusFilter === 'all' || abstract.status === statusFilter
-    const matchesCategory = categoryFilter === 'all' || abstract.category === categoryFilter
-    
-    return matchesSearch && matchesStatus && matchesCategory
-  })
+  const handleStatusChange = async (id: number, newStatus: string) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/abstracts/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      })
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return <CheckCircle className="h-5 w-5 text-green-500" />
-      case 'rejected':
-        return <XCircle className="h-5 w-5 text-red-500" />
-      case 'submitted':
-        return <Clock className="h-5 w-5 text-yellow-500" />
-      default:
-        return <AlertCircle className="h-5 w-5 text-gray-500" />
+      if (response.ok) {
+        setAbstracts(abstracts.map(abstract => 
+          abstract.id === id ? { ...abstract, status: newStatus } : abstract
+        ))
+      } else {
+        alert('Failed to update status')
+      }
+    } catch (err) {
+      alert('Network error occurred')
     }
+  }
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/abstracts/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        setAbstracts(abstracts.filter(abstract => abstract.id !== id))
+        setDeleteConfirm(null)
+      } else {
+        alert('Failed to delete abstract')
+      }
+    } catch (err) {
+      alert('Network error occurred')
+    }
+  }
+
+  const handleDownloadAbstract = async (fileUrl: string, abstract: Abstract) => {
+    try {
+      const response = await fetch(`${API_URL}/abstracts/download/${abstract.id}`)
+      
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        
+        // Get filename from response headers or create one
+        const contentDisposition = response.headers.get('content-disposition')
+        let filename = `Abstract_${abstract.primary_author}_${abstract.title}.pdf`
+        
+        if (contentDisposition) {
+          const filenameMatch = contentDisposition.match(/filename="(.+)"/)
+          if (filenameMatch) {
+            filename = filenameMatch[1]
+          }
+        }
+        
+        link.download = filename
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+      } else {
+        alert('Failed to download abstract')
+      }
+    } catch (err) {
+      alert('Network error occurred')
+    }
+  }
+
+  const viewAbstract = (abstract: Abstract) => {
+    setSelectedAbstract(abstract)
+    setViewOpen(true)
   }
 
   const getStatusColor = (status: string) => {
@@ -98,104 +150,35 @@ export default function AbstractsPage() {
     }
   }
 
-  const handleDownloadAbstract = async (fileUrl: string, abstract: Abstract) => {
-    try {
-      console.log('Downloading abstract file for abstract:', abstract.id)
-      console.log('File URL:', fileUrl)
-      
-      // Create a meaningful filename
-      const authorName = abstract.primary_author.replace(/[^a-zA-Z0-9]/g, '_')
-      const fileExtension = fileUrl.split('.').pop() || 'pdf'
-      
-      const filename = `Abstract_${authorName}_${abstract.id}.${fileExtension}`
-      
-      // Use the frontend file download endpoint
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/abstracts/download/${abstract.id}`);
-
-      if (!response.ok) {
-        throw new Error(`Failed to download file: ${response.statusText}`);
-      }
-
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-
-      // Create a temporary link and trigger download
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Clean up the blob URL
-      window.URL.revokeObjectURL(blobUrl);
-      
-      alert('Abstract file downloaded successfully')
-    } catch (error) {
-      console.error('Error downloading abstract file:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      alert(`Failed to download abstract file: ${errorMessage}`)
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return <CheckCircle className="h-4 w-4 text-green-600" />
+      case 'rejected':
+        return <XCircle className="h-4 w-4 text-red-600" />
+      case 'submitted':
+        return <Clock className="h-4 w-4 text-yellow-600" />
+      default:
+        return <AlertCircle className="h-4 w-4 text-gray-600" />
     }
   }
 
-  const handleDelete = async (id: number) => {
-    setDeleteConfirm(id)
-  }
-
-  const confirmDelete = async (id: number) => {
-    try {
-      const response = await fetch(`${API_URL}/admin/abstracts/${id}`, {
-        method: 'DELETE'
-      })
-
-      if (response.ok) {
-        setAbstracts(abstracts.filter(abs => abs.id !== id))
-        setDeleteConfirm(null)
-        alert('Abstract deleted successfully')
-      } else {
-        alert('Failed to delete abstract')
-      }
-    } catch (error) {
-      console.error('Error deleting abstract:', error)
-      alert('Failed to delete abstract')
-    }
-  }
-
-  const handleStatusChange = async (id: number, newStatus: string) => {
-    try {
-      const response = await fetch(`${API_URL}/admin/abstracts/${id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
-      })
-
-      if (response.ok) {
-        setAbstracts(abstracts.map(abs => 
-          abs.id === id ? { ...abs, status: newStatus } : abs
-        ))
-        alert(`Abstract status updated to ${newStatus}`)
-      } else {
-        alert('Failed to update status')
-      }
-    } catch (error) {
-      console.error('Error updating status:', error)
-      alert('Failed to update status')
-    }
-  }
-
-  const viewAbstract = (abstract: Abstract) => {
-    setSelectedAbstract(abstract)
-    setViewOpen(true)
-  }
+  const filteredAbstracts = abstracts.filter(abstract => {
+    const matchesSearch = abstract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         abstract.primary_author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         abstract.organization.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = statusFilter === 'all' || abstract.status === statusFilter
+    const matchesCategory = categoryFilter === 'all' || abstract.category === categoryFilter
+    
+    return matchesSearch && matchesStatus && matchesCategory
+  })
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading abstracts...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading abstracts...</p>
         </div>
       </div>
     )
@@ -203,15 +186,15 @@ export default function AbstractsPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-600 text-xl mb-4">⚠️ Error Loading Abstracts</div>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <p className="text-red-600 mb-4">{error}</p>
           <button
             onClick={loadAbstracts}
-            className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
+            className="btn-primary"
           >
-            Retry
+            Try Again
           </button>
         </div>
       </div>
@@ -219,293 +202,301 @@ export default function AbstractsPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Abstracts</h1>
-        <p className="text-gray-600">Manage conference abstracts</p>
-      </div>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Abstract Management</h1>
+          <p className="text-gray-600 mt-2">Manage and review submitted abstracts</p>
+        </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <input
-                type="text"
-                placeholder="Search by title, author, or organization..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+        {/* Filters */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search abstracts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              >
+                <option value="all">All Status</option>
+                <option value="submitted">Submitted</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              >
+                <option value="all">All Categories</option>
+                <option value="research">Research</option>
+                <option value="policy">Policy</option>
+                <option value="practice">Practice</option>
+                <option value="innovation">Innovation</option>
+              </select>
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="all">All Statuses</option>
-              <option value="submitted">Submitted</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="all">All Categories</option>
-              <option value="research">Research</option>
-              <option value="policy">Policy</option>
-              <option value="practice">Practice</option>
-            </select>
-          </div>
         </div>
-      </div>
 
-      {/* Results - Original table layout */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Title
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Author
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Organization
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  File
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Submitted
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredAbstracts.map((abstract) => (
-                <tr key={abstract.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900 max-w-xs truncate" title={abstract.title}>
+        {/* Results - Card Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredAbstracts.map((abstract) => (
+            <div key={abstract.id} className="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
+              <div className="p-6">
+                {/* Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                       {abstract.title}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{abstract.primary_author}</div>
-                    <div className="text-sm text-gray-500">{abstract.corresponding_email}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900 max-w-xs truncate" title={abstract.organization}>
-                      {abstract.organization}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {abstract.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      {getStatusIcon(abstract.status)}
-                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(abstract.status)}`}>
-                        {abstract.status}
+                    </h3>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(abstract.status)}`}>
+                        {getStatusIcon(abstract.status)}
+                        <span className="ml-1">{abstract.status}</span>
+                      </span>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {abstract.category}
                       </span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {abstract.file_url ? (
+                  </div>
+                </div>
+
+                {/* Author Info */}
+                <div className="space-y-2 mb-4">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <User className="h-4 w-4 mr-2" />
+                    <span className="font-medium">{abstract.primary_author}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Mail className="h-4 w-4 mr-2" />
+                    <span className="truncate">{abstract.corresponding_email}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Building className="h-4 w-4 mr-2" />
+                    <span className="truncate">{abstract.organization}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    <span>{new Date(abstract.submittedAt).toLocaleDateString()}</span>
+                  </div>
+                </div>
+
+                {/* Abstract Summary */}
+                <div className="mb-4">
+                  <p className="text-sm text-gray-700 line-clamp-3">
+                    {abstract.abstract_summary}
+                  </p>
+                </div>
+
+                {/* Keywords */}
+                <div className="mb-4">
+                  <div className="flex flex-wrap gap-1">
+                    {abstract.keywords.split(',').slice(0, 3).map((keyword, index) => (
+                      <span key={index} className="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-100 text-gray-700">
+                        {keyword.trim()}
+                      </span>
+                    ))}
+                    {abstract.keywords.split(',').length > 3 && (
+                      <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-100 text-gray-700">
+                        +{abstract.keywords.split(',').length - 3} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => viewAbstract(abstract)}
+                      className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="View Details"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </button>
+                    {abstract.status === 'submitted' && (
+                      <>
+                        <button
+                          onClick={() => handleStatusChange(abstract.id, 'approved')}
+                          className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors"
+                          title="Approve"
+                        >
+                          <CheckCircle className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleStatusChange(abstract.id, 'rejected')}
+                          className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Reject"
+                        >
+                          <XCircle className="h-4 w-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {abstract.file_url && (
                       <button
                         onClick={() => handleDownloadAbstract(abstract.file_url!, abstract)}
-                        className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
+                        className="p-2 text-purple-600 hover:text-purple-900 hover:bg-purple-50 rounded-lg transition-colors"
+                        title="Download File"
                       >
-                        <Download className="h-3 w-3 mr-1" />
-                        Download
+                        <Download className="h-4 w-4" />
                       </button>
-                    ) : (
-                      <span className="text-gray-400 text-sm">No file</span>
                     )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div>{new Date(abstract.submittedAt).toLocaleDateString()}</div>
-                    <div className="text-xs text-gray-400">
-                      {new Date(abstract.submittedAt).toLocaleTimeString()}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => viewAbstract(abstract)}
-                        className="text-blue-600 hover:text-blue-900"
-                        title="View Details"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      
-                      {abstract.status === 'submitted' && (
-                        <>
-                          <button
-                            onClick={() => handleStatusChange(abstract.id, 'approved')}
-                            className="text-green-600 hover:text-green-900"
-                            title="Approve Abstract"
-                          >
-                            <CheckCircle className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => handleStatusChange(abstract.id, 'rejected')}
-                            className="text-red-600 hover:text-red-900"
-                            title="Reject Abstract"
-                          >
-                            <XCircle className="h-4 w-4" />
-                          </button>
-                        </>
-                      )}
-                      
-                      <button
-                        onClick={() => handleDelete(abstract.id)}
-                        className="text-red-600 hover:text-red-900"
-                        title="Delete Abstract"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <button
+                      onClick={() => setDeleteConfirm(abstract.id)}
+                      className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
 
-      {/* Delete Confirmation Modal */}
-      {deleteConfirm && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div className="mt-3 text-center">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                <Trash2 className="h-6 w-6 text-red-600" />
+        {/* Empty State */}
+        {filteredAbstracts.length === 0 && (
+          <div className="text-center py-12">
+            <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No abstracts found</h3>
+            <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+          </div>
+        )}
+
+        {/* View Modal */}
+        {viewOpen && selectedAbstract && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">Abstract Details</h2>
+                  <button
+                    onClick={() => setViewOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <XCircle className="h-6 w-6 text-gray-500" />
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Title</h3>
+                    <p className="text-gray-700">{selectedAbstract.title}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Primary Author</h3>
+                      <p className="text-gray-700">{selectedAbstract.primary_author}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Email</h3>
+                      <p className="text-gray-700">{selectedAbstract.corresponding_email}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Organization</h3>
+                      <p className="text-gray-700">{selectedAbstract.organization}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Category</h3>
+                      <p className="text-gray-700">{selectedAbstract.category}</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Abstract Summary</h3>
+                    <p className="text-gray-700 leading-relaxed">{selectedAbstract.abstract_summary}</p>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Keywords</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedAbstract.keywords.split(',').map((keyword, index) => (
+                        <span key={index} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                          {keyword.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                    <div className="flex items-center space-x-4">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedAbstract.status)}`}>
+                        {getStatusIcon(selectedAbstract.status)}
+                        <span className="ml-2">{selectedAbstract.status}</span>
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        Submitted: {new Date(selectedAbstract.submittedAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {selectedAbstract.file_url && (
+                        <button
+                          onClick={() => handleDownloadAbstract(selectedAbstract.file_url!, selectedAbstract)}
+                          className="btn-primary"
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download File
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mt-4">Delete Abstract</h3>
-              <div className="mt-2 px-7 py-3">
-                <p className="text-sm text-gray-500">
-                  Are you sure you want to delete this abstract? This action cannot be undone.
-                </p>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation */}
+        {deleteConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+              <div className="flex items-center mb-4">
+                <AlertCircle className="h-6 w-6 text-red-600 mr-3" />
+                <h3 className="text-lg font-semibold text-gray-900">Confirm Delete</h3>
               </div>
-              <div className="flex justify-center space-x-4 mt-4">
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete this abstract? This action cannot be undone.
+              </p>
+              <div className="flex items-center justify-end space-x-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={() => confirmDelete(deleteConfirm)}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                  onClick={() => handleDelete(deleteConfirm)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                 >
                   Delete
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* View Abstract Modal */}
-      {viewOpen && selectedAbstract && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">Abstract Details</h3>
-                <button
-                  onClick={() => setViewOpen(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <XCircle className="h-6 w-6" />
-                </button>
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Title</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.title}</p>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Author</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.primary_author}</p>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.corresponding_email}</p>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Organization</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.organization}</p>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Category</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.category}</p>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Status</label>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(selectedAbstract.status)}`}>
-                    {selectedAbstract.status}
-                  </span>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Keywords</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedAbstract.keywords}</p>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Abstract</label>
-                  <p className="text-sm text-gray-900 mt-1 whitespace-pre-wrap">{selectedAbstract.abstract_summary}</p>
-                </div>
-                
-                {selectedAbstract.file_url && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Abstract File</label>
-                    <button
-                      onClick={() => handleDownloadAbstract(selectedAbstract.file_url!, selectedAbstract)}
-                      className="mt-2 inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200"
-                    >
-                      <Download className="h-3 w-3 mr-1" />
-                      Download Abstract File
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

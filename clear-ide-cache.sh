@@ -32,3 +32,4 @@ fi
 echo "🚀 Starting development server..."
 npm run dev > /dev/null 2>&1 &
 echo "✅ Development server started in background"
+
