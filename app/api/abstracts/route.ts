@@ -104,19 +104,21 @@ export async function POST(request: NextRequest) {
     })
     
     // Insert abstract using the exact column names from the database
+    const subcategory = formData.get('subcategory') as string
+    
     const [result] = await connection.execute(
       `INSERT INTO abstracts 
-       (title, presentation_type, category, primary_author, co_authors, 
+       (title, presentation_type, category, subcategory, primary_author, co_authors, 
         abstract_summary, keywords, background, methods, findings, conclusion, 
         implications, file_url, conflict_of_interest, ethical_approval, 
         consent_to_publish, author_phone, corresponding_author, corresponding_email, 
-        corresponding_phone, status, created_at) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NOW())`,
+        corresponding_phone, organization, status, created_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NOW())`,
       [
-        title, presentationType, conferenceTrack, primaryAuthor, coAuthors,
+        title, presentationType, conferenceTrack, subcategory, primaryAuthor, coAuthors,
         abstractSummary, keywords, background, methods, findings, conclusion,
         policyImplications, fileUrl, conflictOfInterest, ethicalApproval,
-        consentToPublish, phone, `${firstName} ${lastName}`, email, phone
+        consentToPublish, phone, `${firstName} ${lastName}`, email, phone, institution
       ]
     )
     

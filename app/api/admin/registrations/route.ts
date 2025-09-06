@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
         lastName,
         email,
         phone,
-        organization,
+        institution,
         position,
         registrationType,
         paymentProofUrl,

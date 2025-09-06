@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const lastName = formData.get('lastName') as string
     const email = formData.get('email') as string
     const phone = formData.get('phone') as string
-    const organization = formData.get('institution') as string // Changed from 'organization' to 'institution'
+    const institution = formData.get('institution') as string // Changed from 'organization' to 'institution'
     const position = formData.get('position') as string
     const country = formData.get('country') as string
     const city = formData.get('city') as string
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     const paymentProof = formData.get('paymentProof') as File | null
 
     // Validate required fields
-    if (!firstName || !lastName || !email || !phone || !organization || !position || !country || !city || !registrationType || !paymentProof) {
+    if (!firstName || !lastName || !email || !phone || !institution || !position || !country || !city || !registrationType || !paymentProof) {
       return NextResponse.json(
         { error: 'All required fields must be filled and payment proof must be uploaded' },
         { status: 400 }
@@ -73,9 +73,9 @@ export async function POST(request: NextRequest) {
     // Insert registration
     const [result] = await connection.execute(
       `INSERT INTO registrations 
-       (firstName, lastName, email, phone, organization, position, registrationType, paymentProofUrl, status, createdAt) 
+       (firstName, lastName, email, phone, institution, position, registrationType, paymentProofUrl, status, createdAt) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())`,
-      [firstName, lastName, email, phone, organization, position, registrationType, paymentProofUrl]
+      [firstName, lastName, email, phone, institution, position, registrationType, paymentProofUrl]
     )
     
     await connection.end()

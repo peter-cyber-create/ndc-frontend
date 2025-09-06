@@ -72,12 +72,12 @@ export async function POST(request: NextRequest) {
     
     const [result] = await connection.execute(
       `INSERT INTO exhibitors (
-        company_name, contact_person, email, phone, selected_package, 
-        payment_proof_url, status, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, 'pending', NOW())`,
+        company_name, contact_person, email, phone, address, city, country, 
+        selected_package, additional_info, payment_proof_url, status, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())`,
       [
-        organization_name, contact_person, email, phone, selected_package,
-        payment_proof_url
+        organization_name, contact_person, email, phone, address, city, country,
+        selected_package, additionalInfo, payment_proof_url
       ]
     )
 
