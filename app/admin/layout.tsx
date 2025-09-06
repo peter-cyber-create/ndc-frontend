@@ -19,9 +19,40 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Bypass authentication for now
-    setIsAuthenticated(true)
-    setIsLoading(false)
+    // Check authentication
+    const checkAuth = () => {
+      const token = localStorage.getItem('admin_token')
+      const session = localStorage.getItem('admin_session')
+      
+      if (token && session) {
+        // Verify token is still valid (basic check)
+        try {
+          const sessionData = JSON.parse(session)
+          const now = new Date().getTime()
+          
+          // Check if session is not expired (24 hours)
+          if (sessionData.expires && now < sessionData.expires) {
+            setIsAuthenticated(true)
+          } else {
+            // Session expired, clear storage
+            localStorage.removeItem('admin_token')
+            localStorage.removeItem('admin_session')
+            setIsAuthenticated(false)
+          }
+        } catch (error) {
+          // Invalid session data, clear storage
+          localStorage.removeItem('admin_token')
+          localStorage.removeItem('admin_session')
+          setIsAuthenticated(false)
+        }
+      } else {
+        setIsAuthenticated(false)
+      }
+      
+      setIsLoading(false)
+    }
+    
+    checkAuth()
   }, [])
 
   const handleLogout = () => {

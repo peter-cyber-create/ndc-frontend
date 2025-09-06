@@ -50,7 +50,9 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null)
 
   // API URL for frontend-only architecture
-  const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api`
+  const API_URL = typeof window !== 'undefined' && window.location.hostname === 'conference.health.go.ug' 
+    ? '' 
+    : 'http://localhost:3000'
 
   useEffect(() => {
     loadDashboardData()

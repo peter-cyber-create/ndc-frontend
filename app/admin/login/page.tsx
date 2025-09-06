@@ -20,9 +20,18 @@ export default function LoginPage() {
     try {
       // Simple authentication
       if (username === 'admin' && password === 'conference2025') {
-        // Set authentication tokens
-        localStorage.setItem('admin_token', 'demo_token_123')
-        localStorage.setItem('admin_session', Date.now().toString())
+        // Set authentication tokens with expiration
+        const token = 'admin_token_' + Date.now()
+        const expires = new Date().getTime() + (24 * 60 * 60 * 1000) // 24 hours
+        const sessionData = {
+          token,
+          expires,
+          username: 'admin',
+          loginTime: new Date().toISOString()
+        }
+        
+        localStorage.setItem('admin_token', token)
+        localStorage.setItem('admin_session', JSON.stringify(sessionData))
         
         // Redirect to dashboard
         router.push('/admin/dashboard')
