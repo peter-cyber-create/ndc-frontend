@@ -9,7 +9,7 @@ import {
 
 interface Exhibitor {
   id: number
-  organization_name: string
+  company_name: string
   contact_person: string
   email: string
   phone: string
@@ -106,7 +106,7 @@ export default function ExhibitorsPage() {
 
   const handleDownloadPaymentProof = async (paymentProofUrl: string, exhibitor: Exhibitor) => {
     try {
-      const personName = `${exhibitor.contact_person}_${exhibitor.organization_name}`
+      const personName = `${exhibitor.contact_person}_${exhibitor.company_name}`
       const paymentType = 'Exhibition'
       
       const response = await fetch(`${API_URL}/uploads/payment-proof/download?file=${encodeURIComponent(paymentProofUrl)}&name=${encodeURIComponent(personName)}&type=${encodeURIComponent(paymentType)}`)
@@ -177,7 +177,7 @@ export default function ExhibitorsPage() {
   }
 
   const filteredExhibitors = exhibitors.filter(exhibitor => {
-    const matchesSearch = exhibitor.organization_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = exhibitor.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          exhibitor.contact_person.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          exhibitor.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || exhibitor.status === statusFilter
@@ -333,7 +333,7 @@ export default function ExhibitorsPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {exhibitor.organization_name}
+                      {exhibitor.company_name}
                     </h3>
                     <div className="flex items-center space-x-2 mb-2">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(exhibitor.status)}`}>
@@ -467,7 +467,7 @@ export default function ExhibitorsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">Organization</h3>
-                      <p className="text-gray-700">{selectedExhibitor.organization_name}</p>
+                      <p className="text-gray-700">{selectedExhibitor.company_name}</p>
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">Contact Person</h3>
