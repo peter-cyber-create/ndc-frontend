@@ -45,9 +45,9 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!title || !presentationType || !conferenceTrack || !firstName || !lastName || 
         !email || !phone || !institution || !position || !district || !abstractSummary || 
-        !keywords || !background || !methods || !findings || !conclusion || !consentToPublish) {
+        !keywords || !background || !methods || !findings || !conclusion || !consentToPublish || !file) {
       return NextResponse.json(
-        { error: 'All required fields must be filled' },
+        { error: 'All required fields must be filled and abstract file must be uploaded' },
         { status: 400 }
       )
     }

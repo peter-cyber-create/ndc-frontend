@@ -203,11 +203,11 @@ export default function AbstractsPage() {
         !formData.phone || !formData.institution || !formData.position || 
         !formData.district || !formData.abstract_summary || !formData.keywords ||
         !formData.background || !formData.methods || !formData.findings || 
-        !formData.conclusion || !formData.consent_to_publish) {
+        !formData.conclusion || !formData.consent_to_publish || !formData.abstract_file) {
       setSubmitResult({
         type: 'error',
         title: 'Missing Information',
-        message: 'Please fill in all required fields marked with *.'
+        message: 'Please fill in all required fields marked with * and upload your abstract file.'
       })
       setIsSubmitting(false)
       return

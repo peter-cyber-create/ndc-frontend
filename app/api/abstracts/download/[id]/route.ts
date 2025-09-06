@@ -78,7 +78,18 @@ export async function GET(
     }
 
     // Create filename with author name and title
-    const authorName = abstract.primary_author.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_')
+    let authorName = 'Unknown_Author'
+    try {
+      // Try to parse primary_author as JSON first
+      const authorData = JSON.parse(abstract.primary_author)
+      if (authorData.firstName && authorData.lastName) {
+        authorName = `${authorData.firstName}_${authorData.lastName}`
+      }
+    } catch {
+      // If not JSON, use as string
+      authorName = abstract.primary_author.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_')
+    }
+    
     const title = abstract.title.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_').substring(0, 50)
     const filename = `Abstract_${authorName}_${title}.${extension}`
 
