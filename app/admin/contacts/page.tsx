@@ -31,7 +31,7 @@ export default function ContactsPage() {
 
   // API URL - use relative path for production
   const API_URL = typeof window !== 'undefined' && window.location.hostname === 'conference.health.go.ug' 
-    ? '' 
+    ? 'https://conference.health.go.ug' 
     : 'http://localhost:3000'
 
   useEffect(() => {

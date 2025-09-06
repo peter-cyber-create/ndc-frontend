@@ -37,7 +37,7 @@ export default function AbstractsPage() {
 
   // API URL
   const API_URL = typeof window !== 'undefined' && window.location.hostname === 'conference.health.go.ug' 
-    ? '' 
+    ? 'https://conference.health.go.ug' 
     : 'http://localhost:3000'
 
   useEffect(() => {
