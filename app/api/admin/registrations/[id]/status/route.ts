@@ -37,7 +37,7 @@ export async function PATCH(
     
     // Update the registration status
     await connection.execute(
-      'UPDATE registrations SET status = ?, updated_at = NOW() WHERE id = ?',
+      'UPDATE registrations SET status = ?, updatedAt = NOW() WHERE id = ?',
       [status, registrationId]
     )
     

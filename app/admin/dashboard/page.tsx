@@ -170,7 +170,7 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
           <button
             onClick={refreshDashboard}
-            className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="ml-4 px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
           >
             🔄 Refresh
           </button>
@@ -183,8 +183,8 @@ export default function DashboardPage() {
         {/* Registrations */}
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Users className="h-6 w-6 text-blue-600" />
+            <div className="p-2 bg-primary-100 rounded-lg">
+              <Users className="h-6 w-6 text-primary-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Registrations</p>
@@ -202,8 +202,8 @@ export default function DashboardPage() {
         {/* Abstracts */}
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <FileText className="h-6 w-6 text-green-600" />
+            <div className="p-2 bg-primary-100 rounded-lg">
+              <FileText className="h-6 w-6 text-primary-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Abstracts</p>
@@ -221,8 +221,8 @@ export default function DashboardPage() {
         {/* Contacts */}
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Mail className="h-6 w-6 text-purple-600" />
+            <div className="p-2 bg-primary-100 rounded-lg">
+              <Mail className="h-6 w-6 text-primary-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Contacts</p>
@@ -240,8 +240,8 @@ export default function DashboardPage() {
         {/* Sponsorships */}
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <Building className="h-6 w-6 text-orange-600" />
+            <div className="p-2 bg-primary-100 rounded-lg">
+              <Building className="h-6 w-6 text-primary-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Sponsorships</p>
@@ -262,19 +262,19 @@ export default function DashboardPage() {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">�� Data Summary</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="text-center">
-            <p className="text-2xl font-bold text-blue-600">{dashboardData.registrations.newThisWeek}</p>
+            <p className="text-2xl font-bold text-primary-600">{dashboardData.registrations.newThisWeek}</p>
             <p className="text-sm text-gray-600">New Registrations This Week</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-green-600">{dashboardData.abstracts.newThisWeek}</p>
+            <p className="text-2xl font-bold text-primary-600">{dashboardData.abstracts.newThisWeek}</p>
             <p className="text-sm text-gray-600">New Abstracts This Week</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-purple-600">{dashboardData.contacts.newThisWeek}</p>
+            <p className="text-2xl font-bold text-primary-600">{dashboardData.contacts.newThisWeek}</p>
             <p className="text-sm text-gray-600">New Contacts This Week</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-orange-600">{dashboardData.sponsorships.total}</p>
+            <p className="text-2xl font-bold text-primary-600">{dashboardData.sponsorships.total}</p>
             <p className="text-sm text-gray-600">Total Sponsorships</p>
           </div>
         </div>
@@ -284,16 +284,16 @@ export default function DashboardPage() {
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">⚡ Quick Actions</h2>
         <div className="flex flex-wrap gap-4">
-          <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700">
             View All Registrations
           </button>
-          <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+          <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700">
             Review Abstracts
           </button>
-          <button className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700">
             Check Messages
           </button>
-          <button className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+          <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700">
             Manage Sponsorships
           </button>
         </div>
