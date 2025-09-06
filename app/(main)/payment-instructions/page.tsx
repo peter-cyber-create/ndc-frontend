@@ -7,14 +7,14 @@ import { Button } from '@/components/ui/button'
 
 export default function PaymentInstructionsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-16">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-primary-100 to-primary-200 py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mb-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full mb-6">
             <CreditCard className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-6">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent mb-6">
             Payment Instructions
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -26,12 +26,12 @@ export default function PaymentInstructionsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           {/* Bank Transfer */}
           <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
+            <CardHeader className="bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-t-lg">
               <CardTitle className="flex items-center text-2xl">
                 <Banknote className="h-8 w-8 mr-3" />
                 Bank Transfer
               </CardTitle>
-              <CardDescription className="text-green-100 text-lg">
+              <CardDescription className="text-primary-100 text-lg">
                 Recommended payment method
               </CardDescription>
             </CardHeader>
@@ -40,7 +40,7 @@ export default function PaymentInstructionsPage() {
                 {/* UGX Account */}
                 <div className="bg-gray-50 rounded-xl p-6 border-2 border-gray-200">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <Shield className="h-6 w-6 mr-2 text-green-600" />
+                    <Shield className="h-6 w-6 mr-2 text-primary-600" />
                     UGX Account
                   </h3>
                   <div className="space-y-3">
@@ -102,12 +102,12 @@ export default function PaymentInstructionsPage() {
 
           {/* Payment Guidelines */}
           <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
+            <CardHeader className="bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-t-lg">
               <CardTitle className="flex items-center text-2xl">
                 <CheckCircle className="h-8 w-8 mr-3" />
                 Payment Guidelines
               </CardTitle>
-              <CardDescription className="text-purple-100 text-lg">
+              <CardDescription className="text-primary-100 text-lg">
                 Important information for successful payment
               </CardDescription>
             </CardHeader>
@@ -173,9 +173,9 @@ export default function PaymentInstructionsPage() {
 
         {/* Package Pricing */}
         <Card className="mb-16 border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
-          <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-t-lg">
+          <CardHeader className="bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-t-lg">
             <CardTitle className="text-2xl text-center">Package Pricing</CardTitle>
-            <CardDescription className="text-indigo-100 text-lg text-center">
+            <CardDescription className="text-primary-100 text-lg text-center">
               Choose the package that best fits your needs
             </CardDescription>
           </CardHeader>

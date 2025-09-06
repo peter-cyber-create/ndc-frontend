@@ -62,9 +62,9 @@ export function Navbar() {
   return (
     <>
       {/* Uganda Flag Stripe */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-3 flex flex-col">
-        <div className="h-1 bg-uganda-black"></div>
-        <div className="h-1 bg-uganda-yellow"></div>
+      <div className="fixed top-0 left-0 right-0 z-50 h-4 flex flex-col">
+        <div className="h-1.5 bg-uganda-black"></div>
+        <div className="h-1.5 bg-uganda-yellow"></div>
         <div className="h-1 bg-uganda-red"></div>
       </div>
       
@@ -124,19 +124,19 @@ export function Navbar() {
             {/* Main Separator before Form Links */}
             <div className="h-6 w-px bg-gradient-to-b from-primary-400 to-primary-600 mx-3" />
             
-            {/* Form Links - compact styling */}
-            <div className="flex items-center space-x-2">
+            {/* Form Links - enhanced styling */}
+            <div className="flex items-center space-x-3">
               {formLinks.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm shadow-sm hover:shadow-md min-w-[120px] h-10 text-center ${
+                  className={`relative inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm shadow-lg hover:shadow-xl min-w-[140px] h-12 text-center ${
                     pathname === item.href 
-                      ? 'bg-primary-600 text-white ring-2 ring-primary-400 shadow-md' 
-                      : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border border-primary-300 hover:border-primary-400 focus:ring-primary-400'
+                      ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white ring-2 ring-primary-400 shadow-xl scale-105' 
+                      : 'bg-gradient-to-r from-primary-100 to-primary-200 text-primary-800 hover:from-primary-200 hover:to-primary-300 border border-primary-300 hover:border-primary-400 focus:ring-primary-400'
                   }`}
                 >
-                  <span className="text-sm font-medium">{item.name}</span>
+                  <span className="text-sm font-semibold">{item.name}</span>
                 </Link>
               ))}
             </div>
@@ -197,14 +197,14 @@ export function Navbar() {
                     <Link
                       key={item.name}
                       href={item.href}
-                      className={`relative block px-4 py-2 rounded-md font-medium text-center transition-all duration-300 text-sm shadow-sm border h-10 flex items-center justify-center ${
+                      className={`relative block px-6 py-3 rounded-lg font-semibold text-center transition-all duration-300 text-sm shadow-lg border h-12 flex items-center justify-center ${
                         pathname === item.href
-                          ? 'bg-primary-600 text-white border-primary-600 shadow-md'
-                          : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border-primary-300 hover:border-primary-400'
+                          ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white border-primary-600 shadow-xl'
+                          : 'bg-gradient-to-r from-primary-100 to-primary-200 text-primary-800 hover:from-primary-200 hover:to-primary-300 border-primary-300 hover:border-primary-400'
                       }`}
                       onClick={() => setIsOpen(false)}
                     >
-                      <span className="text-sm font-medium">{item.name}</span>
+                      <span className="text-sm font-semibold">{item.name}</span>
                     </Link>
                   ))}
                 </div>
