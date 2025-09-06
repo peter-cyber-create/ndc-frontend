@@ -2,77 +2,105 @@
 
 import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Building, Globe, Users, Award, Target, Heart, Shield } from 'lucide-react'
+import { Building, Globe, Users, Award, Target, Heart, Shield, ExternalLink } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 const partners = [
   {
-    name: 'Centers for Disease Control and Prevention (CDC)',
-    logo: '/images/partners/CDC.png',
-    description: 'Leading public health agency providing technical assistance and support for health programs worldwide.',
-    category: 'Government Agency'
+    name: 'Makerere University School of Public Health (MakSPH)',
+    logo: '/images/partners/Logo-with-Text.png',
+    description: 'Makerere University School of Public Health (MakSPH) is a premier institution in Sub-Saharan Africa, renowned for public health training, research, and community engagement. Established in 1954, MakSPH pioneered postgraduate public health education in the region and has grown into a stand-alone school as of 2025, reflecting its outstanding impact and leadership in advancing health in Uganda and beyond.',
+    website: '#'
   },
   {
     name: 'Infectious Diseases Institute (IDI)',
     logo: '/images/partners/IDI MAK Logo - Copy.png',
-    description: 'Premier research and training institution focused on infectious diseases and public health in Africa.',
-    category: 'Research Institution'
-  },
-  {
-    name: 'International Development Research Centre (IDRC)',
-    logo: '/images/partners/IDRC-Logo-480.png',
-    description: 'Canadian Crown corporation that funds research and innovation in developing countries.',
-    category: 'Funding Organization'
-  },
-  {
-    name: 'Makerere University College of Health Sciences',
-    logo: '/images/partners/Logo-with-Text.png',
-    description: 'Leading medical and health sciences education institution in Uganda and East Africa.',
-    category: 'Academic Institution'
+    description: 'The Infectious Diseases Institute (IDI) is a leading non-profit national organisation entirely owned by Makerere University. Founded in 2002, IDI is committed to strengthening health systems through research and capacity building to free Africa from the burden of infectious diseases and other emerging and re-emerging health challenges.',
+    website: '#'
   },
   {
     name: 'PEPFAR Uganda',
     logo: '/images/partners/PEPFAR-Uganda-tagline (1).jpg',
-    description: 'U.S. President\'s Emergency Plan for AIDS Relief providing comprehensive HIV/AIDS support.',
-    category: 'International Program'
+    description: 'President\'s Emergency Plan for AIDS Relief in Uganda, supporting HIV/AIDS prevention and treatment programs.',
+    website: '#'
   },
   {
     name: 'The Global Fund',
     logo: '/images/partners/The Global Fund_Logo_Artwork_Stacked_Colour.png',
-    description: 'International financing organization fighting AIDS, tuberculosis, and malaria.',
-    category: 'International Organization'
+    description: 'International financing organization dedicated to fighting AIDS, tuberculosis, and malaria worldwide.',
+    website: '#'
+  },
+  {
+    name: 'Centers for Disease Control and Prevention (CDC)',
+    logo: '/images/partners/CDC.png',
+    description: 'U.S. national public health institute, working to protect public health and safety through disease control and prevention.',
+    website: '#'
+  },
+  {
+    name: 'International Development Research Centre (IDRC)',
+    logo: '/images/partners/IDRC-Logo-480.png',
+    description: 'Canadian Crown corporation supporting research in developing countries to create lasting change.',
+    website: '#'
   }
 ]
 
-const categories = [
+const sponsorshipPackages = [
   {
-    name: 'Government Agencies',
-    icon: Building,
-    color: 'blue',
-    partners: partners.filter(p => p.category === 'Government Agency')
+    name: 'Platinum Sponsor/Exhibitor',
+    price: 10000,
+    idealFor: 'Major healthcare firms, pharmaceutical companies, diagnostic labs, beverage firms & banking institutions',
+    features: [
+      'Prime booth location (largest size)',
+      'Speaking slot (plenary or breakout)',
+      'Logo on all promotional materials',
+      '6 complimentary conference passes',
+      'Feature in post-conference report',
+      'Social media spotlight'
+    ]
   },
   {
-    name: 'Research Institutions',
-    icon: Award,
-    color: 'green',
-    partners: partners.filter(p => p.category === 'Research Institution')
+    name: 'Gold Sponsor/Exhibitor',
+    price: 7000,
+    idealFor: 'Medical tech companies, NGOs, research institutions',
+    features: [
+      'Premium booth location',
+      'Panel participation opportunity',
+      'Logo on website & program booklet',
+      '4 complimentary passes',
+      'Branded banner at venue'
+    ]
   },
   {
-    name: 'Academic Institutions',
-    icon: Users,
-    color: 'purple',
-    partners: partners.filter(p => p.category === 'Academic Institution')
+    name: 'Silver Exhibitor',
+    price: 5000,
+    idealFor: 'Health startups, regional health agencies, universities',
+    features: [
+      'Standard booth',
+      'Logo in program booklet',
+      '2 complimentary passes',
+      'Mention during opening/closing remarks'
+    ]
   },
   {
-    name: 'International Organizations',
-    icon: Globe,
-    color: 'orange',
-    partners: partners.filter(p => p.category === 'International Organization' || p.category === 'International Program')
+    name: 'Bronze Exhibitor',
+    price: 4000,
+    idealFor: 'Small businesses, advocacy groups, student-led health initiatives',
+    features: [
+      'Basic booth',
+      '1 complimentary pass',
+      'Name listed in program booklet'
+    ]
   },
   {
-    name: 'Funding Organizations',
-    icon: Target,
-    color: 'indigo',
-    partners: partners.filter(p => p.category === 'Funding Organization')
+    name: 'Non-Profit/Academic Table',
+    price: 2500,
+    idealFor: 'Non-profits, student groups, academic researchers',
+    features: [
+      'Table display space only (shared zone)',
+      'No promotional branding',
+      '1 access badge',
+      'Listing in non-profit section of booklet'
+    ]
   }
 ]
 
@@ -84,75 +112,92 @@ export default function PartnersPage() {
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Partners</h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            We are proud to collaborate with leading organizations in public health, research, and development to advance digital health solutions in Uganda and beyond.
+            Organizations working with us to strengthen health systems in Uganda
           </p>
         </div>
 
-        {/* Partners by Category */}
-        <div className="space-y-16">
-          {categories.map((category) => {
-            const IconComponent = category.icon
-            if (category.partners.length === 0) return null
-            
-            return (
-              <div key={category.name} className="space-y-8">
-                <div className="flex items-center justify-center mb-8">
-                  <div className={`w-16 h-16 bg-${category.color}-500 rounded-xl flex items-center justify-center mr-4 shadow-lg`}>
-                    <IconComponent className="h-8 w-8 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-3xl font-bold text-gray-900">{category.name}</h2>
-                    <div className="w-24 h-1 bg-gradient-to-r from-primary-600 to-primary-800 mx-auto mt-2 rounded-full"></div>
-                  </div>
+        {/* Partners Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+          {partners.map((partner, index) => (
+            <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
+              <CardHeader className="text-center pb-4">
+                <div className="w-32 h-32 mx-auto mb-6 flex items-center justify-center bg-gray-50 rounded-xl p-6">
+                  <img
+                    src={partner.logo}
+                    alt={`${partner.name} logo`}
+                    className="max-w-full max-h-full object-contain"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.innerHTML = `<div class="text-gray-400 text-sm">Logo</div>`;
+                      }
+                    }}
+                  />
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {category.partners.map((partner, index) => (
-                    <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
-                      <CardHeader className="text-center pb-4">
-                        <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center bg-gray-50 rounded-xl p-4">
-                          <img
-                            src={partner.logo}
-                            alt={`${partner.name} logo`}
-                            className="max-w-full max-h-full object-contain"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.style.display = 'none';
-                              const parent = target.parentElement;
-                              if (parent) {
-                                parent.innerHTML = `<div class="text-gray-400 text-sm">Logo</div>`;
-                              }
-                            }}
-                          />
-                        </div>
-                        <CardTitle className="text-lg font-semibold text-gray-900 leading-tight">
-                          {partner.name}
-                        </CardTitle>
-                        <CardDescription className="text-sm text-gray-600">
-                          {partner.description}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="text-center">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-${category.color}-100 text-${category.color}-800`}>
-                            {partner.category}
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )
-          })}
+                <CardTitle className="text-xl font-bold text-gray-900 leading-tight mb-4">
+                  {partner.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  {partner.description}
+                </p>
+                <Button asChild variant="outline" className="w-full">
+                  <a href={partner.website} className="flex items-center justify-center">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Visit Website
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Partnership Benefits */}
-        <div className="mt-20">
+        {/* Partnership Opportunities */}
+        <div className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Partnership Benefits</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Partnership Opportunities</h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Our partnerships create synergies that amplify impact and drive innovation in digital health.
+              Join us in advancing health innovation and research in Uganda
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {sponsorshipPackages.map((pkg, index) => (
+              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
+                <CardHeader className="text-center pb-4">
+                  <CardTitle className="text-lg font-bold text-gray-900 mb-2">{pkg.name}</CardTitle>
+                  <div className="text-3xl font-bold text-primary-600 mb-2">${pkg.price.toLocaleString()}</div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    <strong>Ideal for:</strong> {pkg.idealFor}
+                  </p>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <ul className="space-y-2 text-sm text-gray-600 mb-6">
+                    {pkg.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-start">
+                        <span className="text-primary-600 mr-2">•</span>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button className="w-full">
+                    Choose This Package
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Why Partner With Us */}
+        <div className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Partner With Us?</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Unlock unique opportunities to make a lasting impact
             </p>
           </div>
 
@@ -160,11 +205,11 @@ export default function PartnersPage() {
             <Card className="border-0 shadow-lg bg-gradient-to-br from-primary-50 to-primary-100 text-center">
               <CardContent className="p-8">
                 <div className="w-16 h-16 bg-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Shield className="h-8 w-8 text-white" />
+                  <Users className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Technical Expertise</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Network Access</h3>
                 <p className="text-gray-600 text-sm">
-                  Access to world-class technical knowledge and best practices in digital health implementation.
+                  Connect with 500+ health professionals, researchers, and policymakers
                 </p>
               </CardContent>
             </Card>
@@ -174,9 +219,9 @@ export default function PartnersPage() {
                 <div className="w-16 h-16 bg-green-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Target className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Resource Mobilization</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Targeted Audience</h3>
                 <p className="text-gray-600 text-sm">
-                  Collaborative funding opportunities and resource sharing for sustainable health programs.
+                  Reach decision-makers in healthcare, government, and academia
                 </p>
               </CardContent>
             </Card>
@@ -186,9 +231,9 @@ export default function PartnersPage() {
                 <div className="w-16 h-16 bg-purple-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Award className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Capacity Building</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Brand Recognition</h3>
                 <p className="text-gray-600 text-sm">
-                  Training programs and knowledge transfer to strengthen local health systems and workforce.
+                  Enhance your brand visibility among key stakeholders
                 </p>
               </CardContent>
             </Card>
@@ -198,9 +243,9 @@ export default function PartnersPage() {
                 <div className="w-16 h-16 bg-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Heart className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Innovation</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Social Impact</h3>
                 <p className="text-gray-600 text-sm">
-                  Joint research initiatives and pilot projects to test and scale innovative health solutions.
+                  Support initiatives that improve health outcomes in Uganda
                 </p>
               </CardContent>
             </Card>
@@ -208,26 +253,20 @@ export default function PartnersPage() {
         </div>
 
         {/* Call to Action */}
-        <div className="mt-20 text-center">
+        <div className="text-center">
           <Card className="border-0 shadow-2xl bg-gradient-to-r from-primary-600 to-primary-700 text-white">
             <CardContent className="p-12">
-              <h2 className="text-3xl font-bold mb-4">Become a Partner</h2>
+              <h2 className="text-3xl font-bold mb-4">Ready to Partner With Us?</h2>
               <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
-                Join us in advancing digital health solutions and making a lasting impact on healthcare delivery in Uganda and across Africa.
+                Join our mission to advance health innovation and research in Uganda
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="/sponsors"
-                  className="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
-                >
-                  Become a Sponsor
-                </a>
-                <a
-                  href="/contact"
-                  className="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-primary-600 transition-colors"
-                >
-                  Contact Us
-                </a>
+                <Button asChild className="bg-white text-primary-600 hover:bg-gray-100">
+                  <a href="/contact">Contact Us</a>
+                </Button>
+                <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-primary-600">
+                  <a href="/sponsors">Register as Sponsor</a>
+                </Button>
               </div>
             </CardContent>
           </Card>
