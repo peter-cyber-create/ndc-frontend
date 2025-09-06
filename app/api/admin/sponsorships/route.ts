@@ -12,9 +12,17 @@ const dbConfig = {
 export async function GET() {
   try {
     const connection = await mysql.createConnection(dbConfig)
+    // Check if submitted_at column exists
+    const [submittedAtCheck] = await connection.execute(`
+      SELECT COUNT(*) as count FROM information_schema.columns 
+      WHERE table_name = 'sponsorships' AND column_name = 'submitted_at'
+    `)
+    const hasSubmittedAt = (submittedAtCheck as any[])[0].count > 0
+    
+    const submittedAtField = hasSubmittedAt ? 'submitted_at,' : ''
     const [rows] = await connection.execute(`
       SELECT id, company_name, contact_person, email, phone, selected_package, 
-             status, submitted_at, created_at
+             status, ${submittedAtField} created_at
       FROM sponsorships ORDER BY created_at DESC
     `)
     await connection.end()

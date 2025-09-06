@@ -12,8 +12,16 @@ const dbConfig = {
 export async function GET() {
   try {
     const connection = await mysql.createConnection(dbConfig)
+    // Check if cross_cutting_themes column exists
+    const [crossCuttingCheck] = await connection.execute(`
+      SELECT COUNT(*) as count FROM information_schema.columns 
+      WHERE table_name = 'abstracts' AND column_name = 'cross_cutting_themes'
+    `)
+    const hasCrossCutting = (crossCuttingCheck as any[])[0].count > 0
+    
+    const crossCuttingField = hasCrossCutting ? 'cross_cutting_themes,' : ''
     const [rows] = await connection.execute(`
-      SELECT id, title, presentation_type, category, subcategory, cross_cutting_themes,
+      SELECT id, title, presentation_type, category, subcategory, ${crossCuttingField}
              primary_author, co_authors, abstract_summary, keywords, background,
              methods, findings, conclusion, implications, conflict_of_interest,
              ethical_approval, consent_to_publish, file_url, status, admin_notes,
