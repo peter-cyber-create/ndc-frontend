@@ -144,12 +144,14 @@ export default function AbstractsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'approved':
+      case 'accepted':
         return 'bg-green-100 text-green-800'
       case 'rejected':
         return 'bg-red-100 text-red-800'
       case 'submitted':
         return 'bg-yellow-100 text-yellow-800'
+      case 'under_review':
+        return 'bg-blue-100 text-blue-800'
       default:
         return 'bg-gray-100 text-gray-800'
     }
@@ -157,12 +159,14 @@ export default function AbstractsPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'approved':
+      case 'accepted':
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case 'rejected':
         return <XCircle className="h-4 w-4 text-red-600" />
       case 'submitted':
         return <Clock className="h-4 w-4 text-yellow-600" />
+      case 'under_review':
+        return <AlertCircle className="h-4 w-4 text-blue-600" />
       default:
         return <AlertCircle className="h-4 w-4 text-gray-600" />
     }
@@ -249,7 +253,8 @@ export default function AbstractsPage() {
             >
               <option value="all">All Status</option>
               <option value="submitted">Submitted</option>
-              <option value="approved">Approved</option>
+              <option value="under_review">Under Review</option>
+              <option value="accepted">Accepted</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
@@ -361,12 +366,12 @@ export default function AbstractsPage() {
                       >
                         <Eye className="h-4 w-4" />
                       </button>
-                      {abstract.status === 'submitted' && (
+                      {(abstract.status === 'submitted' || abstract.status === 'under_review') && (
                         <>
                           <button
-                            onClick={() => handleStatusChange(abstract.id, 'approved')}
+                            onClick={() => handleStatusChange(abstract.id, 'accepted')}
                             className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors"
-                            title="Approve"
+                            title="Accept"
                           >
                             <CheckCircle className="h-4 w-4" />
                           </button>
