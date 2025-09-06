@@ -45,7 +45,7 @@ export default function SponsorshipsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/admin/sponsorships`)
+      const response = await fetch(`${API_URL}/api/admin/sponsorships`)
       
       if (response.ok) {
         const data = await response.json()
@@ -134,7 +134,7 @@ export default function SponsorshipsPage() {
 
   const confirmDelete = async (id: number) => {
     try {
-      const response = await fetch(`${API_URL}/admin/sponsorships/${id}`, {
+      const response = await fetch(`${API_URL}/api/admin/sponsorships/${id}`, {
         method: 'DELETE'
       })
 
@@ -153,7 +153,7 @@ export default function SponsorshipsPage() {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      const response = await fetch(`${API_URL}/admin/sponsorships/${id}/status`, {
+      const response = await fetch(`${API_URL}/api/admin/sponsorships/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

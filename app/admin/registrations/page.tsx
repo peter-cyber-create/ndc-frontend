@@ -47,7 +47,7 @@ export default function RegistrationsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/admin/registrations`)
+      const response = await fetch(`${API_URL}/api/admin/registrations`)
       
       if (response.ok) {
         const data = await response.json()
@@ -146,7 +146,7 @@ export default function RegistrationsPage() {
 
   const confirmDelete = async (id: number) => {
     try {
-      const response = await fetch(`${API_URL}/admin/registrations/${id}`, {
+      const response = await fetch(`${API_URL}/api/admin/registrations/${id}`, {
         method: 'DELETE'
       })
 
@@ -165,7 +165,7 @@ export default function RegistrationsPage() {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      const response = await fetch(`${API_URL}/admin/registrations/${id}/status`, {
+      const response = await fetch(`${API_URL}/api/admin/registrations/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

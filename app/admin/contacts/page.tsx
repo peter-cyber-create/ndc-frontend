@@ -43,7 +43,7 @@ export default function ContactsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/admin/contacts`)
+      const response = await fetch(`${API_URL}/api/admin/contacts`)
       
       if (response.ok) {
         const data = await response.json()
@@ -98,7 +98,7 @@ export default function ContactsPage() {
 
   const confirmDelete = async (id: number) => {
     try {
-      const response = await fetch(`${API_URL}/admin/contacts/${id}`, {
+      const response = await fetch(`${API_URL}/api/admin/contacts/${id}`, {
         method: 'DELETE'
       })
 
@@ -117,7 +117,7 @@ export default function ContactsPage() {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      const response = await fetch(`${API_URL}/admin/contacts/${id}/status`, {
+      const response = await fetch(`${API_URL}/api/admin/contacts/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

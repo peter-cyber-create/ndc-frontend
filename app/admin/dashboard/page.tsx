@@ -67,7 +67,7 @@ export default function DashboardPage() {
       console.log('Fetching from:', `${API_URL}/admin/dashboard`)
       
       // Fetch dashboard data from admin API endpoint
-      const dashboardResponse = await fetch(`${API_URL}/admin/dashboard`)
+      const dashboardResponse = await fetch(`${API_URL}/api/admin/dashboard`)
 
       console.log('Response received:', dashboardResponse.status)
 

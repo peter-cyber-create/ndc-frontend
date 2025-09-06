@@ -49,7 +49,7 @@ export default function AbstractsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/admin/abstracts`)
+      const response = await fetch(`${API_URL}/api/admin/abstracts`)
       
       if (response.ok) {
         const data = await response.json()
@@ -66,7 +66,7 @@ export default function AbstractsPage() {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      const response = await fetch(`${API_URL}/admin/abstracts/${id}/status`, {
+      const response = await fetch(`${API_URL}/api/admin/abstracts/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ export default function AbstractsPage() {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`${API_URL}/admin/abstracts/${id}`, {
+      const response = await fetch(`${API_URL}/api/admin/abstracts/${id}`, {
         method: 'DELETE',
       })
 
