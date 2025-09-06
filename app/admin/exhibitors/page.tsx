@@ -324,123 +324,107 @@ export default function ExhibitorsPage() {
           </div>
         </div>
 
-        {/* Results - Card Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredExhibitors.map((exhibitor) => (
-            <div key={exhibitor.id} className="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
-              <div className="p-6">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {exhibitor.company_name}
-                    </h3>
-                    <div className="flex items-center space-x-2 mb-2">
+        {/* Results - Table Layout */}
+        <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Company
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contact
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Package
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Submitted
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredExhibitors.map((exhibitor) => (
+                  <tr key={exhibitor.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{exhibitor.company_name}</div>
+                      <div className="text-sm text-gray-500">{exhibitor.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{exhibitor.contact_person}</div>
+                      <div className="text-sm text-gray-500">{exhibitor.phone}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPackageColor(exhibitor.selected_package)}`}>
+                        {exhibitor.selected_package}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(exhibitor.status)}`}>
                         {getStatusIcon(exhibitor.status)}
                         <span className="ml-1">{exhibitor.status}</span>
                       </span>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPackageColor(exhibitor.selected_package)}`}>
-                        {exhibitor.selected_package}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contact Info */}
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <User className="h-4 w-4 mr-2" />
-                    <span className="font-medium">{exhibitor.contact_person}</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Mail className="h-4 w-4 mr-2" />
-                    <span className="truncate">{exhibitor.email}</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Phone className="h-4 w-4 mr-2" />
-                    <span>{exhibitor.phone}</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    <span>{new Date(exhibitor.created_at).toLocaleDateString()}</span>
-                  </div>
-                </div>
-
-                {/* Package Info */}
-                <div className="mb-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Package:</span>
-                    <span className="text-sm font-medium text-gray-900 capitalize">{exhibitor.selected_package}</span>
-                  </div>
-                  {exhibitor.booth_preference && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Booth Preference:</span>
-                      <span className="text-sm font-medium text-gray-900">{exhibitor.booth_preference}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Additional Info */}
-                {exhibitor.additional_info && (
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-700 line-clamp-2">
-                      {exhibitor.additional_info}
-                    </p>
-                  </div>
-                )}
-
-                {/* Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => viewExhibitor(exhibitor)}
-                      className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="View Details"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </button>
-                    {exhibitor.status === 'submitted' && (
-                      <>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(exhibitor.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex items-center justify-end space-x-2">
                         <button
-                          onClick={() => handleStatusChange(exhibitor.id, 'approved')}
-                          className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors"
-                          title="Approve"
+                          onClick={() => viewExhibitor(exhibitor)}
+                          className="p-2 text-blue-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="View Details"
                         >
-                          <CheckCircle className="h-4 w-4" />
+                          <Eye className="h-4 w-4" />
                         </button>
+                        {exhibitor.status === 'pending' && (
+                          <>
+                            <button
+                              onClick={() => handleStatusChange(exhibitor.id, 'approved')}
+                              className="p-2 text-green-600 hover:text-green-900 hover:bg-green-50 rounded-lg transition-colors"
+                              title="Approve"
+                            >
+                              <CheckCircle className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => handleStatusChange(exhibitor.id, 'rejected')}
+                              className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Reject"
+                            >
+                              <XCircle className="h-4 w-4" />
+                            </button>
+                          </>
+                        )}
+                        {exhibitor.payment_proof_url && (
+                          <button
+                            onClick={() => handleDownloadPaymentProof(exhibitor.payment_proof_url, exhibitor)}
+                            className="p-2 text-purple-600 hover:text-purple-900 hover:bg-purple-50 rounded-lg transition-colors"
+                            title="Download Payment Proof"
+                          >
+                            <Download className="h-4 w-4" />
+                          </button>
+                        )}
                         <button
-                          onClick={() => handleStatusChange(exhibitor.id, 'rejected')}
+                          onClick={() => setDeleteConfirm(exhibitor.id)}
                           className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Reject"
+                          title="Delete"
                         >
-                          <XCircle className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
-                      </>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    {exhibitor.payment_proof_url && (
-                      <button
-                        onClick={() => handleDownloadPaymentProof(exhibitor.payment_proof_url, exhibitor)}
-                        className="p-2 text-purple-600 hover:text-purple-900 hover:bg-purple-50 rounded-lg transition-colors"
-                        title="Download Payment Proof"
-                      >
-                        <Download className="h-4 w-4" />
-                      </button>
-                    )}
-                    <button
-                      onClick={() => setDeleteConfirm(exhibitor.id)}
-                      className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Empty State */}

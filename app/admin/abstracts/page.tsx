@@ -19,6 +19,9 @@ interface Abstract {
   file_url?: string
   abstract_summary?: string
   created_at: string
+  author_phone?: string
+  corresponding_author?: string
+  corresponding_phone?: string
 }
 
 export default function AbstractsPage() {
@@ -315,8 +318,7 @@ export default function AbstractsPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">{abstract.primary_author}</div>
-                    <div className="text-sm text-gray-500">{abstract.corresponding_email}</div>
+                    <div className="text-sm text-gray-900">{abstract.corresponding_email}</div>
                     <div className="text-sm text-gray-500">{abstract.organization}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -421,13 +423,31 @@ export default function AbstractsPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700">Author</label>
-                <p className="text-sm text-gray-900 mt-1">{selectedAbstract.primary_author}</p>
+                <label className="block text-sm font-medium text-gray-700">Author Information</label>
+                <div className="mt-1 text-sm text-gray-900">
+                  {(() => {
+                    try {
+                      const authorData = JSON.parse(selectedAbstract.primary_author)
+                      return (
+                        <div className="space-y-1">
+                          <p><strong>Name:</strong> {authorData.firstName} {authorData.lastName}</p>
+                          <p><strong>Email:</strong> {authorData.email}</p>
+                          <p><strong>Phone:</strong> {authorData.phone}</p>
+                          <p><strong>Institution:</strong> {authorData.institution}</p>
+                          <p><strong>Position:</strong> {authorData.position}</p>
+                          <p><strong>District:</strong> {authorData.district}</p>
+                        </div>
+                      )
+                    } catch {
+                      return <p>{selectedAbstract.primary_author}</p>
+                    }
+                  })()}
+                </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <p className="text-sm text-gray-900 mt-1">{selectedAbstract.corresponding_email}</p>
+                <label className="block text-sm font-medium text-gray-700">Corresponding Author</label>
+                <p className="text-sm text-gray-900 mt-1">{selectedAbstract.corresponding_author || selectedAbstract.corresponding_email}</p>
               </div>
               
               <div>
@@ -451,9 +471,16 @@ export default function AbstractsPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700">Submitted</label>
+                <label className="block text-sm font-medium text-gray-700">Submission Date & Time</label>
                 <p className="text-sm text-gray-900 mt-1">
-                  Submitted: {new Date(selectedAbstract.submittedAt).toLocaleDateString()}
+                  {new Date(selectedAbstract.created_at).toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                  })}
                 </p>
               </div>
               
