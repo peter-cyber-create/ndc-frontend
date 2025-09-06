@@ -30,12 +30,19 @@ export default function ContactPage() {
     e.preventDefault()
     setIsSubmitting(true)
     
+    console.log('Form submitted with data:', formData)
+    
     try {
       const response = await fetch('/api/contacts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
-      }).catch(() => null)
+      }).catch((error) => {
+        console.error('Fetch error:', error)
+        return null
+      })
+      
+      console.log('Response received:', response)
       
       if (response && response.ok) {
         const result = await response.json()
