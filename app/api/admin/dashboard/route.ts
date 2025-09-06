@@ -18,6 +18,7 @@ export async function GET() {
     const [abstracts] = await connection.execute('SELECT * FROM abstracts')
     const [contacts] = await connection.execute('SELECT * FROM contacts')
     const [sponsorships] = await connection.execute('SELECT * FROM sponsorships')
+    const [exhibitors] = await connection.execute('SELECT * FROM exhibitors')
     
     await connection.end()
 
@@ -26,12 +27,14 @@ export async function GET() {
     const abstractsArray = abstracts as any[]
     const contactsArray = contacts as any[]
     const sponsorshipsArray = sponsorships as any[]
+    const exhibitorsArray = exhibitors as any[]
     
     const stats = {
       totalRegistrations: registrationsArray.length,
       totalAbstracts: abstractsArray.length,
       totalContacts: contactsArray.length,
       totalSponsorships: sponsorshipsArray.length,
+      totalExhibitors: exhibitorsArray.length,
       recentRegistrations: registrationsArray
         .filter((r: any) => r.status === 'pending')
         .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -78,6 +81,19 @@ export async function GET() {
           email: s.email,
           status: s.status,
           submittedAt: s.created_at
+        })),
+      recentExhibitors: exhibitorsArray
+        .filter((e: any) => e.status === 'pending')
+        .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 5)
+        .map((e: any) => ({
+          id: e.id,
+          companyName: e.company_name,
+          contactPerson: e.contact_person,
+          email: e.email,
+          package: e.selected_package,
+          status: e.status,
+          submittedAt: e.created_at
         }))
     }
 

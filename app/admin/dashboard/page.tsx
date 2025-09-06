@@ -36,6 +36,12 @@ interface DashboardData {
     pending: number
     newThisWeek: number
   }
+  exhibitors: {
+    total: number
+    approved: number
+    pending: number
+    newThisWeek: number
+  }
 }
 
 export default function DashboardPage() {
@@ -98,6 +104,12 @@ export default function DashboardPage() {
             approved: data.data.totalSponsorships || 0,
             pending: data.data.totalSponsorships || 0,
             newThisWeek: data.data.totalSponsorships || 0
+          },
+          exhibitors: {
+            total: data.data.totalExhibitors || 0,
+            approved: data.data.totalExhibitors || 0,
+            pending: data.data.totalExhibitors || 0,
+            newThisWeek: data.data.totalExhibitors || 0
           }
         }
 
@@ -161,7 +173,8 @@ export default function DashboardPage() {
   const totalRecords = dashboardData.registrations.total + 
                      dashboardData.abstracts.total + 
                      dashboardData.contacts.total + 
-                     dashboardData.sponsorships.total
+                     dashboardData.sponsorships.total +
+                     dashboardData.exhibitors.total
 
   return (
     <div className="p-6">
@@ -255,6 +268,25 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+
+        {/* Exhibitors */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Building className="h-6 w-6 text-green-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Total Exhibitors</p>
+              <p className="text-2xl font-bold text-gray-900">{dashboardData.exhibitors.total}</p>
+            </div>
+          </div>
+          <div className="mt-4 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-green-600">✓ {dashboardData.exhibitors.approved} Approved</span>
+              <span className="text-yellow-600">⏳ {dashboardData.exhibitors.pending} Pending</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Data Summary */}
@@ -276,6 +308,10 @@ export default function DashboardPage() {
           <div className="text-center">
             <p className="text-2xl font-bold text-primary-600">{dashboardData.sponsorships.total}</p>
             <p className="text-sm text-gray-600">Total Sponsorships</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-green-600">{dashboardData.exhibitors.total}</p>
+            <p className="text-sm text-gray-600">Total Exhibitors</p>
           </div>
         </div>
       </div>
