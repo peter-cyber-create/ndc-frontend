@@ -22,17 +22,18 @@ export async function POST(request: NextRequest) {
     const lastName = formData.get('lastName') as string
     const email = formData.get('email') as string
     const phone = formData.get('phone') as string
-    const organization = formData.get('organization') as string
+    const organization = formData.get('institution') as string // Changed from 'organization' to 'institution'
     const position = formData.get('position') as string
     const country = formData.get('country') as string
-    const registrationType = formData.get('registrationType') as string
+    const city = formData.get('city') as string
+    const registrationType = formData.get('selected_package') as string // Changed from 'registrationType' to 'selected_package'
     const specialRequirements = formData.get('specialRequirements') as string
     const paymentProof = formData.get('paymentProof') as File | null
 
     // Validate required fields
-    if (!firstName || !lastName || !email || !country || !registrationType) {
+    if (!firstName || !lastName || !email || !phone || !organization || !position || !country || !city || !registrationType || !paymentProof) {
       return NextResponse.json(
-        { error: 'All required fields must be filled' },
+        { error: 'All required fields must be filled and payment proof must be uploaded' },
         { status: 400 }
       )
     }
@@ -72,9 +73,9 @@ export async function POST(request: NextRequest) {
     // Insert registration
     const [result] = await connection.execute(
       `INSERT INTO registrations 
-       (first_name, last_name, email, phone, organization, position, country, registration_type, special_requirements, payment_proof_url, status, created_at) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NOW())`,
-      [firstName, lastName, email, phone, organization, position, country, registrationType, specialRequirements, paymentProofUrl]
+       (first_name, last_name, email, phone, organization, position, country, city, registration_type, special_requirements, payment_proof_url, status, created_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NOW())`,
+      [firstName, lastName, email, phone, organization, position, country, city, registrationType, specialRequirements, paymentProofUrl]
     )
     
     await connection.end()

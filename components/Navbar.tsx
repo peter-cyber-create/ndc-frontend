@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
@@ -89,86 +89,68 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-2">
-            {/* Main Navigation - Core Pages */}
-            <div className="flex items-center space-x-1">
-              {navigation.slice(0, 4).map((item) => (
+          <div className="hidden lg:flex items-center space-x-1">
+            {/* Main Navigation Links with separators */}
+            {navigation.map((item, index) => (
+              <div key={item.name} className="flex items-center">
                 <Link
-                  key={item.name}
                   href={item.href}
                   className={`px-3 py-2 rounded-lg font-medium transition-all duration-150 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${pathname === item.href ? 'bg-primary-600 text-white shadow-md scale-105 ring-2 ring-primary-400' : shouldUseBlackText ? 'text-gray-900' : 'text-primary-100'}`}
                 >
                   {item.name}
                 </Link>
-              ))}
-            </div>
+                {/* Add separator after each nav link except the last one */}
+                {index < navigation.length - 1 && (
+                  <div className="h-6 w-px bg-primary-300 mx-1" />
+                )}
+              </div>
+            ))}
             
-            {/* Separator */}
-            <div className="h-6 w-px bg-primary-300 mx-2" />
+            {/* Main Separator before Submit Abstract */}
+            <div className="h-6 w-px bg-primary-400 mx-3" />
             
-            {/* Conference Pages */}
-            <div className="flex items-center space-x-1">
-              {navigation.slice(4, 7).map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all duration-150 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${pathname === item.href ? 'bg-primary-600 text-white shadow-md scale-105 ring-2 ring-primary-400' : shouldUseBlackText ? 'text-gray-900' : 'text-primary-100'}`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-            
-            {/* Separator */}
-            <div className="h-6 w-px bg-primary-300 mx-2" />
-            
-            {/* Contact */}
-            <div className="flex items-center">
-              <Link
-                href="/contact"
-                className={`px-3 py-2 rounded-lg font-medium transition-all duration-150 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${pathname === '/contact' ? 'bg-primary-600 text-white shadow-md scale-105 ring-2 ring-primary-400' : shouldUseBlackText ? 'text-gray-900' : 'text-primary-100'}`}
-              >
-                Contact
-              </Link>
-            </div>
-            
-            {/* Separator */}
-            <div className="h-6 w-px bg-primary-300 mx-2" />
-            
-            {/* Form Links */}
-            <div className="flex items-center space-x-1">
+            {/* Form Links - styled differently */}
+            <div className="flex items-center space-x-2">
               <Link
                 href="/register"
-                className={`px-3 py-2 rounded-lg font-medium transition-all duration-150 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${pathname === '/register' ? 'bg-primary-600 text-white shadow-md scale-105 ring-2 ring-primary-400' : shouldUseBlackText ? 'text-gray-900' : 'text-primary-100'}`}
+                className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-400 shadow-md hover:shadow-lg ${
+                  pathname === '/register' 
+                    ? 'bg-primary-600 text-white ring-2 ring-primary-400' 
+                    : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border border-primary-300'
+                }`}
               >
                 Register
               </Link>
               <Link
                 href="/abstracts"
-                className={`px-3 py-2 rounded-lg font-medium transition-all duration-150 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${pathname === '/abstracts' ? 'bg-primary-600 text-white shadow-md scale-105 ring-2 ring-primary-400' : shouldUseBlackText ? 'text-gray-900' : 'text-primary-100'}`}
+                className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-400 shadow-md hover:shadow-lg ${
+                  pathname === '/abstracts' 
+                    ? 'bg-primary-600 text-white ring-2 ring-primary-400' 
+                    : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border border-primary-300'
+                }`}
               >
                 Submit Abstract
               </Link>
             </div>
             
-            {/* Separator */}
+            {/* Separator before action buttons */}
             <div className="h-6 w-px bg-primary-300 mx-2" />
             
-            {/* Action Buttons */}
+            {/* Action Buttons - styled differently */}
             <div className="flex items-center space-x-2">
               {actionItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-1 text-xs shadow-md hover:shadow-lg ${
+                  className={`relative inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg font-bold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-1 text-sm shadow-lg hover:shadow-xl ${
                     item.type === 'payment'
-                      ? 'bg-primary-600 hover:bg-primary-700 text-white border border-primary-600 hover:border-primary-700 focus:ring-primary-500'
+                      ? 'bg-primary-600 hover:bg-primary-700 text-white border-2 border-primary-600 hover:border-primary-700 focus:ring-primary-500'
                       : item.type === 'sponsor'
-                      ? 'bg-uganda-yellow hover:bg-yellow-500 text-uganda-black border border-uganda-yellow hover:border-yellow-500 focus:ring-yellow-400'
-                      : 'bg-primary-500 hover:bg-primary-600 text-white border border-primary-500 hover:border-primary-600 focus:ring-primary-400'
+                      ? 'bg-uganda-yellow hover:bg-yellow-500 text-uganda-black border-2 border-uganda-yellow hover:border-yellow-500 focus:ring-yellow-400'
+                      : 'bg-primary-500 hover:bg-primary-600 text-white border-2 border-primary-500 hover:border-primary-600 focus:ring-primary-400'
                   }`}
                 >
-                  <span className="text-sm">{item.icon}</span>
+                  <span className="text-base">{item.icon}</span>
                   <span className="relative z-10">{item.name}</span>
                 </Link>
               ))}

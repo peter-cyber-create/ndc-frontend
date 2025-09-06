@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import PaymentInformation from '@/components/PaymentInformation'
+import { useToast } from '@/hooks/useToast'
 
 interface FormData {
   firstName: string
@@ -76,6 +77,7 @@ const registrationTypes = [
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { success, error } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -128,11 +130,7 @@ export default function RegisterPage() {
     if (!formData.firstName || !formData.lastName || !formData.email || 
         !formData.phone || !formData.institution || !formData.position || 
         !formData.country || !formData.city || !formData.selected_package || !formData.paymentProof) {
-      setSubmitResult({
-        type: 'error',
-        title: 'Missing Information',
-        message: 'Please fill in all required fields and upload payment proof.'
-      })
+      error('Please fill in all required fields and upload payment proof.')
       setIsSubmitting(false)
       return
     }
@@ -158,11 +156,7 @@ export default function RegisterPage() {
       const result = await response.json()
 
       if (response.ok) {
-        setSubmitResult({
-          type: 'success',
-          title: 'Registration Successful!',
-          message: 'Thank you for your registration! We will review your payment and get back to you within 24-48 hours.'
-        })
+        success('Registration successful! We will review your payment and get back to you within 24-48 hours.')
         setFormData({
           firstName: '',
           lastName: '',
@@ -177,18 +171,10 @@ export default function RegisterPage() {
         })
       } else {
         const errorMessage = result.error || result.message || 'Registration failed. Please try again.'
-        setSubmitResult({
-          type: 'error',
-          title: 'Registration Failed',
-          message: errorMessage
-        })
+        error(errorMessage)
       }
-    } catch (error) {
-      setSubmitResult({
-        type: 'error',
-        title: 'Network Error',
-        message: 'Could not connect to the server. Please try again later.'
-      })
+    } catch (err) {
+      error('Could not connect to the server. Please try again later.')
     } finally {
       setIsSubmitting(false)
     }

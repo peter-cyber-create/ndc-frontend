@@ -121,7 +121,7 @@ export default function PartnersPage() {
           {partners.map((partner, index) => (
             <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
               <CardHeader className="text-center pb-4">
-                <div className="w-32 h-32 mx-auto mb-6 flex items-center justify-center bg-gray-50 rounded-xl p-6">
+                <div className="w-48 h-48 mx-auto mb-6 flex items-center justify-center bg-gray-50 rounded-xl p-8">
                   <img
                     src={partner.logo}
                     alt={`${partner.name} logo`}
