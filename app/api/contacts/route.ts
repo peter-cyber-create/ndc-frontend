@@ -13,11 +13,16 @@ export async function POST(request: NextRequest) {
   try {
     const { name, email, phone, organization, inquiry_type, subject, message } = await request.json()
     
+    // Handle undefined values by providing defaults or null
+    const safePhone = phone || null
+    const safeOrganization = organization || null
+    const safeInquiryType = inquiry_type || null
+    
     const connection = await mysql.createConnection(dbConfig)
     await connection.execute(`
       INSERT INTO contacts (name, email, phone, organization, inquiry_type, subject, message, status, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, 'new', NOW())
-    `, [name, email, phone, organization, inquiry_type, subject, message])
+    `, [name, email, safePhone, safeOrganization, safeInquiryType, subject, message])
     
     await connection.end()
     
