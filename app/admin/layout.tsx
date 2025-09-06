@@ -26,8 +26,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       return
     }
     
-    // Check authentication for other admin pages
+    // Check authentication for other admin pages (client-side only)
     const checkAuth = () => {
+      // Only run on client side
+      if (typeof window === 'undefined') {
+        setIsLoading(false)
+        return
+      }
+      
       const token = localStorage.getItem('admin_token')
       const session = localStorage.getItem('admin_session')
       
