@@ -73,7 +73,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
+        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white shadow-xl">
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               type="button"
@@ -84,7 +84,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </button>
           </div>
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-            <div className="flex-shrink-0 flex items-center px-4">
+            <div className="flex-shrink-0 flex items-center px-4 border-b border-gray-200 pb-4">
               <Shield className="h-8 w-8 text-primary-600" />
               <span className="ml-2 text-xl font-bold text-gray-900">Admin Panel</span>
             </div>
@@ -97,29 +97,38 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     href={item.href}
                     className={`${
                       isActive
-                        ? 'bg-primary-100 text-primary-900'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    } group flex items-center px-2 py-2 text-base font-medium rounded-md`}
+                        ? 'bg-primary-600 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700'
+                    } group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200`}
                   >
                     <item.icon
                       className={`${
-                        isActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
-                      } mr-4 h-6 w-6`}
+                        isActive ? 'text-white' : 'text-gray-500 group-hover:text-primary-600'
+                      } mr-3 h-5 w-5`}
                     />
                     {item.name}
                   </Link>
                 )
               })}
             </nav>
+            <div className="mt-6 px-2">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center px-3 py-3 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200"
+              >
+                <LogOut className="h-5 w-5 mr-3" />
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Desktop sidebar */}
       <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
-        <div className="flex-1 flex flex-col min-h-0 bg-white border-r border-gray-200">
+        <div className="flex-1 flex flex-col min-h-0 bg-white border-r border-gray-200 shadow-lg">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-            <div className="flex items-center flex-shrink-0 px-4">
+            <div className="flex items-center flex-shrink-0 px-4 border-b border-gray-200 pb-4">
               <Shield className="h-8 w-8 text-primary-600" />
               <span className="ml-2 text-xl font-bold text-gray-900">Admin Panel</span>
             </div>
@@ -132,14 +141,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     href={item.href}
                     className={`${
                       isActive
-                        ? 'bg-primary-100 text-primary-900'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    } group flex items-center px-2 py-2 text-sm font-medium rounded-md`}
+                        ? 'bg-primary-600 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-primary-50 hover:text-primary-700'
+                    } group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200`}
                   >
                     <item.icon
                       className={`${
-                        isActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
-                      } mr-3 h-6 w-6`}
+                        isActive ? 'text-white' : 'text-gray-500 group-hover:text-primary-600'
+                      } mr-3 h-5 w-5`}
                     />
                     {item.name}
                   </Link>
@@ -150,18 +159,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
             <button
               onClick={handleLogout}
-              className="flex-shrink-0 w-full group block"
+              className="w-full flex items-center px-3 py-3 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200"
             >
-              <div className="flex items-center">
-                <div>
-                  <LogOut className="inline-block h-6 w-6 text-gray-400 group-hover:text-gray-500" />
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                    Sign out
-                  </p>
-                </div>
-              </div>
+              <LogOut className="h-5 w-5 mr-3" />
+              Sign Out
             </button>
           </div>
         </div>

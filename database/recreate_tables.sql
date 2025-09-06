@@ -115,3 +115,4 @@ INSERT INTO sponsorships (company_name, contact_person, email, phone, selected_p
 ('Tech Solutions Ltd', 'Mary Davis', 'mary.davis@techsolutions.com', '+256700000006', 'gold', 'pending'),
 ('Health Innovations Inc', 'Tom Anderson', 'tom.anderson@healthinnov.com', '+256700000007', 'platinum', 'approved');
 
+

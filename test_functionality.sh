@@ -110,3 +110,4 @@ echo "  ./deploy.sh"
 echo ""
 echo "Application will be available at: http://localhost:3000"
 
+

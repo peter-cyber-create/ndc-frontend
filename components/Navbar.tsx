@@ -28,9 +28,14 @@ export function Navbar() {
     { name: 'Contact', href: '/contact' },
   ]
 
-  const actionItems = [
+  const formLinks = [
+    { name: 'Submit Abstract', href: '/abstracts', type: 'abstract', icon: '📝' },
     { name: 'Become a Sponsor', href: '/sponsors', type: 'sponsor', icon: '🤝' },
     { name: 'Register Now', href: '/register', type: 'payment', icon: '🎫' },
+  ]
+
+  const actionItems = [
+    { name: 'Become a Sponsor', href: '/sponsors', type: 'sponsor', icon: '🤝' },
   ]
 
   // Handle scroll for floating navbar
@@ -90,68 +95,49 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-2">
-            {/* Main Navigation Links with separators */}
+            {/* Main Navigation Links with special separator after About */}
             {navigation.map((item, index) => (
               <React.Fragment key={item.name}>
                 <Link
                   href={item.href}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all duration-150 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${pathname === item.href ? 'bg-primary-600 text-white shadow-md scale-105 ring-2 ring-primary-400' : shouldUseBlackText ? 'text-gray-900' : 'text-primary-100'}`}
+                  className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${
+                    pathname === item.href 
+                      ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg scale-105 ring-2 ring-primary-400 font-semibold' 
+                      : shouldUseBlackText 
+                        ? 'text-gray-900 hover:shadow-md' 
+                        : 'text-primary-100'
+                  }`}
                 >
                   {item.name}
                 </Link>
-                {/* Add separator after each nav link except the last one */}
-                {index < navigation.length - 1 && (
+                {/* Special separator after About */}
+                {item.name === 'About' && (
+                  <div className="h-6 w-px bg-gradient-to-b from-primary-300 to-primary-500 mx-2" />
+                )}
+                {/* Regular separators for other nav links except the last one */}
+                {item.name !== 'About' && index < navigation.length - 1 && (
                   <div className="h-6 w-px bg-primary-300 mx-1" />
                 )}
               </React.Fragment>
             ))}
             
-            {/* Main Separator before Submit Abstract */}
-            <div className="h-6 w-px bg-primary-400 mx-3" />
+            {/* Main Separator before Form Links */}
+            <div className="h-6 w-px bg-gradient-to-b from-primary-400 to-primary-600 mx-3" />
             
-            {/* Form Links - styled differently */}
+            {/* Form Links - consistent government styling */}
             <div className="flex items-center space-x-2">
-              <Link
-                href="/register"
-                className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-400 shadow-md hover:shadow-lg ${
-                  pathname === '/register' 
-                    ? 'bg-primary-600 text-white ring-2 ring-primary-400' 
-                    : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border border-primary-300'
-                }`}
-              >
-                Register
-              </Link>
-              <Link
-                href="/abstracts"
-                className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-400 shadow-md hover:shadow-lg ${
-                  pathname === '/abstracts' 
-                    ? 'bg-primary-600 text-white ring-2 ring-primary-400' 
-                    : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border border-primary-300'
-                }`}
-              >
-                Submit Abstract
-              </Link>
-            </div>
-            
-            {/* Separator before action buttons */}
-            <div className="h-6 w-px bg-primary-300 mx-2" />
-            
-            {/* Action Buttons - styled differently */}
-            <div className="flex items-center space-x-2">
-              {actionItems.map((item) => (
+              {formLinks.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg font-bold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-1 text-sm shadow-lg hover:shadow-xl ${
-                    item.type === 'payment'
-                      ? 'bg-primary-600 hover:bg-primary-700 text-white border-2 border-primary-600 hover:border-primary-700 focus:ring-primary-500'
-                      : item.type === 'sponsor'
-                      ? 'bg-uganda-yellow hover:bg-yellow-500 text-uganda-black border-2 border-uganda-yellow hover:border-yellow-500 focus:ring-yellow-400'
-                      : 'bg-primary-500 hover:bg-primary-600 text-white border-2 border-primary-500 hover:border-primary-600 focus:ring-primary-400'
+                  className={`relative inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm shadow-md hover:shadow-lg min-w-[140px] text-center ${
+                    pathname === item.href 
+                      ? 'bg-primary-600 text-white ring-2 ring-primary-400 shadow-lg' 
+                      : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border border-primary-300 hover:border-primary-400 focus:ring-primary-400'
                   }`}
                 >
-                  <span className="text-base">{item.icon}</span>
-                  <span className="relative z-10">{item.name}</span>
+                  <span className="text-lg">{item.icon}</span>
+                  <span className="relative z-10 text-sm font-medium">{item.name}</span>
                 </Link>
               ))}
             </div>
@@ -203,27 +189,25 @@ export function Navbar() {
                   ))}
                 </div>
 
-                {/* Action Buttons */}
+                {/* Form Links */}
                 <div className="space-y-2 pt-3 border-t border-primary-200">
                   <div className="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-2 px-3">
                     Quick Actions
                   </div>
-                  {actionItems.map((item) => (
+                  {formLinks.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}
-                      className={`relative block px-3 py-2.5 rounded-lg font-semibold text-center transition-all duration-300 text-sm shadow-md border ${
-                        item.type === 'payment'
-                          ? 'bg-primary-600 hover:bg-primary-700 text-white border-primary-600 hover:border-primary-700'
-                          : item.type === 'sponsor'
-                          ? 'bg-uganda-yellow hover:bg-yellow-500 text-uganda-black border-uganda-yellow hover:border-yellow-500'
-                          : 'bg-primary-500 hover:bg-primary-600 text-white border-primary-500 hover:border-primary-600'
+                      className={`relative block px-4 py-3 rounded-lg font-semibold text-center transition-all duration-300 text-sm shadow-md border ${
+                        pathname === item.href
+                          ? 'bg-primary-600 text-white border-primary-600 shadow-lg'
+                          : 'bg-primary-100 text-primary-800 hover:bg-primary-200 border-primary-300 hover:border-primary-400'
                       }`}
                       onClick={() => setIsOpen(false)}
                     >
                       <div className="flex items-center justify-center gap-2">
-                        <span>{item.icon}</span>
-                        <span className="relative z-10">{item.name}</span>
+                        <span className="text-lg">{item.icon}</span>
+                        <span className="relative z-10 text-sm font-medium">{item.name}</span>
                       </div>
                     </Link>
                   ))}
