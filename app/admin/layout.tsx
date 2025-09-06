@@ -15,12 +15,12 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(pathname !== '/admin/login')
+  const [isLoading, setIsLoading] = useState(pathname !== '/admin')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
-    // Skip authentication check for login page
-    if (pathname === '/admin/login') {
+    // Skip authentication check for main admin page (login)
+    if (pathname === '/admin') {
       setIsAuthenticated(false)
       setIsLoading(false)
       return
@@ -65,7 +65,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const handleLogout = () => {
     localStorage.removeItem('admin_token')
     localStorage.removeItem('admin_session')
-    window.location.href = '/admin/login'
+    window.location.href = '/admin'
   }
 
   if (isLoading) {
@@ -79,8 +79,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     )
   }
 
-  // Show login page content if on login route
-  if (pathname === '/admin/login') {
+  // Show login page content if on main admin route
+  if (pathname === '/admin') {
     return (
       <div className="min-h-screen bg-gray-50">
         {children}
@@ -95,7 +95,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="text-red-600 text-xl mb-4">⚠️ Access Denied</div>
           <p className="text-gray-600 mb-4">You need to log in to access the admin panel.</p>
           <Link
-            href="/admin/login"
+            href="/admin"
             className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
           >
             Go to Login
