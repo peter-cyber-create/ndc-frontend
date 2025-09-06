@@ -12,7 +12,7 @@ import {
 
 interface Payment {
   id: number
-  type: 'registration' | 'sponsorship'
+  type: 'registration' | 'sponsorship' | 'exhibition'
   name: string
   email: string
   organization: string
@@ -57,6 +57,10 @@ export default function PaymentsPage() {
       const sponsorshipsResponse = await fetch('/api/admin/sponsorships')
       const sponsorshipsData = await sponsorshipsResponse.json()
       
+      // Fetch exhibitors
+      const exhibitorsResponse = await fetch('/api/admin/exhibitors')
+      const exhibitorsData = await exhibitorsResponse.json()
+      
       // Transform registrations to payment format
       const registrationPayments: Payment[] = registrationsData.data?.map((reg: any) => ({
         id: reg.id,
@@ -87,7 +91,23 @@ export default function PaymentsPage() {
         reviewedBy: sponsor.reviewed_by
       })) || []
       
-      const allPayments = [...registrationPayments, ...sponsorshipPayments]
+      // Transform exhibitors to payment format
+      const exhibitionPayments: Payment[] = exhibitorsData.data?.map((exhibitor: any) => ({
+        id: exhibitor.id,
+        type: 'exhibition' as const,
+        name: exhibitor.contact_person,
+        email: exhibitor.email,
+        organization: exhibitor.company_name,
+        amount: getExhibitionAmount(exhibitor.selected_package),
+        package: exhibitor.selected_package,
+        status: exhibitor.status,
+        paymentProofUrl: exhibitor.payment_proof_url,
+        submittedAt: exhibitor.created_at,
+        reviewedAt: exhibitor.updated_at,
+        reviewedBy: exhibitor.reviewed_by
+      })) || []
+      
+      const allPayments = [...registrationPayments, ...sponsorshipPayments, ...exhibitionPayments]
       setPayments(allPayments)
       
       // Calculate statistics
@@ -138,11 +158,24 @@ export default function PaymentsPage() {
     return amounts[packageType] || 0
   }
 
-  const updatePaymentStatus = async (id: number, type: 'registration' | 'sponsorship', status: 'approved' | 'rejected') => {
+  const getExhibitionAmount = (packageType: string): number => {
+    const amounts: { [key: string]: number } = {
+      'platinum': 5000,
+      'gold': 3000,
+      'silver': 2000,
+      'bronze': 1000,
+      'non-profit': 500
+    }
+    return amounts[packageType] || 0
+  }
+
+  const updatePaymentStatus = async (id: number, type: 'registration' | 'sponsorship' | 'exhibition', status: 'approved' | 'rejected') => {
     try {
       const endpoint = type === 'registration' 
         ? `/api/admin/registrations/${id}/status`
-        : `/api/admin/sponsorships/${id}/status`
+        : type === 'sponsorship'
+        ? `/api/admin/sponsorships/${id}/status`
+        : `/api/admin/exhibitors/${id}/status`
       
       const response = await fetch(endpoint, {
         method: 'PATCH',
@@ -419,6 +452,7 @@ export default function PaymentsPage() {
                 <option value="all">All Types</option>
                 <option value="registration">Registration</option>
                 <option value="sponsorship">Sponsorship</option>
+                <option value="exhibition">Exhibition</option>
               </select>
             </div>
             
@@ -555,17 +589,24 @@ export default function PaymentsPage() {
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         payment.type === 'registration' 
                           ? 'bg-blue-100 text-blue-800' 
-                          : 'bg-purple-100 text-purple-800'
+                          : payment.type === 'sponsorship'
+                          ? 'bg-purple-100 text-purple-800'
+                          : 'bg-green-100 text-green-800'
                       }`}>
                         {payment.type === 'registration' ? (
                           <>
                             <FileText className="h-3 w-3 mr-1" />
                             Registration
                           </>
-                        ) : (
+                        ) : payment.type === 'sponsorship' ? (
                           <>
                             <Building className="h-3 w-3 mr-1" />
                             Sponsorship
+                          </>
+                        ) : (
+                          <>
+                            <Building className="h-3 w-3 mr-1" />
+                            Exhibition
                           </>
                         )}
                       </span>
