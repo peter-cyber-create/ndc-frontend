@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useToast } from '@/hooks/useToast'
 
 interface FormData {
   title: string
@@ -129,6 +130,7 @@ const conferenceTracks = [
 
 export default function AbstractsPage() {
   const router = useRouter()
+  const { success, error: showError } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState<FormData>({
     title: '',
@@ -156,11 +158,6 @@ export default function AbstractsPage() {
     consent_to_publish: false
   })
 
-  const [submitResult, setSubmitResult] = useState<{
-    type: 'success' | 'error' | null;
-    title: string;
-    message: string;
-  }>({ type: null, title: '', message: '' })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -195,7 +192,6 @@ export default function AbstractsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    setSubmitResult({ type: null, title: '', message: '' })
 
     // Validate required fields
     if (!formData.title || !formData.presentation_type || !formData.conference_track || 
@@ -204,11 +200,7 @@ export default function AbstractsPage() {
         !formData.district || !formData.abstract_summary || !formData.keywords ||
         !formData.background || !formData.methods || !formData.findings || 
         !formData.conclusion || !formData.consent_to_publish || !formData.abstract_file) {
-      setSubmitResult({
-        type: 'error',
-        title: 'Missing Information',
-        message: 'Please fill in all required fields marked with * and upload your abstract file.'
-      })
+      showError('Please fill in all required fields marked with * and upload your abstract file.')
       setIsSubmitting(false)
       return
     }
@@ -250,11 +242,7 @@ export default function AbstractsPage() {
       const result = await response.json()
 
       if (response.ok) {
-        setSubmitResult({
-          type: 'success',
-          title: 'Abstract Submitted Successfully!',
-          message: 'Thank you for your abstract submission! We will review it and get back to you by September 25, 2025.'
-        })
+        success('Abstract submitted successfully! We will review it and get back to you by September 25, 2025.')
         setFormData({
           title: '',
           presentation_type: '',
@@ -282,18 +270,10 @@ export default function AbstractsPage() {
         })
       } else {
         const errorMessage = result.error || result.message || 'Abstract submission failed. Please try again.'
-        setSubmitResult({
-          type: 'error',
-          title: 'Submission Failed',
-          message: errorMessage
-        })
+        showError(errorMessage)
       }
     } catch (error) {
-      setSubmitResult({
-        type: 'error',
-        title: 'Network Error',
-        message: 'Could not connect to the server. Please try again later.'
-      })
+      showError('Could not connect to the server. Please try again later.')
     } finally {
       setIsSubmitting(false)
     }
@@ -398,25 +378,6 @@ export default function AbstractsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-8">
-            {submitResult.type && (
-              <div className={`mb-6 p-4 rounded-lg border-2 ${
-                submitResult.type === 'success' 
-                  ? 'bg-green-50 border-green-200 text-green-800' 
-                  : 'bg-red-50 border-red-200 text-red-800'
-              }`}>
-                <div className="flex items-center">
-                  {submitResult.type === 'success' ? (
-                    <CheckCircle className="h-5 w-5 mr-3" />
-                  ) : (
-                    <AlertCircle className="h-5 w-5 mr-3" />
-                  )}
-                  <div>
-                    <h3 className="font-semibold">{submitResult.title}</h3>
-                    <p className="text-sm">{submitResult.message}</p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Abstract Details Section */}

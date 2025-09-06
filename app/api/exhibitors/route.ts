@@ -5,10 +5,10 @@ import { writeFile, mkdir } from 'fs/promises'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'ndc_conference',
-  port: parseInt(process.env.DB_PORT || '3306'),
+  user: process.env.DB_USER || 'user',
+  password: process.env.DB_PASSWORD || 'toor',
+  database: process.env.DB_NAME || 'conf',
+  port: 3306,
 }
 
 export async function POST(request: NextRequest) {
