@@ -54,22 +54,19 @@ export default function ContactPage() {
           })
         }
       } else {
-        // When API is unavailable, show success anyway for better UX
         setSubmitResult({
-          type: 'success',
-          title: 'Message Received!',
-          message: 'Your message has been received and saved locally. We will get back to you as soon as possible. Thank you for contacting us!'
+          type: 'error',
+          title: 'Submission Failed',
+          message: 'Failed to submit your message. Please check your connection and try again.'
         })
-        setFormData({ name: '', email: '', organization: '', subject: '', message: '', inquiry_type: '' })
       }
     } catch (error) {
       console.error('Error submitting contact form:', error)
       setSubmitResult({
-        type: 'success', // Show success for better UX when offline
-        title: 'Message Saved!',
-        message: 'Your message has been saved locally. We will process it as soon as our systems are back online. Thank you for your patience!'
+        type: 'error',
+        title: 'Submission Failed',
+        message: 'An error occurred while submitting your message. Please try again.'
       })
-      setFormData({ name: '', email: '', organization: '', subject: '', message: '', inquiry_type: '' })
     } finally {
       setIsSubmitting(false)
     }
