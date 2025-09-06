@@ -26,11 +26,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       return
     }
     
-    // Check authentication for other admin pages (client-side only)
+    // Check authentication for other admin pages
     const checkAuth = () => {
       // Only run on client side
       if (typeof window === 'undefined') {
         setIsLoading(false)
+        setIsAuthenticated(false)
         return
       }
       
@@ -65,10 +66,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       setIsLoading(false)
     }
     
-    // Add a small delay to ensure client-side rendering is complete
-    const timeoutId = setTimeout(checkAuth, 100)
-    
-    return () => clearTimeout(timeoutId)
+    // Run authentication check immediately
+    checkAuth()
   }, [pathname])
 
   const handleLogout = () => {
