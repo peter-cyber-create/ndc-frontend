@@ -13,7 +13,7 @@ interface Registration {
   lastName: string
   email: string
   phone: string
-  organization: string
+  institution: string
   position: string
   registrationType: string
   status: string
@@ -65,7 +65,7 @@ export default function RegistrationsPage() {
       registration.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       registration.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       registration.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      registration.organization?.toLowerCase().includes(searchTerm.toLowerCase())
+      registration.institution?.toLowerCase().includes(searchTerm.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || registration.status === statusFilter
     const matchesType = typeFilter === 'all' || registration.registrationType === typeFilter
@@ -121,7 +121,8 @@ export default function RegistrationsPage() {
       // Create a temporary link and trigger download
       const link = document.createElement("a");
       link.href = blobUrl;
-      // The filename is now set by the API response headers
+      link.download = `${paymentType}_${personName}.pdf`;
+      link.style.display = 'none';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -244,7 +245,7 @@ export default function RegistrationsPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder="Search by name, email, or organization..."
+                placeholder="Search by name, email, or institution..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -334,7 +335,7 @@ export default function RegistrationsPage() {
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">{registration.email}</div>
                     <div className="text-sm text-gray-500">{registration.phone}</div>
-                    <div className="text-sm text-gray-500">{registration.organization}</div>
+                    <div className="text-sm text-gray-500">{registration.institution}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -478,8 +479,8 @@ export default function RegistrationsPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Organization</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedRegistration.organization}</p>
+                  <label className="block text-sm font-medium text-gray-700">Institution</label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedRegistration.institution}</p>
                 </div>
                 
                 <div>

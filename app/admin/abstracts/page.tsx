@@ -48,7 +48,7 @@ export default function AbstractsPage() {
       
       if (response.ok) {
         const data = await response.json()
-        setAbstracts(data.abstracts || [])
+        setAbstracts(data.data || [])
       } else {
         setError('Failed to load abstracts')
       }

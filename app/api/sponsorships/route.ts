@@ -15,8 +15,8 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
     
-    const company_name = formData.get('company_name') as string
-    const contact_person = formData.get('contact_person') as string
+    const company_name = formData.get('organizationName') as string
+    const contact_person = formData.get('contactPerson') as string
     const email = formData.get('email') as string
     const phone = formData.get('phone') as string
     const selected_package = formData.get('selected_package') as string

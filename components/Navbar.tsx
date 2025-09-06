@@ -129,7 +129,7 @@ export function Navbar() {
             <div className="h-6 w-px bg-gradient-to-b from-primary-400 to-primary-600 mx-3" />
             
             {/* Form Links - compact styling */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 pr-2">
               {formLinks.map((item) => (
                 <Link
                   key={item.name}
