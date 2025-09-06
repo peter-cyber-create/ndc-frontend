@@ -30,19 +30,23 @@ export default function ContactPage() {
     e.preventDefault()
     setIsSubmitting(true)
     
-    console.log('Form submitted with data:', formData)
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.message) {
+      setSubmitResult({
+        type: 'error',
+        title: 'Missing Information',
+        message: 'Please fill in all required fields (Name, Email, and Message).'
+      })
+      setIsSubmitting(false)
+      return
+    }
     
     try {
       const response = await fetch('/api/contacts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
-      }).catch((error) => {
-        console.error('Fetch error:', error)
-        return null
       })
-      
-      console.log('Response received:', response)
       
       if (response && response.ok) {
         const result = await response.json()
@@ -96,10 +100,10 @@ export default function ContactPage() {
             <div className="flex items-center gap-3 text-primary-800"><Clock className="w-6 h-6" /> <span className="font-semibold">Mon-Fri: 8am - 5pm</span></div>
           </div>
           {/* Contact Form */}
-          <form className="flex-1 flex flex-col gap-5 bg-white border border-primary-200 rounded-2xl p-6 shadow-md" onSubmit={handleSubmit}>
+          <form className="flex-1 flex flex-col gap-5 bg-white border border-primary-200 rounded-2xl p-6 shadow-md" onSubmit={handleSubmit} noValidate>
             <div className="flex flex-col gap-2">
               <label htmlFor="inquiry_type" className="font-semibold text-primary-800">Inquiry Type</label>
-              <select id="inquiry_type" name="inquiry_type" value={formData.inquiry_type || ''} onChange={handleChange} required className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-800 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400">
+              <select id="inquiry_type" name="inquiry_type" value={formData.inquiry_type || ''} onChange={handleChange} className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-800 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400">
                 <option value="">Select an option</option>
                 <option value="general">General Inquiry</option>
                 <option value="partnership">Partnership</option>
@@ -109,11 +113,11 @@ export default function ContactPage() {
             </div>
             <div className="flex flex-col gap-2">
             <label htmlFor="name" className="font-semibold text-primary-900">Name</label>
-            <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400" />
+            <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400" />
             </div>
             <div className="flex flex-col gap-2">
             <label htmlFor="email" className="font-semibold text-primary-900">Email</label>
-            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400" />
+            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400" />
             </div>
             <div className="flex flex-col gap-2">
             <label htmlFor="organization" className="font-semibold text-primary-900">Organization</label>
@@ -125,7 +129,7 @@ export default function ContactPage() {
             </div>
             <div className="flex flex-col gap-2">
             <label htmlFor="message" className="font-semibold text-primary-900">Message</label>
-            <textarea id="message" name="message" value={formData.message} onChange={handleChange} required rows={4} className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400" />
+            <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows={4} className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400" />
             </div>
             <button type="submit" disabled={isSubmitting} className="mt-2 bg-gradient-to-r from-primary-500 to-primary-700 text-white px-8 py-3 rounded-xl font-bold text-base shadow-lg hover:from-primary-600 hover:to-primary-800 transform hover:scale-105 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:scale-105 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2 justify-center">
               <Send className="w-5 h-5" /> {isSubmitting ? 'Sending...' : 'Send Message'}
