@@ -2,6 +2,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import React from 'react'
 import type { ReactNode } from 'react'
+import ToastContainer from '@/components/ToastContainer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body className={inter.className}>
         {children}
+        <ToastContainer />
       </body>
     </html>
   )

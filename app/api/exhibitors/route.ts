@@ -15,18 +15,16 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
     
-    const organization_name = formData.get('organization_name') as string
-    const contact_person = formData.get('contact_person') as string
+    const organization_name = formData.get('organizationName') as string
+    const contact_person = formData.get('contactPerson') as string
     const email = formData.get('email') as string
     const phone = formData.get('phone') as string
     const website = formData.get('website') as string
-    const organization_type = formData.get('organization_type') as string
-    const description = formData.get('description') as string
-    const products_services = formData.get('products_services') as string
-    const target_audience = formData.get('target_audience') as string
-    const previous_exhibitions = formData.get('previous_exhibitions') as string
-    const collaboration_interest = formData.get('collaboration_interest') as string
+    const address = formData.get('address') as string
+    const city = formData.get('city') as string
+    const country = formData.get('country') as string
     const selected_package = formData.get('selected_package') as string
+    const additionalInfo = formData.get('additionalInfo') as string
     const paymentProof = formData.get('paymentProof') as File
 
     // Validate required fields
@@ -74,16 +72,12 @@ export async function POST(request: NextRequest) {
     
     const [result] = await connection.execute(
       `INSERT INTO exhibitors (
-        organization_name, contact_person, email, phone, website, 
-        organization_type, description, products_services, target_audience,
-        previous_exhibitions, collaboration_interest, selected_package, 
-        amount, payment_proof_url, status, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NOW())`,
+        company_name, contact_person, email, phone, selected_package, 
+        payment_proof_url, status, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, 'pending', NOW())`,
       [
-        organization_name, contact_person, email, phone, website,
-        organization_type, description, products_services, target_audience,
-        previous_exhibitions, collaboration_interest, selected_package,
-        amount, payment_proof_url
+        organization_name, contact_person, email, phone, selected_package,
+        payment_proof_url
       ]
     )
 
