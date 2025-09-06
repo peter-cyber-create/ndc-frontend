@@ -89,10 +89,10 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-2">
             {/* Main Navigation Links with separators */}
             {navigation.map((item, index) => (
-              <div key={item.name} className="flex items-center">
+              <React.Fragment key={item.name}>
                 <Link
                   href={item.href}
                   className={`px-3 py-2 rounded-lg font-medium transition-all duration-150 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${pathname === item.href ? 'bg-primary-600 text-white shadow-md scale-105 ring-2 ring-primary-400' : shouldUseBlackText ? 'text-gray-900' : 'text-primary-100'}`}
@@ -103,7 +103,7 @@ export function Navbar() {
                 {index < navigation.length - 1 && (
                   <div className="h-6 w-px bg-primary-300 mx-1" />
                 )}
-              </div>
+              </React.Fragment>
             ))}
             
             {/* Main Separator before Submit Abstract */}
