@@ -13,10 +13,10 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(pathname !== '/admin/login')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     // Skip authentication check for login page
@@ -81,7 +81,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   // Show login page content if on login route
   if (pathname === '/admin/login') {
-    return <>{children}</>
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {children}
+      </div>
+    )
   }
 
   if (!isAuthenticated) {
