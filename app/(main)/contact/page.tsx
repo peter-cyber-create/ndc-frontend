@@ -10,7 +10,7 @@ export default function ContactPage() {
     organization: '',
     subject: '',
     message: '',
-    inquiryType: ''
+    inquiry_type: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitResult, setSubmitResult] = useState<{
@@ -45,7 +45,7 @@ export default function ContactPage() {
             title: 'Message Sent Successfully!',
             message: 'Thank you for contacting us! We have received your message and will get back to you within 24 hours. Please check your email for a confirmation.'
           })
-          setFormData({ name: '', email: '', organization: '', subject: '', message: '', inquiryType: '' })
+          setFormData({ name: '', email: '', organization: '', subject: '', message: '', inquiry_type: '' })
         } else {
           setSubmitResult({
             type: 'error',
@@ -60,7 +60,7 @@ export default function ContactPage() {
           title: 'Message Received!',
           message: 'Your message has been received and saved locally. We will get back to you as soon as possible. Thank you for contacting us!'
         })
-        setFormData({ name: '', email: '', organization: '', subject: '', message: '', inquiryType: '' })
+        setFormData({ name: '', email: '', organization: '', subject: '', message: '', inquiry_type: '' })
       }
     } catch (error) {
       console.error('Error submitting contact form:', error)
@@ -69,7 +69,7 @@ export default function ContactPage() {
         title: 'Message Saved!',
         message: 'Your message has been saved locally. We will process it as soon as our systems are back online. Thank you for your patience!'
       })
-      setFormData({ name: '', email: '', organization: '', subject: '', message: '', inquiryType: '' })
+      setFormData({ name: '', email: '', organization: '', subject: '', message: '', inquiry_type: '' })
     } finally {
       setIsSubmitting(false)
     }
@@ -86,7 +86,7 @@ export default function ContactPage() {
         <div className="flex flex-col md:flex-row gap-10">
           {/* Contact Info */}
           <div className="flex-1 flex flex-col gap-6 justify-center items-center bg-primary-50 border border-primary-200 rounded-2xl p-6 shadow-md">
-            <div className="flex items-center gap-3 text-primary-800"><Mail className="w-6 h-6" /> <span className="font-semibold">moh.conference@health.go.ug</span></div>
+            {/* Contact email removed for payment instructions privacy */}
             <div className="flex items-center gap-3 text-primary-800"><Phone className="w-6 h-6" /> <span className="font-semibold">0800 100 066</span></div>
             <div className="flex items-center gap-3 text-primary-800"><MapPin className="w-6 h-6" /> <span className="font-semibold">Speke Resort Munyonyo, Uganda</span></div>
             <div className="flex items-center gap-3 text-primary-800"><Clock className="w-6 h-6" /> <span className="font-semibold">Mon-Fri: 8am - 5pm</span></div>
@@ -94,8 +94,8 @@ export default function ContactPage() {
           {/* Contact Form */}
           <form className="flex-1 flex flex-col gap-5 bg-white border border-primary-200 rounded-2xl p-6 shadow-md" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
-              <label htmlFor="inquiryType" className="font-semibold text-primary-800">Inquiry Type</label>
-              <select id="inquiryType" name="inquiryType" value={formData.inquiryType || ''} onChange={handleChange} required className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-800 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400">
+              <label htmlFor="inquiry_type" className="font-semibold text-primary-800">Inquiry Type</label>
+              <select id="inquiry_type" name="inquiry_type" value={formData.inquiry_type || ''} onChange={handleChange} required className="rounded-lg px-4 py-2 bg-white border border-gray-300 text-primary-800 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all duration-150 hover:border-primary-400">
                 <option value="">Select an option</option>
                 <option value="general">General Inquiry</option>
                 <option value="partnership">Partnership</option>

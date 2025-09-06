@@ -145,7 +145,7 @@ export default function RegisterPage() {
       formDataToSend.append('position', formData.position)
       formDataToSend.append('country', formData.country)
       formDataToSend.append('city', formData.city)
-      formDataToSend.append('selected_package', formData.selected_package)
+      formDataToSend.append('registrationType', formData.selected_package)
       formDataToSend.append('paymentProof', formData.paymentProof)
 
       const response = await fetch('/api/registrations', {
