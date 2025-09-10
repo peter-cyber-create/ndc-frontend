@@ -16,7 +16,6 @@ export async function GET() {
     // Get all data
     const [registrations] = await connection.execute('SELECT * FROM registrations')
     const [abstracts] = await connection.execute('SELECT * FROM abstracts')
-    console.log("DEBUG: Total abstracts from DB:", (abstracts as any[]).length);
     const [contacts] = await connection.execute('SELECT * FROM contacts')
     const [sponsorships] = await connection.execute('SELECT * FROM sponsorships')
     const [exhibitors] = await connection.execute('SELECT * FROM exhibitors')

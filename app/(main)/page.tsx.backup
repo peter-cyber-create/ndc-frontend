@@ -72,7 +72,7 @@ export default function HomePage() {
       </div>
 
       {/* Official Call for Abstracts section with CRUD-inspired card UI */}
-      <section className="relative w-full bg-primary-950 py-16 px-2 sm:px-0 text-white" style={{display: "none"}}>
+      <section className="relative w-full bg-primary-950 py-16 px-2 sm:px-0 text-white">
         {/* Section divider */}
         <div className="flex justify-center mb-10">
           <div className="h-1 w-32 bg-gradient-to-r from-primary-500 via-primary-400 to-primary-700 rounded-full opacity-80" />
@@ -116,7 +116,7 @@ export default function HomePage() {
       </section>
 
       {/* Conference At-a-Glance section with CRUD-inspired card UI */}
-      <section className="relative w-full bg-primary-950 py-16 px-2 sm:px-0 text-white" style={{display: "none"}}>
+      <section className="relative w-full bg-primary-950 py-16 px-2 sm:px-0 text-white">
         {/* Section divider */}
         <div className="flex justify-center mb-10">
           <div className="h-1 w-32 bg-gradient-to-r from-primary-700 via-primary-400 to-primary-500 rounded-full opacity-80" />
