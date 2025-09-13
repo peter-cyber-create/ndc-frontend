@@ -3,7 +3,7 @@ import mysql from 'mysql2/promise'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'user',
+  user: process.env.DB_USER || 'conf',
   password: process.env.DB_PASSWORD || 'toor',
   database: process.env.DB_NAME || 'conf',
   port: 3306,
@@ -34,7 +34,7 @@ export async function GET() {
     
   } catch (error) {
     console.error('Error fetching sponsorships:', error)
-    return NextResponse.json({ error: "Failed to fetch sponsorships" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to fetch sponsorships" }, { status: 500, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0" } })
   }
 }
 

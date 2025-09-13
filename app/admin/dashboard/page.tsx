@@ -64,10 +64,10 @@ export default function DashboardPage() {
       setIsLoading(true)
       setError(null)
 
-      console.log('Fetching from:', `${API_URL}/admin/dashboard`)
+      console.log('Fetching from:', `${API_URL}/admin/dashboard?t=${Date.now()}`)
       
       // Fetch dashboard data from admin API endpoint
-      const dashboardResponse = await fetch(`${API_URL}/api/admin/dashboard`)
+      const dashboardResponse = await fetch(`${API_URL}/api/admin/dashboard?t=${Date.now()}?t=${Date.now()}`, { cache: "no-store" })
 
       console.log('Response received:', dashboardResponse.status)
 

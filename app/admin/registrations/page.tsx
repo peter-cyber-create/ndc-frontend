@@ -47,7 +47,7 @@ export default function RegistrationsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/api/admin/registrations`)
+      const response = await fetch(`${API_URL}/api/admin/registrations?t=${Date.now()}?t=${Date.now()}`, { cache: "no-store" })
       
       if (response.ok) {
         const data = await response.json()

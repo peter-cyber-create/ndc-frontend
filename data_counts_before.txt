@@ -1,0 +1,6 @@
+table_name	count
+Abstracts	106
+Registrations	2
+Contacts	5
+Exhibitors	0
+Sponsorships	0

@@ -262,7 +262,7 @@ export default function PaymentsPage() {
     if (exportFormat === 'csv') {
       const csvContent = [
         Object.keys(data[0]).join(','),
-        ...data.map(row => Object.values(row).map(val => `"${val}"`).join(','))
+        ...data.map(row => Object.values(row).map(val => `"${val}"?t=${Date.now()}`).join(','))
       ].join('\n')
       
       const blob = new Blob([csvContent], { type: 'text/csv' })

@@ -64,7 +64,7 @@ export default function ExhibitorsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/api/admin/exhibitors`)
+      const response = await fetch(`${API_URL}/api/admin/exhibitors?t=${Date.now()}?t=${Date.now()}`, { cache: "no-store" })
       
       if (response.ok) {
         const data = await response.json()
@@ -123,7 +123,7 @@ export default function ExhibitorsPage() {
       const personName = `${exhibitor.contact_person}_${exhibitor.company_name}`
       const paymentType = 'Exhibition'
       
-      const response = await fetch(`${API_URL}/uploads/payment-proof/download?file=${encodeURIComponent(paymentProofUrl)}&name=${encodeURIComponent(personName)}&type=${encodeURIComponent(paymentType)}`)
+      const response = await fetch(`${API_URL}/uploads/payment-proof/download?file=${encodeURIComponent(paymentProofUrl)}&name=${encodeURIComponent(personName)}&type=${encodeURIComponent(paymentType)}?t=${Date.now()}`)
       
       if (response.ok) {
         const blob = await response.blob()

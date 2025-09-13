@@ -5,7 +5,7 @@ import { join } from 'path'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'user',
+  user: process.env.DB_USER || 'conf',
   password: process.env.DB_PASSWORD || 'toor',
   database: process.env.DB_NAME || 'conf',
   port: 3306,

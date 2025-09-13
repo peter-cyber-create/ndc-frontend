@@ -1,0 +1,62 @@
+import React, { useState, useEffect } from 'react'
+import { 
+  Search, Filter, Download, Eye, Trash2, CheckCircle, XCircle, 
+  Clock, AlertCircle, User, Mail, Building, Phone, Calendar,
+  FileText, ExternalLink, RefreshCw, Users, Upload, Shield, Loader2
+} from 'lucide-react'
+
+// Add this after the existing imports and before the conferenceTracks array
+const SubmissionProgress = ({ isSubmitting, stage }: { isSubmitting: boolean, stage: string }) => {
+  if (!isSubmitting) return null
+  
+  const stages = [
+    { id: 'validating', label: 'Validating form data...', icon: '🔍' },
+    { id: 'uploading', label: 'Uploading your abstract file...', icon: '📁' },
+    { id: 'saving', label: 'Saving to database...', icon: '💾' },
+    { id: 'finalizing', label: 'Finalizing submission...', icon: '✅' }
+  ]
+  
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+        <div className="text-center">
+          <div className="mb-6">
+            <Loader2 className="h-16 w-16 animate-spin text-primary-600 mx-auto" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-6">Submitting Your Abstract</h3>
+          <div className="space-y-4">
+            {stages.map((stageItem, index) => (
+              <div 
+                key={stageItem.id}
+                className={`flex items-center p-3 rounded-lg transition-all duration-300 ${
+                  stage === stageItem.id 
+                    ? 'bg-primary-50 border-l-4 border-primary-500' 
+                    : stages.findIndex(s => s.id === stage) > index
+                    ? 'bg-green-50 border-l-4 border-green-500'
+                    : 'bg-gray-50'
+                }`}
+              >
+                <span className="text-2xl mr-3">{stageItem.icon}</span>
+                <span className={`text-sm font-medium ${
+                  stage === stageItem.id ? 'text-primary-700' : 
+                  stages.findIndex(s => s.id === stage) > index ? 'text-green-700' : 'text-gray-600'
+                }`}>
+                  {stageItem.label}
+                </span>
+                {stages.findIndex(s => s.id === stage) > index && (
+                  <CheckCircle className="h-5 w-5 text-green-500 ml-auto" />
+                )}
+                {stage === stageItem.id && (
+                  <Loader2 className="h-5 w-5 animate-spin text-primary-500 ml-auto" />
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="text-gray-500 text-sm mt-6">
+            Please don't close this window. This may take a few moments...
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}

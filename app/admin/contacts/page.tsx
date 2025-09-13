@@ -43,7 +43,7 @@ export default function ContactsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/api/admin/contacts`)
+      const response = await fetch(`${API_URL}/api/admin/contacts?t=${Date.now()}?t=${Date.now()}`, { cache: "no-store" })
       
       if (response.ok) {
         const data = await response.json()
