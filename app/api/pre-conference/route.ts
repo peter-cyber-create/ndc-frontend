@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import mysql from 'mysql2/promise'
+import mysql, { Connection } from 'mysql2/promise'
 import { emailService } from '../../../lib/emailService'
 
 const dbConfig = {
@@ -53,17 +53,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Check submission deadline (September 30, 2025)
-    const submissionDeadline = new Date('2025-09-30T23:59:59Z')
-    const currentDate = new Date()
-    
-    if (currentDate > submissionDeadline) {
-      return NextResponse.json(
-        { message: 'Submission deadline has passed. The deadline was September 30th, 2025.' },
-        { status: 400 }
-      )
-    }
-
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(data.organizerEmail)) {
@@ -73,16 +62,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate expected attendees is a number
+    // Validate expected attendees
     const attendees = parseInt(data.expectedAttendees)
-    if (isNaN(attendees) || attendees <= 0) {
+    if (isNaN(attendees) || attendees <= 0 || attendees > 200) {
       return NextResponse.json(
-        { message: 'Expected attendees must be a positive number' },
+        { message: 'Expected attendees must be between 1 and 200' },
         { status: 400 }
       )
     }
 
-    // Validate time format (basic check)
+    // Validate session duration
+    const duration = parseInt(data.sessionDuration)
+    if (isNaN(duration) || duration < 3) {
+      return NextResponse.json(
+        { message: 'Session duration must be at least 3 hours' },
+        { status: 400 }
+      )
+    }
+
+    // Validate time format
     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
     if (!timeRegex.test(data.meetingTimeStart) || !timeRegex.test(data.meetingTimeEnd)) {
       return NextResponse.json(
@@ -102,12 +100,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Connect to database
-    const connection = await mysql.createConnection(dbConfig)
+  const connection = await mysql.createConnection(dbConfig)
 
     try {
       // Check if email already has a pending or approved submission
-      const [existingRecords] = await (connection as any).execute(
-        'SELECT id FROM pre_conference_meetings WHERE organizer_email = ? AND approval_status IN (?, ?)',
+  const [existingRecords] = await (connection as any).execute(
+        'SELECT id FROM pre_conference_meetings WHERE organizer_email = ? AND status IN (?, ?)',
         [data.organizerEmail, 'pending', 'approved']
       )
 
@@ -119,13 +117,13 @@ export async function POST(request: NextRequest) {
       }
 
       // Insert the new pre-conference meeting
-      const [result] = await (connection as any).execute(
+  const [result] = await (connection as any).execute(
         `INSERT INTO pre_conference_meetings (
           session_title, session_description, meeting_type, organizer_name, organizer_email,
           organizer_phone, organization, co_organizers, meeting_date, meeting_time_start,
           meeting_time_end, session_duration, expected_attendees, room_size, location_preference, 
-          abstract_text, keywords, special_requirements, payment_amount, approval_status, payment_status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          abstract_text, keywords, special_requirements, payment_amount, status, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
         [
           data.sessionTitle,
           data.sessionDescription,
@@ -146,32 +144,33 @@ export async function POST(request: NextRequest) {
           data.keywords,
           data.specialRequirements || '',
           data.paymentAmount,
-          'pending',
           'pending'
         ]
       )
 
-      if ('insertId' in result) {
-        const submissionId = result.insertId as number
-        
-        // Send confirmation email (implement email service integration here)
-        try {
-          await sendConfirmationEmail({ ...data, id: submissionId })
-        } catch (emailError) {
-          console.error('Failed to send confirmation email:', emailError)
-          // Don't fail the registration if email fails
-        }
-
-        return NextResponse.json(
-          { 
-            message: 'Pre-conference meeting submitted successfully',
-            submissionId: submissionId
-          },
-          { status: 201 }
-        )
-      } else {
-        throw new Error('Failed to insert record')
+      const insertResult = result as mysql.ResultSetHeader
+      
+      // Send confirmation email (optional)
+      try {
+        await emailService.sendPreConferenceMeetingConfirmation(
+          data.organizerEmail,
+          data.organizerName,
+          data.sessionTitle,
+          data.meetingDate.replace('_', ' ').replace('november', 'November'),
+          data.meetingType,
+          insertResult.insertId
+        );
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError)
       }
+
+      return NextResponse.json(
+        { 
+          message: 'Pre-conference meeting submitted successfully',
+          submissionId: insertResult.insertId
+        },
+        { status: 201 }
+      )
 
     } finally {
       await connection.end()
@@ -183,96 +182,5 @@ export async function POST(request: NextRequest) {
       { message: 'Internal server error. Please try again later.' },
       { status: 500 }
     )
-  }
-}
-
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url)
-    const organizerEmail = searchParams.get('email')
-    const status = searchParams.get('status')
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
-    const offset = (page - 1) * limit
-
-    const connection = await mysql.createConnection(dbConfig)
-
-    try {
-      let query = 'SELECT * FROM pre_conference_meetings WHERE 1=1'
-      const params: any[] = []
-
-      if (organizerEmail) {
-        query += ' AND organizer_email = ?'
-        params.push(organizerEmail)
-      }
-
-      if (status) {
-        query += ' AND approval_status = ?'
-        params.push(status)
-      }
-
-      query += ' ORDER BY submitted_at DESC LIMIT ? OFFSET ?'
-      params.push(limit, offset)
-
-      const [meetings] = await (connection as any).execute(query, params)
-
-      // Get total count for pagination
-      let countQuery = 'SELECT COUNT(*) as total FROM pre_conference_meetings WHERE 1=1'
-      const countParams: any[] = []
-
-      if (organizerEmail) {
-        countQuery += ' AND organizer_email = ?'
-        countParams.push(organizerEmail)
-      }
-
-      if (status) {
-        countQuery += ' AND approval_status = ?'
-        countParams.push(status)
-      }
-
-      const [countResult] = await (connection as any).execute(countQuery, countParams)
-      const total = Array.isArray(countResult) && countResult.length > 0 ? 
-        (countResult[0] as any).total : 0
-
-      return NextResponse.json({
-        meetings,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit)
-        }
-      })
-
-    } finally {
-      await connection.end()
-    }
-
-  } catch (error) {
-    console.error('Error fetching pre-conference meetings:', error)
-    return NextResponse.json(
-      { message: 'Failed to fetch meetings' },
-      { status: 500 }
-    )
-  }
-}
-
-async function sendConfirmationEmail(data: PreConferenceMeetingData & { id?: number }) {
-  try {
-    const success = await emailService.sendPreConferenceMeetingConfirmation(
-      data.organizerEmail,
-      data.organizerName,
-      data.sessionTitle,
-      data.meetingDate.replace('_', ' ').replace('november', 'November'),
-      data.meetingType,
-      data.id || 0
-    )
-    
-    if (!success) {
-      throw new Error('Failed to send confirmation email')
-    }
-  } catch (error) {
-    console.error('Email service error:', error)
-    throw error
   }
 }
