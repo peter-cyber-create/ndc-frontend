@@ -13,14 +13,14 @@ export async function GET() {
   try {
     const connection = await mysql.createConnection(dbConfig)
     // Check if phone column exists
-    const [phoneCheck] = await connection.execute(`
+    const [phoneCheck] = await (connection as any).execute(`
       SELECT COUNT(*) as count FROM information_schema.columns 
       WHERE table_name = 'contacts' AND column_name = 'phone'
     `)
     const hasPhone = (phoneCheck as any[])[0].count > 0
     
     const phoneField = hasPhone ? 'phone,' : ''
-    const [rows] = await connection.execute(`
+    const [rows] = await (connection as any).execute(`
       SELECT id, name, email, ${phoneField} organization, inquiry_type, message, status, created_at
       FROM contacts ORDER BY created_at DESC
     `)

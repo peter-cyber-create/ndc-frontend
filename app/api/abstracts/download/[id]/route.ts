@@ -21,7 +21,7 @@ export async function GET(
     
     // Get abstract file path from database
     const connection = await mysql.createConnection(dbConfig)
-    const [rows] = await connection.execute(
+    const [rows] = await (connection as any).execute(
       'SELECT file_url, primary_author, title FROM abstracts WHERE id = ?',
       [abstractId]
     )
@@ -94,7 +94,7 @@ export async function GET(
     const filename = `Abstract_${authorName}_${title}.${extension}`
 
     // Return the file
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(Uint8Array.from(fileBuffer), {
       status: 200,
       headers: {
         'Content-Type': contentType,

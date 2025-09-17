@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   try {
     const connection = await mysql.createConnection(dbConfig)
     
-    const [rows] = await connection.execute(
+    const [rows] = await (connection as any).execute(
       'SELECT * FROM exhibitors ORDER BY created_at DESC'
     )
     

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { User, Award, Building, Mail, Twitter, Linkedin, ExternalLink } from 'lucide-react'
 
 const speakers = [
@@ -7,7 +8,7 @@ const speakers = [
     name: "Dr. Charles Olaro",
     title: "Minister of Health",
     organization: "Ministry of Health Uganda",
-    bio: "Leading Uganda's health sector transformation with focus on digital health integration and universal health coverage.",
+    bio: "Leading Uganda's health sector transformation with focus on health integration and universal health coverage.",
     image: "/images/charles.jpeg",
     social: {
       twitter: "#",
@@ -17,9 +18,9 @@ const speakers = [
   {
     id: 2,
     name: "Dr. Diana Atwine",
-    title: "Executive Director",
-    organization: "African Centre for Global Health and Social Transformation",
-    bio: "Pioneer in global health systems strengthening and advocate for health workforce development across Africa.",
+    title: "Permanent Secretary",
+    organization: "Ministry of Health Uganda",
+    bio: "Championing health policy reforms and health initiatives to improve healthcare delivery in Uganda.",
     image: "/images/diana.jpeg",
     social: {
       twitter: "#",
@@ -28,10 +29,10 @@ const speakers = [
   },
   {
     id: 3,
-    name: "Dr. Diana Atwine",
-    title: "Permanent Secretary",
+    name: "Dr. Richard Mugahi",
+    title: "Assistant Commissioner",
     organization: "Ministry of Health Uganda",
-    bio: "Championing health policy reforms and digital health initiatives to improve healthcare delivery in Uganda.",
+    bio: "Expert in health information systems and health implementation across Uganda's health facilities.",
     image: "/images/ruth.jpeg",
     social: {
       twitter: "#",
@@ -40,11 +41,11 @@ const speakers = [
   },
   {
     id: 4,
-    name: "Dr. Richard Mugahi",
-    title: "Assistant Commissioner",
-    organization: "Ministry of Health Uganda",
-    bio: "Expert in health information systems and digital health implementation across Uganda's health facilities.",
-    image: "/images/speakers/dr-richard-mugahi.jpg",
+    name: "Prof. Moses Kamya",
+    title: "Principal",
+    organization: "Makerere University College of Health Sciences",
+    bio: "Leading researcher in infectious diseases and advocate for evidence-based health interventions in Uganda.",
+    image: null, // Will use placeholder icon
     social: {
       twitter: "#",
       linkedin: "#"
@@ -52,23 +53,11 @@ const speakers = [
   },
   {
     id: 5,
-    name: "Prof. Moses Kamya",
-    title: "Principal",
-    organization: "Makerere University College of Health Sciences",
-    bio: "Leading researcher in infectious diseases and advocate for evidence-based health interventions in Uganda.",
-    image: "/images/speakers/prof-moses-kamya.jpg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
-  },
-  {
-    id: 6,
     name: "Dr. Christine Munduru",
     title: "Director General",
     organization: "Uganda National Health Laboratory Services",
     bio: "Pioneer in laboratory systems strengthening and quality assurance for health diagnostics in Uganda.",
-    image: "/images/speakers/dr-christine-munduru.jpg",
+    image: null, // Will use placeholder icon
     social: {
       twitter: "#",
       linkedin: "#"
@@ -86,7 +75,7 @@ export default function SpeakersPage() {
             Conference Speakers
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Meet the distinguished speakers and thought leaders who will share their expertise and insights at the National Digital Health Conference 2025.
+            Meet the distinguished speakers and thought leaders who will share their expertise and insights at the upcoming conference.
           </p>
         </div>
 
@@ -95,21 +84,39 @@ export default function SpeakersPage() {
           {speakers.map((speaker) => (
             <div key={speaker.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
               {/* Speaker Image */}
-              <div className="relative h-64 bg-gradient-to-br from-primary-100 to-primary-200">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-32 h-32 bg-primary-600 rounded-full flex items-center justify-center">
-                    <User className="h-16 w-16 text-white" />
+              <div className="relative h-80 bg-gradient-to-br from-primary-100 to-primary-200 overflow-hidden">
+                {speaker.image ? (
+                  <div className="absolute inset-0 flex items-center justify-center p-8">
+                    <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-2xl">
+                      <Image
+                        src={speaker.image}
+                        alt={speaker.name}
+                        fill
+                        className="object-cover object-center transition-transform duration-300 hover:scale-110"
+                        sizes="(max-width: 768px) 192px, 192px"
+                        priority={speaker.id <= 3}
+                      />
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center p-8">
+                    <div className="w-48 h-48 bg-primary-600 rounded-full flex items-center justify-center border-4 border-white shadow-2xl">
+                      <User className="h-20 w-20 text-white" />
+                    </div>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                 <div className="absolute top-4 right-4">
-                  <Award className="h-6 w-6 text-primary-600" />
+                  <Award className="h-6 w-6 text-white drop-shadow-lg" />
+                </div>
+                <div className="absolute bottom-4 left-4 right-4 text-center">
+                  <h3 className="text-xl font-bold text-white drop-shadow-lg">{speaker.name}</h3>
+                  <p className="text-white/90 font-medium drop-shadow-md">{speaker.title}</p>
                 </div>
               </div>
 
               {/* Speaker Info */}
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{speaker.name}</h3>
-                <p className="text-primary-600 font-semibold mb-1">{speaker.title}</p>
                 <div className="flex items-center text-gray-600 mb-3">
                   <Building className="h-4 w-4 mr-2" />
                   <span className="text-sm">{speaker.organization}</span>

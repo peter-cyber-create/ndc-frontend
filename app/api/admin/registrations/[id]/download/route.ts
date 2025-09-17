@@ -21,7 +21,7 @@ export async function GET(
     const registrationId = params.id
     
     const connection = await mysql.createConnection(dbConfig)
-    const [rows] = await connection.execute(
+    const [rows] = await (connection as any).execute(
       'SELECT paymentProofUrl, firstName, lastName FROM registrations WHERE id = ?',
       [registrationId]
     )

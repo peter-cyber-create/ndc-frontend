@@ -22,7 +22,7 @@ export async function PATCH(
     console.log('Updating registration status:', { registrationId, status })
     
     // Check if registration exists
-    const [existing] = await connection.execute(
+    const [existing] = await (connection as any).execute(
       'SELECT id FROM registrations WHERE id = ?',
       [registrationId]
     )
@@ -36,7 +36,7 @@ export async function PATCH(
     }
     
     // Update the registration status
-    await connection.execute(
+    await (connection as any).execute(
       'UPDATE registrations SET status = ?, updatedAt = NOW() WHERE id = ?',
       [status, registrationId]
     )

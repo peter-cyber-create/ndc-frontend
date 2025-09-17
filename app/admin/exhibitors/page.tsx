@@ -64,7 +64,7 @@ export default function ExhibitorsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/api/admin/exhibitors?t=${Date.now()}?t=${Date.now()}`, { cache: "no-store" })
+      const response = await fetch(`${API_URL}/api/admin/exhibitors?t=${Date.now()}`, { cache: "no-store" })
       
       if (response.ok) {
         const data = await response.json()

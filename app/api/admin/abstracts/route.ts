@@ -3,7 +3,7 @@ import mysql from 'mysql2/promise'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'conf',
+  user: process.env.DB_USER || 'user',
   password: process.env.DB_PASSWORD || 'toor',
   database: process.env.DB_NAME || 'conf',
   port: 3306,
@@ -16,7 +16,7 @@ export async function GET() {
     console.log('Database connection established')
     
     // Check if cross_cutting_themes column exists
-    const [crossCuttingCheck] = await connection.execute(`
+    const [crossCuttingCheck] = await (connection as any).execute(`
       SELECT COUNT(*) as count FROM information_schema.columns 
       WHERE table_name = 'abstracts' AND column_name = 'cross_cutting_themes'
     `)
@@ -24,7 +24,7 @@ export async function GET() {
     console.log('Cross cutting check completed, has column:', hasCrossCutting)
     
     const crossCuttingField = hasCrossCutting ? 'cross_cutting_themes,' : ''
-    const [rows] = await connection.execute(`
+    const [rows] = await (connection as any).execute(`
       SELECT id, title, presentation_type, category, subcategory, ${crossCuttingField}
              primary_author, co_authors, abstract_summary, keywords, background,
              methods, findings, conclusion, implications, conflict_of_interest,

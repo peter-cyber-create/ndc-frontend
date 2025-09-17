@@ -6,6 +6,7 @@ import {
   Clock, AlertCircle, User, Mail, Building, Phone, Calendar,
   FileText, ExternalLink, RefreshCw
 } from 'lucide-react'
+import { useToast } from '@/hooks/useToast'
 
 interface Registration {
   id: number
@@ -32,6 +33,7 @@ export default function RegistrationsPage() {
   const [viewOpen, setViewOpen] = useState(false)
   const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
+  const { success, error: errorToast } = useToast()
 
   // API URL
   const API_URL = typeof window !== 'undefined' && window.location.hostname === 'conference.health.go.ug' 
@@ -47,7 +49,7 @@ export default function RegistrationsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/api/admin/registrations?t=${Date.now()}?t=${Date.now()}`, { cache: "no-store" })
+      const response = await fetch(`${API_URL}/api/admin/registrations?t=${Date.now()}`, { cache: "no-store" })
       
       if (response.ok) {
         const data = await response.json()
@@ -153,37 +155,42 @@ export default function RegistrationsPage() {
       if (response.ok) {
         setRegistrations(registrations.filter((reg: Registration) => reg.id !== id))
         setDeleteConfirm(null)
-        alert('Registration deleted successfully')
+        success('Delete Successful: Registration deleted successfully')
       } else {
-        alert('Failed to delete registration')
+        errorToast('Delete Failed: Could not delete registration')
       }
     } catch (error) {
       console.error('Error deleting registration:', error)
-      alert('Failed to delete registration')
+      errorToast('Delete Failed: Could not connect to server')
     }
   }
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      const response = await fetch(`${API_URL}/api/admin/registrations/${id}/status`, {
-        method: 'PATCH',
+      const response = await fetch(`${API_URL}/api/admin/registrations/approve`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ 
+          registrationId: id, 
+          status: newStatus 
+        })
       })
+
+      const result = await response.json()
 
       if (response.ok) {
         setRegistrations(registrations.map((reg: Registration) => 
           reg.id === id ? { ...reg, status: newStatus } : reg
         ))
-        alert(`Registration status updated to ${newStatus}`)
+        success(`Update Successful: Registration ${newStatus} successfully`)
       } else {
-        alert('Failed to update status')
+        errorToast(`Update Failed: ${result.error || 'Could not update status'}`)
       }
     } catch (error) {
       console.error('Error updating status:', error)
-      alert('Failed to update status')
+      errorToast('Update Failed: Could not connect to server')
     }
   }
 

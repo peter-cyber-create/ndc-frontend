@@ -42,6 +42,13 @@ interface DashboardData {
     pending: number
     newThisWeek: number
   }
+  preConference: {
+    total: number
+    approved: number
+    pending: number
+    rejected: number
+    newThisWeek: number
+  }
 }
 
 export default function DashboardPage() {
@@ -64,10 +71,10 @@ export default function DashboardPage() {
       setIsLoading(true)
       setError(null)
 
-      console.log('Fetching from:', `${API_URL}/admin/dashboard?t=${Date.now()}`)
+      console.log('Fetching from:', `${API_URL}/api/admin/dashboard?t=${Date.now()}`)
       
       // Fetch dashboard data from admin API endpoint
-      const dashboardResponse = await fetch(`${API_URL}/api/admin/dashboard?t=${Date.now()}?t=${Date.now()}`, { cache: "no-store" })
+      const dashboardResponse = await fetch(`${API_URL}/api/admin/dashboard?t=${Date.now()}`, { cache: "no-store" })
 
       console.log('Response received:', dashboardResponse.status)
 
@@ -76,23 +83,23 @@ export default function DashboardPage() {
 
         console.log('Dashboard data received:', data)
 
-        // Use the data directly from the admin dashboard API
+        // Use the data directly from the admin dashboard API with proper status breakdown
         const dashboardStats: DashboardData = {
           registrations: {
             total: data.data.totalRegistrations || 0,
-            approved: data.data.totalRegistrations || 0,
-            submitted: data.data.totalRegistrations || 0,
-            underReview: 0,
-            rejected: 0,
+            approved: data.data.registrationsByStatus?.approved || 0,
+            submitted: data.data.registrationsByStatus?.pending || 0,
+            underReview: data.data.registrationsByStatus?.pending || 0,
+            rejected: data.data.registrationsByStatus?.rejected || 0,
             newThisWeek: data.data.totalRegistrations || 0
           },
           abstracts: {
             total: data.data.totalAbstracts || 0,
-            approved: data.data.totalAbstracts || 0,
-            submitted: data.data.totalAbstracts || 0,
-            underReview: 0,
-            accepted: data.data.totalAbstracts || 0,
-            rejected: 0,
+            approved: data.data.abstractsByStatus?.approved || 0,
+            submitted: data.data.abstractsByStatus?.submitted || 0,
+            underReview: data.data.abstractsByStatus?.submitted || 0,
+            accepted: data.data.abstractsByStatus?.approved || 0,
+            rejected: data.data.abstractsByStatus?.rejected || 0,
             newThisWeek: data.data.totalAbstracts || 0
           },
           contacts: {
@@ -103,15 +110,22 @@ export default function DashboardPage() {
           },
           sponsorships: {
             total: data.data.totalSponsorships || 0,
-            approved: data.data.totalSponsorships || 0,
-            pending: data.data.totalSponsorships || 0,
+            approved: data.data.sponsorshipsByStatus?.approved || 0,
+            pending: data.data.sponsorshipsByStatus?.pending || 0,
             newThisWeek: data.data.totalSponsorships || 0
           },
           exhibitors: {
             total: data.data.totalExhibitors || 0,
-            approved: data.data.totalExhibitors || 0,
-            pending: data.data.totalExhibitors || 0,
+            approved: data.data.exhibitorsByStatus?.approved || 0,
+            pending: data.data.exhibitorsByStatus?.pending || 0,
             newThisWeek: data.data.totalExhibitors || 0
+          },
+          preConference: {
+            total: data.data.totalPreConference || 0,
+            approved: data.data.preConferenceByStatus?.approved || 0,
+            pending: data.data.preConferenceByStatus?.pending || 0,
+            rejected: data.data.preConferenceByStatus?.rejected || 0,
+            newThisWeek: data.data.totalPreConference || 0
           }
         }
 
@@ -194,7 +208,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
         {/* Registrations */}
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
@@ -286,6 +300,28 @@ export default function DashboardPage() {
             <div className="flex justify-between text-sm">
               <span className="text-green-600">✓ {dashboardData.exhibitors.approved} Approved</span>
               <span className="text-yellow-600">⏳ {dashboardData.exhibitors.pending} Pending</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Pre-Conference Meetings */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center">
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <Award className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Pre-Conference</p>
+              <p className="text-2xl font-bold text-gray-900">{dashboardData.preConference.total}</p>
+            </div>
+          </div>
+          <div className="mt-4 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-green-600">✓ {dashboardData.preConference.approved} Approved</span>
+              <span className="text-yellow-600">⏳ {dashboardData.preConference.pending} Pending</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-red-600">✗ {dashboardData.preConference.rejected} Rejected</span>
             </div>
           </div>
         </div>

@@ -18,7 +18,7 @@ export async function DELETE(
 
     const connection = await mysql.createConnection(dbConfig)
     
-    const [result] = await connection.execute(
+    const [result] = await (connection as any).execute(
       'DELETE FROM exhibitors WHERE id = ?',
       [id]
     )

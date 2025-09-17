@@ -28,56 +28,22 @@ export async function POST(request: NextRequest) {
     const paymentProof = formData.get('paymentProof') as File
 
     // Validate required fields
-    if (!organization_name || !contact_person || !email || !phone || !selected_package || !paymentProof) {
+    if (!organization_name || !contact_person || !email || !phone || !selected_package) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    // Handle file upload
-    let payment_proof_url = ''
-    if (paymentProof && paymentProof.size > 0) {
-      const bytes = await paymentProof.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-      
-      // Create uploads directory if it doesn't exist
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'exhibition-payments')
-      await mkdir(uploadsDir, { recursive: true })
-      
-      // Generate unique filename
-      const timestamp = Date.now()
-      const originalName = paymentProof.name
-      const extension = path.extname(originalName)
-      const filename = `exhibition_${timestamp}_${originalName}`
-      const filepath = path.join(uploadsDir, filename)
-      
-      await writeFile(filepath, buffer)
-      payment_proof_url = `/uploads/exhibition-payments/${filename}`
-    }
-
-    // Get package price
-    const packagePrices: { [key: string]: number } = {
-      'platinum': 10000,
-      'gold': 7000,
-      'silver': 5000,
-      'bronze': 4000,
-      'nonprofit': 2500
-    }
-
-    const amount = packagePrices[selected_package] || 0
-
-    // Save to database
+    // Save to database - only using columns that exist in schema
     const connection = await mysql.createConnection(dbConfig)
     
-    const [result] = await connection.execute(
+    const [result] = await (connection as any).execute(
       `INSERT INTO exhibitors (
-        company_name, contact_person, email, phone, address, city, country, 
-        selected_package, additional_info, payment_proof_url, status, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())`,
+        company_name, contact_person, email, phone, selected_package, status, created_at
+      ) VALUES (?, ?, ?, ?, ?, 'pending', NOW())`,
       [
-        organization_name, contact_person, email, phone, address, city, country,
-        selected_package, additionalInfo, payment_proof_url
+        organization_name, contact_person, email, phone, selected_package
       ]
     )
 
@@ -102,7 +68,7 @@ export async function GET(request: NextRequest) {
   try {
     const connection = await mysql.createConnection(dbConfig)
     
-    const [rows] = await connection.execute(
+    const [rows] = await (connection as any).execute(
       'SELECT * FROM exhibitors ORDER BY created_at DESC'
     )
     

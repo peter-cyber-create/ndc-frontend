@@ -21,21 +21,13 @@ export function Navbar() {
     { name: 'About', href: '/about' },
     { name: 'Speakers', href: '/speakers' },
     { name: 'Agenda', href: '/agenda' },
-    { name: 'Abstracts', href: '/abstracts' },
     { name: 'Partners', href: '/partners' },
     { name: 'Sponsors', href: '/sponsors' },
     { name: 'Exhibitors', href: '/exhibitors' },
+    { name: 'Pre-Conference', href: '/pre-conference' },
+    { name: 'Register', href: '/register' },
+    { name: 'Abstracts', href: '/abstracts' },
     { name: 'Contact', href: '/contact' },
-  ]
-
-  const formLinks = [
-    { name: 'Submit Abstract', href: '/abstracts', type: 'abstract', icon: '📝' },
-    { name: 'Become a Sponsor', href: '/sponsors', type: 'sponsor', icon: '🤝' },
-    { name: 'Register Now', href: '/register', type: 'payment', icon: '🎫' },
-  ]
-
-  const actionItems = [
-    { name: 'Become a Sponsor', href: '/sponsors', type: 'sponsor', icon: '🤝' },
   ]
 
   // Handle scroll for floating navbar
@@ -124,26 +116,6 @@ export function Navbar() {
                 )}
               </React.Fragment>
             ))}
-            
-            {/* Main Separator before Form Links */}
-            <div className="h-6 w-px bg-gradient-to-b from-primary-400 to-primary-600 mx-3" />
-            
-            {/* Form Links - compact styling */}
-            <div className="flex items-center space-x-2 pr-2">
-              {formLinks.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`relative inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 text-xs shadow-lg hover:shadow-xl min-w-[110px] h-10 text-center ${
-                    pathname === item.href 
-                      ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white ring-2 ring-primary-400 shadow-xl scale-105' 
-                      : 'bg-gradient-to-r from-primary-100 to-primary-200 text-primary-800 hover:from-primary-200 hover:to-primary-300 border border-primary-300 hover:border-primary-400 focus:ring-primary-400'
-                  }`}
-                >
-                  <span className="text-xs font-semibold">{item.name}</span>
-                </Link>
-              ))}
-            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -188,27 +160,6 @@ export function Navbar() {
                       onClick={() => setIsOpen(false)}
                     >
                       {item.name}
-                    </Link>
-                  ))}
-                </div>
-
-                {/* Form Links */}
-                <div className="space-y-2 pt-3 border-t border-primary-200">
-                  <div className="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-2 px-3">
-                    Quick Actions
-                  </div>
-                  {formLinks.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className={`relative block px-6 py-3 rounded-lg font-semibold text-center transition-all duration-300 text-sm shadow-lg border h-12 flex items-center justify-center ${
-                        pathname === item.href
-                          ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white border-primary-600 shadow-xl'
-                          : 'bg-gradient-to-r from-primary-100 to-primary-200 text-primary-800 hover:from-primary-200 hover:to-primary-300 border-primary-300 hover:border-primary-400'
-                      }`}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <span className="text-sm font-semibold">{item.name}</span>
                     </Link>
                   ))}
                 </div>

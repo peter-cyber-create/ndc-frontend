@@ -19,7 +19,7 @@ export async function DELETE(
     const sponsorshipId = params.id
     
     // Check if sponsorship exists
-    const [existing] = await connection.execute(
+    const [existing] = await (connection as any).execute(
       'SELECT id FROM sponsorships WHERE id = ?',
       [sponsorshipId]
     )
@@ -33,7 +33,7 @@ export async function DELETE(
     }
     
     // Delete the sponsorship
-    await connection.execute(
+    await (connection as any).execute(
       'DELETE FROM sponsorships WHERE id = ?',
       [sponsorshipId]
     )

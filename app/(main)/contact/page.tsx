@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { Mail, Phone, MapPin, Send, Clock, CheckCircle, AlertCircle, X } from 'lucide-react'
+import { useToast } from '@/hooks/useToast'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -13,11 +14,7 @@ export default function ContactPage() {
     inquiry_type: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitResult, setSubmitResult] = useState<{
-    type: 'success' | 'error' | null;
-    title: string;
-    message: string;
-  }>({ type: null, title: '', message: '' })
+  const { success, error } = useToast()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -32,11 +29,7 @@ export default function ContactPage() {
     
     // Validate required fields
     if (!formData.name || !formData.email || !formData.message) {
-      setSubmitResult({
-        type: 'error',
-        title: 'Missing Information',
-        message: 'Please fill in all required fields (Name, Email, and Message).'
-      })
+      error('Please fill in all required fields (Name, Email, and Message).')
       setIsSubmitting(false)
       return
     }
@@ -51,33 +44,17 @@ export default function ContactPage() {
       if (response && response.ok) {
         const result = await response.json()
         if (result.success) {
-          setSubmitResult({
-            type: 'success',
-            title: 'Message Sent Successfully!',
-            message: 'Thank you for contacting us! We have received your message and will get back to you within 24 hours. Please check your email for a confirmation.'
-          })
+          success('Message sent successfully! We will get back to you within 24 hours.')
           setFormData({ name: '', email: '', organization: '', subject: '', message: '', inquiry_type: '' })
         } else {
-          setSubmitResult({
-            type: 'error',
-            title: 'Submission Failed',
-            message: result.message || 'Failed to submit your message. Please try again.'
-          })
+          error('Submission Failed: ' + (result.message || 'Please try again.'))
         }
       } else {
-        setSubmitResult({
-          type: 'error',
-          title: 'Submission Failed',
-          message: 'Failed to submit your message. Please check your connection and try again.'
-        })
+        error('Submission Failed: Please check your connection and try again.')
       }
-    } catch (error) {
-      console.error('Error submitting contact form:', error)
-      setSubmitResult({
-        type: 'error',
-        title: 'Submission Failed',
-        message: 'An error occurred while submitting your message. Please try again.'
-      })
+    } catch (err) {
+      console.error('Error submitting contact form:', err)
+      error('Submission Failed: An error occurred while submitting your message.')
     } finally {
       setIsSubmitting(false)
     }
@@ -137,47 +114,6 @@ export default function ContactPage() {
           </form>
         </div>
       </div>
-
-      {/* Success/Error Modal */}
-      {submitResult.type && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all duration-300 scale-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                {submitResult.type === 'success' ? (
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-6 h-6 text-green-600" />
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                    <AlertCircle className="w-6 h-6 text-red-600" />
-                  </div>
-                )}
-                <h3 className="text-lg font-bold text-gray-900">{submitResult.title}</h3>
-              </div>
-              <button
-                onClick={() => setSubmitResult({ type: null, title: '', message: '' })}
-                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-            </div>
-            <p className="text-gray-600 mb-6 leading-relaxed">{submitResult.message}</p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setSubmitResult({ type: null, title: '', message: '' })}
-                className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
-                  submitResult.type === 'success'
-                    ? 'bg-green-600 hover:bg-green-700 text-white'
-                    : 'bg-red-600 hover:bg-red-700 text-white'
-                }`}
-              >
-                {submitResult.type === 'success' ? 'Great!' : 'Try Again'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

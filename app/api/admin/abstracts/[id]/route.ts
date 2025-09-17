@@ -19,7 +19,7 @@ export async function DELETE(
     const abstractId = params.id
     
     // Check if abstract exists
-    const [existing] = await connection.execute(
+    const [existing] = await (connection as any).execute(
       'SELECT id FROM abstracts WHERE id = ?',
       [abstractId]
     )
@@ -33,7 +33,7 @@ export async function DELETE(
     }
     
     // Delete the abstract
-    await connection.execute(
+    await (connection as any).execute(
       'DELETE FROM abstracts WHERE id = ?',
       [abstractId]
     )

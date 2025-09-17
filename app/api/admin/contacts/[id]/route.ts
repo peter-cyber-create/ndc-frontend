@@ -19,7 +19,7 @@ export async function DELETE(
     const contactId = params.id
     
     // Check if contact exists
-    const [existing] = await connection.execute(
+    const [existing] = await (connection as any).execute(
       'SELECT id FROM contacts WHERE id = ?',
       [contactId]
     )
@@ -33,7 +33,7 @@ export async function DELETE(
     }
     
     // Delete the contact
-    await connection.execute(
+    await (connection as any).execute(
       'DELETE FROM contacts WHERE id = ?',
       [contactId]
     )

@@ -26,7 +26,7 @@ export async function PATCH(
 
     const connection = await mysql.createConnection(dbConfig)
     
-    const [result] = await connection.execute(
+    const [result] = await (connection as any).execute(
       'UPDATE exhibitors SET status = ?, updated_at = NOW() WHERE id = ?',
       [status, id]
     )

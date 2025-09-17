@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { 
   FileText, Upload, Calendar, AlertCircle, CheckCircle, 
@@ -56,7 +56,7 @@ const conferenceTracks = [
   },
   {
     value: 'digital-health',
-    label: 'Digital Health, Data, and Innovation',
+    label: 'Health Data and Innovation',
     description: 'Harnessing digital tools, AI, and data systems to transform public health delivery and surveillance.',
     subcategories: [
       'Health Information Systems',
@@ -132,6 +132,8 @@ export default function AbstractsPage() {
   const router = useRouter()
   const { success, error: showError } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [daysUntilDeadline, setDaysUntilDeadline] = useState(0)
+  const [daysUntilNotification, setDaysUntilNotification] = useState(0)
   const [formData, setFormData] = useState<FormData>({
     title: '',
     presentation_type: '',
@@ -157,6 +159,19 @@ export default function AbstractsPage() {
     ethical_approval: false,
     consent_to_publish: false
   })
+
+  // Calculate days until deadlines
+  useEffect(() => {
+    const calculateDaysUntil = (targetDate: string) => {
+      const target = new Date(targetDate + 'T23:59:59')
+      const now = new Date()
+      const timeDiff = target.getTime() - now.getTime()
+      return Math.max(0, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)))
+    }
+
+    setDaysUntilDeadline(calculateDaysUntil('2025-09-15'))
+    setDaysUntilNotification(calculateDaysUntil('2025-09-25'))
+  }, [])
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -193,6 +208,13 @@ export default function AbstractsPage() {
     e.preventDefault()
     setIsSubmitting(true)
 
+    // Check if deadline has passed
+    if (daysUntilDeadline <= 0) {
+      showError('Submission Failed: The abstract submission deadline has passed.')
+      setIsSubmitting(false)
+      return
+    }
+
     // Validate required fields
     if (!formData.title || !formData.presentation_type || !formData.conference_track || 
         !formData.subcategory || !formData.firstName || !formData.lastName || !formData.email || 
@@ -200,7 +222,7 @@ export default function AbstractsPage() {
         !formData.district || !formData.abstract_summary || !formData.keywords ||
         !formData.background || !formData.methods || !formData.findings || 
         !formData.conclusion || !formData.consent_to_publish || !formData.abstract_file) {
-      showError('Please fill in all required fields marked with * and upload your abstract file.')
+      showError('Submission Failed: Please fill in all required fields marked with * and upload your abstract file.')
       setIsSubmitting(false)
       return
     }
@@ -242,7 +264,7 @@ export default function AbstractsPage() {
       const result = await response.json()
 
       if (response.ok) {
-        success('Abstract submitted successfully! We will review it and get back to you by September 25, 2025.')
+        success('Submission Successful! Abstract submitted successfully. We will review it and get back to you by September 25, 2025.')
         setFormData({
           title: '',
           presentation_type: '',
@@ -269,11 +291,11 @@ export default function AbstractsPage() {
           consent_to_publish: false
         })
       } else {
-        const errorMessage = result.error || result.message || 'Abstract submission failed. Please try again.'
-        showError(errorMessage)
+        const errorMessage = result.error || result.message || 'Please check your information and try again.'
+        showError('Submission Failed: ' + errorMessage)
       }
     } catch (error) {
-      showError('Could not connect to the server. Please try again later.')
+      showError('Submission Failed: Could not connect to the server. Please check your connection and try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -285,7 +307,7 @@ export default function AbstractsPage() {
         {/* Simple Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Abstract Submission Form</h1>
-          <p className="text-lg text-gray-600">National Digital Health Conference 2025</p>
+          <p className="text-lg text-gray-600">National Conference 2025</p>
         </div>
 
         {/* Important Information Cards */}
@@ -302,13 +324,17 @@ export default function AbstractsPage() {
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Submission Deadline</span>
-                    <span className="font-bold text-yellow-300">September 15, 2025</span>
+                    <span className={`font-bold ${daysUntilDeadline > 0 ? 'text-yellow-300' : 'text-red-400'}`}>
+                      {daysUntilDeadline > 0 ? `${daysUntilDeadline} days left` : 'Deadline passed'}
+                    </span>
                   </div>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Notification Date</span>
-                    <span className="font-bold text-green-300">September 25, 2025</span>
+                    <span className={`font-bold ${daysUntilNotification > 0 ? 'text-green-300' : 'text-gray-400'}`}>
+                      {daysUntilNotification > 0 ? `${daysUntilNotification} days left` : 'Notifications sent'}
+                    </span>
                   </div>
                 </div>
               </div>

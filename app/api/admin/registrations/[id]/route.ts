@@ -19,7 +19,7 @@ export async function DELETE(
     const registrationId = params.id
     
     // Check if registration exists
-    const [existing] = await connection.execute(
+    const [existing] = await (connection as any).execute(
       'SELECT id FROM registrations WHERE id = ?',
       [registrationId]
     )
@@ -33,7 +33,7 @@ export async function DELETE(
     }
     
     // Delete the registration
-    await connection.execute(
+    await (connection as any).execute(
       'DELETE FROM registrations WHERE id = ?',
       [registrationId]
     )

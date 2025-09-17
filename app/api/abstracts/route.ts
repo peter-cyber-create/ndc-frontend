@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import mysql from 'mysql2/promise'
 import { writeFile } from 'fs/promises'
 import { join } from 'path'
+import { emailService } from '../../../lib/emailService'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -127,30 +128,48 @@ export async function POST(request: NextRequest) {
     // Insert abstract using the exact column names from the database
     const subcategory = formData.get('subcategory') as string
     
-    const [result] = await connection.execute(
+    const [result] = await (connection as any).execute(
       `INSERT INTO abstracts 
        (title, presentation_type, category, subcategory, primary_author, co_authors, 
         abstract_summary, keywords, background, methods, findings, conclusion, 
         implications, file_url, conflict_of_interest, ethical_approval, 
         consent_to_publish, author_phone, corresponding_author, corresponding_email, 
-        corresponding_phone, organization, status, created_at) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NOW())`,
+        corresponding_phone) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title, presentationType, conferenceTrack, subcategory, primaryAuthor, coAuthors,
         abstractSummary, keywords, background, methods, findings, conclusion,
         policyImplications, fileUrl, conflictOfInterest, ethicalApproval,
-        consentToPublish, phone, `${firstName} ${lastName}`, email, phone, institution
+        consentToPublish, phone, `${firstName} ${lastName}`, email, phone
       ]
     )
+    
+    const abstractId = (result as any).insertId
     
     await connection.end()
     
     console.log('Abstract saved successfully:', result)
     
+    // Send confirmation email
+    try {
+      const emailSent = await emailService.sendAbstractConfirmation(
+        email,
+        `${firstName} ${lastName}`,
+        title,
+        abstractId
+      )
+      
+      if (!emailSent) {
+        console.error('Failed to send abstract confirmation email')
+      }
+    } catch (emailError) {
+      console.error('Error sending abstract confirmation email:', emailError)
+    }
+    
     return NextResponse.json({
       success: true,
-      message: 'Abstract submitted successfully',
-      abstractId: (result as any).insertId
+      message: 'Abstract submitted successfully! A confirmation email has been sent to your email address.',
+      abstractId
     })
     
   } catch (error) {

@@ -369,3 +369,52 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Toast Animations */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.animate-in {
+  animation: slideInFromRight 0.4s ease-out;
+}
+
+.animate-out {
+  animation: slideOutToRight 0.3s ease-in;
+}
+
+.animate-progress {
+  animation: progress 6s linear;
+  transform-origin: left;
+}
+
+.slide-in-from-right-full {
+  animation: slideInFromRight 0.4s ease-out;
+}

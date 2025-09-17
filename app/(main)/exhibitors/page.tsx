@@ -20,13 +20,7 @@ interface FormData {
   contactPerson: string
   email: string
   phone: string
-  website: string
-  address: string
-  city: string
-  country: string
   selected_package: string
-  paymentProof: File | null
-  additionalInfo: string
 }
 
 const exhibitionPackages = [
@@ -86,13 +80,7 @@ export default function ExhibitorsPage() {
     contactPerson: '',
     email: '',
     phone: '',
-    website: '',
-    address: '',
-    city: '',
-    country: '',
-    selected_package: 'bronze',
-    paymentProof: null,
-    additionalInfo: ''
+    selected_package: 'bronze'
   })
 
 
@@ -111,23 +99,14 @@ export default function ExhibitorsPage() {
     }))
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null
-    setFormData((prev: any) => ({
-      ...prev,
-      paymentProof: file
-    }))
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     // Validate required fields
     if (!formData.organizationName || !formData.contactPerson || !formData.email || 
-        !formData.phone || !formData.address || !formData.city || !formData.country || 
-        !formData.selected_package || !formData.paymentProof) {
-      showError('Please fill in all required fields and upload payment proof.')
+        !formData.phone || !formData.selected_package) {
+      showError('Submission Failed: Please fill in all required fields.')
       setIsSubmitting(false)
       return
     }
@@ -138,13 +117,7 @@ export default function ExhibitorsPage() {
       formDataToSend.append('contactPerson', formData.contactPerson)
       formDataToSend.append('email', formData.email)
       formDataToSend.append('phone', formData.phone)
-      formDataToSend.append('website', formData.website)
-      formDataToSend.append('address', formData.address)
-      formDataToSend.append('city', formData.city)
-      formDataToSend.append('country', formData.country)
       formDataToSend.append('selected_package', formData.selected_package)
-      formDataToSend.append('additionalInfo', formData.additionalInfo)
-      formDataToSend.append('paymentProof', formData.paymentProof)
 
       const response = await fetch('/api/exhibitors', {
         method: 'POST',
@@ -154,26 +127,20 @@ export default function ExhibitorsPage() {
       const result = await response.json()
 
       if (response.ok) {
-        success('Exhibition application submitted successfully! We will review your payment and get back to you within 24-48 hours.')
+        success('Submission Successful! Exhibition application submitted successfully. We will review your payment and contact you within 24-48 hours.')
         setFormData({
           organizationName: '',
           contactPerson: '',
           email: '',
           phone: '',
-          website: '',
-          address: '',
-          city: '',
-          country: '',
-          selected_package: 'bronze',
-          paymentProof: null,
-          additionalInfo: ''
+          selected_package: 'bronze'
         })
       } else {
-        const errorMessage = result.error || result.message || 'Exhibition application failed. Please try again.'
-        showError(errorMessage)
+        const errorMessage = result.error || result.message || 'Please check your information and try again.'
+        showError('Submission Failed: ' + errorMessage)
       }
     } catch (error) {
-      showError('Could not connect to the server. Please try again later.')
+      showError('Submission Failed: Could not connect to the server. Please check your connection and try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -186,8 +153,14 @@ export default function ExhibitorsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Simple Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Exhibition Application Form</h1>
-          <p className="text-lg text-gray-600">National Digital Health Conference 2025</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Reserve an Exhibit Booth for the Annual Meeting</h1>
+          <p className="text-lg text-gray-600 mb-6">Secure your booth space at the 2025 Annual Meeting and connect with thousands of attendees from around the world. Booths are assigned on a first-come, first-served basis.</p>
+          <Button 
+            onClick={() => document.getElementById('exhibition-form')?.scrollIntoView({behavior: 'smooth'})}
+            className="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-8 py-3 rounded-lg text-lg shadow-lg"
+          >
+            Book Now
+          </Button>
         </div>
 
         {/* Exhibition Packages */}
@@ -237,7 +210,50 @@ export default function ExhibitorsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Session Submission Guidelines */}
+        <div className="mb-12">
+          <Card className="border-0 shadow-xl bg-white">
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+              <CardTitle className="text-2xl">Session Submission Guidelines</CardTitle>
+            </CardHeader>
+            <CardContent className="p-8">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Session Description:</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    2-3 sentence paragraph providing the background and importance of the session's topic. 
+                    Explain what the session will cover and why it is a valuable addition to the conference.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Submission Guidelines:</h3>
+                  <ul className="list-disc list-inside space-y-2 text-gray-700">
+                    <li>Submissions should be in the form of a <strong>250-word abstract</strong>.</li>
+                    <li>Include a title, the names and affiliations of all authors, and 3-5 keywords.</li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Important Dates:</h3>
+                  <ul className="list-disc list-inside space-y-2 text-gray-700">
+                    <li><strong>Submission Deadline:</strong> 12th October 2025</li>
+                    <li><strong>Notification of Acceptance:</strong> 25th October 2025</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold text-primary-900 mb-2">How to Submit:</h3>
+                  <p className="text-primary-800">
+                    Please email your abstract to <strong>moh.conference@health.go.ug</strong> with the subject line "Submission for [Session Title]".
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" id="exhibition-form">
           {/* Exhibition Form */}
           <Card className="border-0 shadow-xl bg-white">
             <CardHeader className="bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-t-lg">
@@ -333,126 +349,6 @@ export default function ExhibitorsPage() {
                         className="h-11"
                         placeholder="Include country code (e.g., +256)"
                       />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="website" className="text-sm font-medium text-gray-700">Website (Optional)</Label>
-                    <Input
-                      id="website"
-                      name="website"
-                      type="url"
-                      value={formData.website}
-                      onChange={handleInputChange}
-                      className="h-11"
-                      placeholder="https://your-website.com"
-                    />
-                  </div>
-                </div>
-
-                {/* Location Information */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <Globe className="h-5 w-5 mr-2 text-primary-600" />
-                    Location Information
-                  </h3>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="address" className="text-sm font-medium text-gray-700">Address *</Label>
-                    <Input
-                      id="address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      required
-                      className="h-11"
-                      placeholder="Enter your organization address"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="city" className="text-sm font-medium text-gray-700">City *</Label>
-                      <Input
-                        id="city"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        required
-                        className="h-11"
-                        placeholder="Enter your city"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="country" className="text-sm font-medium text-gray-700">Country *</Label>
-                      <Input
-                        id="country"
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        required
-                        className="h-11"
-                        placeholder="Enter your country"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Additional Information */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <Target className="h-5 w-5 mr-2 text-primary-600" />
-                    Additional Information
-                  </h3>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="additionalInfo" className="text-sm font-medium text-gray-700">Additional Information (Optional)</Label>
-                    <Textarea
-                      id="additionalInfo"
-                      name="additionalInfo"
-                      value={formData.additionalInfo}
-                      onChange={handleInputChange}
-                      rows={4}
-                      placeholder="Tell us more about your organization and what you plan to exhibit"
-                    />
-                  </div>
-                </div>
-
-                {/* Payment Proof Upload */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <Upload className="h-5 w-5 mr-2 text-primary-600" />
-                    Payment Verification
-                  </h3>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="paymentProof" className="text-sm font-medium text-gray-700">Payment Proof Document *</Label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors bg-gray-50 hover:bg-primary-50">
-                      <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600 mb-4">
-                        PDF, JPG, or PNG files only. Maximum size: 5MB
-                      </p>
-                      <input
-                        type="file"
-                        id="paymentProof"
-                        name="paymentProof"
-                        onChange={handleFileChange}
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        required
-                        className="hidden"
-                      />
-                      <Label
-                        htmlFor="paymentProof"
-                        className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 cursor-pointer transition-all duration-200 transform hover:scale-105 shadow-md"
-                      >
-                        Choose File
-                      </Label>
-                      {formData.paymentProof && (
-                        <p className="text-sm text-green-600 mt-3 font-medium">
-                          Selected: {formData.paymentProof.name}
-                        </p>
-                      )}
                     </div>
                   </div>
                 </div>

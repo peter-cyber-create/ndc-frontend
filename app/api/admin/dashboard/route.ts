@@ -3,7 +3,7 @@ import mysql from 'mysql2/promise'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'conf',
+  user: process.env.DB_USER || 'user',
   password: process.env.DB_PASSWORD || 'toor',
   database: process.env.DB_NAME || 'conf',
   port: 3306,
@@ -13,13 +13,14 @@ export async function GET() {
   try {
     const connection = await mysql.createConnection(dbConfig)
     
-    // Get all data
-    const [registrations] = await connection.execute('SELECT * FROM registrations')
-    const [abstracts] = await connection.execute('SELECT * FROM abstracts')
+    // Get all data using proper type casting
+    const [registrations] = await (connection as any).execute('SELECT * FROM registrations')
+    const [abstracts] = await (connection as any).execute('SELECT * FROM abstracts')
     console.log("DEBUG: Total abstracts from DB:", (abstracts as any[]).length);
-    const [contacts] = await connection.execute('SELECT * FROM contacts')
-    const [sponsorships] = await connection.execute('SELECT * FROM sponsorships')
-    const [exhibitors] = await connection.execute('SELECT * FROM exhibitors')
+    const [contacts] = await (connection as any).execute('SELECT * FROM contacts')
+    const [sponsorships] = await (connection as any).execute('SELECT * FROM sponsorships')
+    const [exhibitors] = await (connection as any).execute('SELECT * FROM exhibitors')
+    const [preConference] = await (connection as any).execute('SELECT * FROM pre_conference_meetings')
     
     await connection.end()
 
@@ -29,6 +30,7 @@ export async function GET() {
     const contactsArray = contacts as any[]
     const sponsorshipsArray = sponsorships as any[]
     const exhibitorsArray = exhibitors as any[]
+    const preConferenceArray = preConference as any[]
     
     const stats = {
       totalRegistrations: registrationsArray.length,
@@ -36,17 +38,51 @@ export async function GET() {
       totalContacts: contactsArray.length,
       totalSponsorships: sponsorshipsArray.length,
       totalExhibitors: exhibitorsArray.length,
+      totalPreConference: preConferenceArray.length,
+      
+      // Status breakdown
+      registrationsByStatus: {
+        pending: registrationsArray.filter((r: any) => r.status === 'pending').length,
+        approved: registrationsArray.filter((r: any) => r.status === 'approved').length,
+        rejected: registrationsArray.filter((r: any) => r.status === 'rejected').length,
+      },
+      
+      abstractsByStatus: {
+        submitted: abstractsArray.filter((a: any) => a.status === 'submitted').length,
+        approved: abstractsArray.filter((a: any) => a.status === 'approved').length,
+        rejected: abstractsArray.filter((a: any) => a.status === 'rejected').length,
+      },
+      
+      sponsorshipsByStatus: {
+        pending: sponsorshipsArray.filter((s: any) => s.status === 'pending').length,
+        approved: sponsorshipsArray.filter((s: any) => s.status === 'approved').length,
+        rejected: sponsorshipsArray.filter((s: any) => s.status === 'rejected').length,
+      },
+      
+      exhibitorsByStatus: {
+        pending: exhibitorsArray.filter((e: any) => e.status === 'pending').length,
+        approved: exhibitorsArray.filter((e: any) => e.status === 'approved').length,
+        rejected: exhibitorsArray.filter((e: any) => e.status === 'rejected').length,
+      },
+      
+      preConferenceByStatus: {
+        pending: preConferenceArray.filter((p: any) => p.approval_status === 'pending').length,
+        approved: preConferenceArray.filter((p: any) => p.approval_status === 'approved').length,
+        rejected: preConferenceArray.filter((p: any) => p.approval_status === 'rejected').length,
+      },
+      
+      // Recent activity
       recentRegistrations: registrationsArray
         .filter((r: any) => r.status === 'pending')
-        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .sort((a: any, b: any) => new Date(b.createdAt || b.created_at).getTime() - new Date(a.createdAt || a.created_at).getTime())
         .slice(0, 5)
         .map((r: any) => ({
           id: r.id,
           name: `${r.firstName} ${r.lastName}`,
           email: r.email,
-          organization: r.institution,
+          organization: r.organization,
           status: r.status,
-          submittedAt: r.createdAt
+          submittedAt: r.createdAt || r.created_at
         })),
       recentAbstracts: abstractsArray
         .filter((a: any) => a.status === 'submitted')

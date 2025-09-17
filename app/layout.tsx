@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import React from 'react'
 import type { ReactNode } from 'react'
 import ToastContainer from '@/components/ToastContainer'
+import { ToastProvider } from '@/lib/ToastContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -59,8 +60,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
         
       </head>
       <body className={inter.className}>
-        {children}
-        <ToastContainer />
+        <ToastProvider>
+          {children}
+          <ToastContainer />
+        </ToastProvider>
       </body>
     </html>
   )

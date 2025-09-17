@@ -37,7 +37,7 @@ const partners = [
     website: '#'
   },
   {
-    name: 'International Development Research Centre (IDRC)',
+    name: 'Infectious Diseases Research Organisation',
     logo: '/images/partners/IDRC-Logo-480.png',
     description: 'Canadian Crown corporation supporting research in developing countries to create lasting change.',
     website: '#'
@@ -117,39 +117,31 @@ export default function PartnersPage() {
         </div>
 
         {/* Partners Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+                {/* Partners Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {partners.map((partner, index) => (
-            <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
-              <CardHeader className="text-center pb-4">
-                <div className="w-48 h-48 mx-auto mb-6 flex items-center justify-center bg-gray-50 rounded-xl p-8">
-                  <img
-                    src={partner.logo}
-                    alt={`${partner.name} logo`}
-                    className="max-w-full max-h-full object-contain"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent) {
-                        parent.innerHTML = `<div class="text-gray-400 text-sm">Logo</div>`;
-                      }
-                    }}
-                  />
+            <Card key={index} className="text-center p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              <CardContent className="pt-6">
+                <div className="mb-4 flex justify-center">
+                  <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                    {partner.logo ? (
+                      <img 
+                        src={partner.logo} 
+                        alt={partner.name}
+                        className="max-w-full max-h-full object-contain"
+                      />
+                    ) : (
+                      <Building className="h-12 w-12 text-gray-400" />
+                    )}
+                  </div>
                 </div>
-                <CardTitle className="text-xl font-bold text-gray-900 leading-tight mb-4">
-                  {partner.name}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  {partner.description}
-                </p>
-                <Button asChild variant="outline" className="w-full">
-                  <a href={partner.website} className="flex items-center justify-center">
-                    <ExternalLink className="h-4 w-4 mr-2" />
+                <h3 className="font-semibold text-lg text-gray-900 mb-2">{partner.name}</h3>
+                {partner.website && partner.website !== '#' && (
+                  <Button variant="outline" size="sm" className="mt-2">
+                    <ExternalLink className="h-4 w-4 mr-1" />
                     Visit Website
-                  </a>
-                </Button>
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}

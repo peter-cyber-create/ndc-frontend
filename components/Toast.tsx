@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { CheckCircle, XCircle, AlertCircle, Info, X } from 'lucide-react'
 
 interface ToastProps {
@@ -9,73 +9,106 @@ interface ToastProps {
 }
 
 const Toast: React.FC<ToastProps> = ({ id, type, message, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose(id)
+    }, 6000) // Auto close after 6 seconds
+
+    return () => clearTimeout(timer)
+  }, [id, onClose])
+
   const getIcon = () => {
+    const iconClasses = "h-6 w-6"
     switch (type) {
       case 'success':
-        return <CheckCircle className="h-5 w-5 text-green-500" />
+        return <CheckCircle className={`${iconClasses} text-white`} />
       case 'error':
-        return <XCircle className="h-5 w-5 text-red-500" />
+        return <XCircle className={`${iconClasses} text-white`} />
       case 'warning':
-        return <AlertCircle className="h-5 w-5 text-yellow-500" />
+        return <AlertCircle className={`${iconClasses} text-white`} />
       case 'info':
-        return <Info className="h-5 w-5 text-blue-500" />
+        return <Info className={`${iconClasses} text-white`} />
       default:
-        return <Info className="h-5 w-5 text-blue-500" />
+        return <Info className={`${iconClasses} text-white`} />
     }
   }
 
-  const getBackgroundColor = () => {
+  const getStyles = () => {
     switch (type) {
       case 'success':
-        return 'bg-green-50 border-green-200'
+        return {
+          background: 'bg-gradient-to-r from-green-500 to-emerald-600',
+          iconBg: 'bg-green-600',
+          shadow: 'shadow-green-200'
+        }
       case 'error':
-        return 'bg-red-50 border-red-200'
+        return {
+          background: 'bg-gradient-to-r from-red-500 to-rose-600',
+          iconBg: 'bg-red-600',
+          shadow: 'shadow-red-200'
+        }
       case 'warning':
-        return 'bg-yellow-50 border-yellow-200'
+        return {
+          background: 'bg-gradient-to-r from-yellow-500 to-orange-500',
+          iconBg: 'bg-yellow-600',
+          shadow: 'shadow-yellow-200'
+        }
       case 'info':
-        return 'bg-blue-50 border-blue-200'
+        return {
+          background: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+          iconBg: 'bg-blue-600',
+          shadow: 'shadow-blue-200'
+        }
       default:
-        return 'bg-blue-50 border-blue-200'
+        return {
+          background: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+          iconBg: 'bg-blue-600',
+          shadow: 'shadow-blue-200'
+        }
     }
   }
 
-  const getTextColor = () => {
-    switch (type) {
-      case 'success':
-        return 'text-green-800'
-      case 'error':
-        return 'text-red-800'
-      case 'warning':
-        return 'text-yellow-800'
-      case 'info':
-        return 'text-blue-800'
-      default:
-        return 'text-blue-800'
-    }
-  }
+  const styles = getStyles()
 
   return (
-    <div className={`fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border-l-4 ${getBackgroundColor()} transform transition-all duration-300 ease-in-out`}>
+    <div className={`
+      relative max-w-md w-full ${styles.background} rounded-xl shadow-2xl ${styles.shadow} 
+      transform transition-all duration-500 ease-out 
+      animate-in slide-in-from-right-full
+      border border-white/20 backdrop-blur-sm
+    `}>
       <div className="p-4">
         <div className="flex items-start">
-          <div className="flex-shrink-0">
+          <div className={`
+            flex-shrink-0 p-2 rounded-lg ${styles.iconBg} 
+            shadow-lg transform transition-transform duration-200 hover:scale-110
+          `}>
             {getIcon()}
           </div>
-          <div className="ml-3 w-0 flex-1">
-            <p className={`text-sm font-medium ${getTextColor()}`}>
+          <div className="ml-4 flex-1 min-w-0">
+            <p className="text-white font-medium text-sm leading-relaxed break-words">
               {message}
             </p>
           </div>
-          <div className="ml-4 flex-shrink-0 flex">
+          <div className="ml-2 flex-shrink-0">
             <button
-              className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="
+                inline-flex items-center justify-center w-8 h-8 
+                text-white/80 hover:text-white hover:bg-white/20 
+                rounded-full transition-all duration-200 
+                focus:outline-none focus:ring-2 focus:ring-white/50
+              "
               onClick={() => onClose(id)}
             >
               <span className="sr-only">Close</span>
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>
+      </div>
+      {/* Progress bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-xl overflow-hidden">
+        <div className="h-full bg-white/40 animate-progress origin-left"></div>
       </div>
     </div>
   )

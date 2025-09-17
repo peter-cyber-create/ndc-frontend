@@ -45,7 +45,7 @@ export default function SponsorshipsPage() {
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`${API_URL}/api/admin/sponsorships?t=${Date.now()}?t=${Date.now()}`, { cache: "no-store" })
+      const response = await fetch(`${API_URL}/api/admin/sponsorships?t=${Date.now()}`, { cache: "no-store" })
       
       if (response.ok) {
         const data = await response.json()

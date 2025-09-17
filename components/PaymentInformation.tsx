@@ -180,7 +180,7 @@ const PaymentInformation: React.FC<PaymentInformationProps> = ({ type, selectedP
           </p>
           <div className="text-sm space-y-1">
             <div>📧 Email: moh.conference@health.go.ug</div>
-            <div>📞 Phone: +256 700 000 000</div>
+            <div>📞 Phone: 0800-100-066</div>
             <div>🕒 Hours: Mon-Fri, 9:00 AM - 5:00 PM EAT</div>
           </div>
         </div>

@@ -22,7 +22,7 @@ export async function PATCH(
     console.log('Updating abstract status:', { abstractId, status })
     
     // Check if abstract exists
-    const [existing] = await connection.execute(
+    const [existing] = await (connection as any).execute(
       'SELECT id FROM abstracts WHERE id = ?',
       [abstractId]
     )
@@ -36,7 +36,7 @@ export async function PATCH(
     }
     
     // Update the abstract status
-    await connection.execute(
+    await (connection as any).execute(
       'UPDATE abstracts SET status = ?, updated_at = NOW() WHERE id = ?',
       [status, abstractId]
     )

@@ -22,7 +22,7 @@ export async function PATCH(
     console.log('Updating sponsorship status:', { sponsorshipId, status })
     
     // Check if sponsorship exists
-    const [existing] = await connection.execute(
+    const [existing] = await (connection as any).execute(
       'SELECT id FROM sponsorships WHERE id = ?',
       [sponsorshipId]
     )
@@ -36,7 +36,7 @@ export async function PATCH(
     }
     
     // Update the sponsorship status
-    await connection.execute(
+    await (connection as any).execute(
       'UPDATE sponsorships SET status = ?, updated_at = NOW() WHERE id = ?',
       [status, sponsorshipId]
     )
