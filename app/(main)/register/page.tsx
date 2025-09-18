@@ -32,7 +32,8 @@ const registrationTypes = [
   {
     id: 'undergrad',
     name: 'Undergraduate Student',
-    price: 50,
+    price: 100000,
+    currency: 'UGX',
     description: 'For undergraduate students',
     icon: Users,
     color: 'blue',
@@ -41,7 +42,8 @@ const registrationTypes = [
   {
     id: 'grad',
     name: 'Graduate Student',
-    price: 75,
+    price: 150000,
+    currency: 'UGX',
     description: 'For graduate students',
     icon: Award,
     color: 'green',
@@ -50,8 +52,9 @@ const registrationTypes = [
   {
     id: 'local',
     name: 'Local Professional',
-    price: 100,
-    description: 'For local healthcare professionals',
+    price: 350000,
+    currency: 'UGX',
+    description: 'For Uganda / East Africa participants (non-students)',
     icon: Building,
     color: 'purple',
     features: ['Full conference access', 'All meals included', 'Certificate', 'Networking', 'Workshop access']
@@ -59,8 +62,9 @@ const registrationTypes = [
   {
     id: 'international',
     name: 'International Professional',
-    price: 200,
-    description: 'For international participants',
+    price: 300,
+    currency: 'USD',
+    description: 'For international delegates',
     icon: Target,
     color: 'orange',
     features: ['Full conference access', 'All meals included', 'Certificate', 'Networking', 'Workshop access', 'Cultural tour']
@@ -68,7 +72,8 @@ const registrationTypes = [
   {
     id: 'online',
     name: 'Virtual Attendance',
-    price: 25,
+    price: 180000,
+    currency: 'UGX',
     description: 'Online participation only',
     icon: Heart,
     color: 'pink',
@@ -232,7 +237,7 @@ export default function RegisterPage() {
                     </div>
                     <CardTitle className="text-lg">{type.name}</CardTitle>
                     <CardDescription className="text-sm">{type.description}</CardDescription>
-                    <div className="text-2xl font-bold text-gray-900 mt-2">${type.price}</div>
+                    <div className="text-2xl font-bold text-gray-900 mt-2">{type.currency} {type.price.toLocaleString()}</div>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <ul className="space-y-2 text-sm text-gray-600">
@@ -298,7 +303,7 @@ export default function RegisterPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xl font-bold text-primary-600">${selectedPackage.price}</div>
+                        <div className="text-xl font-bold text-primary-600">{selectedPackage.currency} {selectedPackage.price.toLocaleString()}</div>
                         <div className="text-xs text-gray-500">Total Amount</div>
                       </div>
                     </div>

@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
 
     const connection = await mysql.createConnection(dbConfig)
     await (connection as any).execute(`
-      INSERT INTO sponsorships (company_name, contact_person, email, phone, selected_package, status, submitted_at, created_at)
-      VALUES (?, ?, ?, ?, ?, 'pending', NOW(), NOW())
+      INSERT INTO sponsorships (company_name, contact_person, email, phone, selected_package, status, created_at)
+      VALUES (?, ?, ?, ?, ?, 'pending', NOW())
     `, [company_name, contact_person, email, phone, selected_package])
     
     await connection.end()

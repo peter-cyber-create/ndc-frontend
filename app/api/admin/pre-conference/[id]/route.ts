@@ -46,9 +46,9 @@ export async function PATCH(
       const updateFields: string[] = []
       const updateValues: any[] = []
 
-      if (updateData.approval_status !== undefined) {
-        updateFields.push('approval_status = ?')
-        updateValues.push(updateData.approval_status)
+      if (updateData.status !== undefined) {
+        updateFields.push('status = ?')
+        updateValues.push(updateData.status)
       }
 
       if (updateData.payment_status !== undefined) {
@@ -92,9 +92,9 @@ export async function PATCH(
       await (connection as any).execute(updateQuery, updateValues)
 
       // Send notification email if status changed
-      if (updateData.approval_status && updateData.approval_status !== meeting.approval_status) {
+      if (updateData.status && updateData.status !== meeting.status) {
         try {
-          await sendStatusUpdateEmail(meeting, updateData.approval_status, updateData.admin_notes)
+          await sendStatusUpdateEmail(meeting, updateData.status, updateData.admin_notes)
         } catch (emailError) {
           console.error('Failed to send status update email:', emailError)
           // Don't fail the update if email fails

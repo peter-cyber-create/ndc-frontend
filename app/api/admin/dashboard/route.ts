@@ -66,9 +66,9 @@ export async function GET() {
       },
       
       preConferenceByStatus: {
-        pending: preConferenceArray.filter((p: any) => p.approval_status === 'pending').length,
-        approved: preConferenceArray.filter((p: any) => p.approval_status === 'approved').length,
-        rejected: preConferenceArray.filter((p: any) => p.approval_status === 'rejected').length,
+        pending: preConferenceArray.filter((p: any) => p.status === 'pending').length,
+        approved: preConferenceArray.filter((p: any) => p.status === 'approved').length,
+        rejected: preConferenceArray.filter((p: any) => p.status === 'rejected').length,
       },
       
       // Recent activity
