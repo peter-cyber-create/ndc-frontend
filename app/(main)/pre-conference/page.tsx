@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useToast } from '@/hooks/useToast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,7 +10,6 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import PaymentInformation from '@/components/PaymentInformation'
 
 interface FormData {
   sessionTitle: string
@@ -27,10 +27,10 @@ interface FormData {
   expectedAttendees: string
   roomSize: string
   locationPreference: string
-  abstractText: string
   keywords: string
   specialRequirements: string
   paymentAmount: number
+  abstractFile: File | null
 }
 
 const initialFormData: FormData = {
@@ -49,13 +49,15 @@ const initialFormData: FormData = {
   expectedAttendees: '',
   roomSize: '',
   locationPreference: '',
-  abstractText: '',
   keywords: '',
   specialRequirements: '',
-  paymentAmount: 0
+  paymentAmount: 0,
+  abstractFile: null,
 }
 
+
 export default function PreConferencePage() {
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [formData, setFormData] = useState<FormData>(initialFormData)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
@@ -74,9 +76,15 @@ export default function PreConferencePage() {
     setDaysUntilDeadline(daysDiff)
   }, [])
 
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    const { name, value, type } = e.target
+    if (type === 'file') {
+      const file = (e.target as HTMLInputElement).files?.[0] || null
+      setFormData(prev => ({ ...prev, abstractFile: file }))
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }))
+    }
   }
 
   const handleSelectChange = (name: string, value: string) => {
@@ -99,36 +107,36 @@ export default function PreConferencePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
     if (!agreedToTerms) {
       error('Please agree to the terms and conditions')
       return
     }
-
     // Check submission deadline (September 30, 2025)
     const submissionDeadline = new Date('2025-09-30T23:59:59')
     const currentDate = new Date()
-    
     if (currentDate > submissionDeadline) {
       error('Submission deadline has passed. The deadline was September 30th, 2025.')
       return
     }
-
     setIsSubmitting(true)
-
     try {
+      const form = new FormData()
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === 'abstractFile' && value) {
+          form.append('abstractFile', value as File)
+        } else if (value !== null && value !== undefined) {
+          form.append(key, value as string)
+        }
+      })
       const response = await fetch('/api/pre-conference', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: form,
       })
-
       if (response.ok) {
         success('Pre-conference meeting submission successful! You will receive a confirmation email shortly.')
         setFormData(initialFormData)
         setAgreedToTerms(false)
+        if (fileInputRef.current) fileInputRef.current.value = ''
       } else {
         const errorData = await response.json()
         error(errorData.message || 'Failed to submit pre-conference meeting request')
@@ -409,20 +417,26 @@ export default function PreConferencePage() {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900">Abstract & Keywords</h3>
                 
-                <div>
-                  <Label htmlFor="abstractText">Abstract (250 words) *</Label>
-                  <Textarea
-                    id="abstractText"
-                    name="abstractText"
-                    value={formData.abstractText}
-                    onChange={handleInputChange}
-                    placeholder="Provide a 250-word abstract of your session including background, importance, and what the session will cover"
-                    rows={6}
-                    required
-                  />
-                  <p className="text-sm text-gray-500 mt-1">
-                    Please limit your abstract to approximately 250 words.
-                  </p>
+                {/* Abstract File Upload - Enhanced */}
+                <div className="my-6">
+                  <Label htmlFor="abstractFile" className="block text-lg font-bold text-primary-700 mb-2">
+                    Upload Abstract <span className="text-red-600">*</span>
+                  </Label>
+                  <div className="flex flex-col items-center justify-center border-2 border-dashed border-primary-400 rounded-xl p-8 bg-primary-50 shadow-sm">
+                    <input
+                      id="abstractFile"
+                      name="abstractFile"
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      ref={fileInputRef}
+                      onChange={handleInputChange}
+                      required
+                      className="block w-full text-lg text-primary-800 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-lg file:font-semibold file:bg-primary-200 file:text-primary-900 hover:file:bg-primary-300 focus:outline-none"
+                    />
+                    <p className="text-base text-primary-700 mt-3 font-medium">
+                      Please upload your abstract as a PDF or Word document. This is required for submission.
+                    </p>
+                  </div>
                 </div>
 
                 <div>
@@ -453,25 +467,17 @@ export default function PreConferencePage() {
                 </div>
               </div>
 
-              {/* Payment Information */}
-              {formData.paymentAmount > 0 && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Payment Information</h3>
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-blue-800 text-lg">
-                      <strong>Total Fee: ${formData.paymentAmount} USD</strong>
-                    </p>
-                    <p className="text-sm text-blue-600 mt-2">
-                      Based on USD $2000 per hour (3-hour minimum session). 
-                      Payment must be received within five business days of receipt of request.
-                    </p>
-                    <p className="text-sm text-blue-600 mt-1">
-                      <strong>Important:</strong> Rooms will not be assigned until payment is received.
-                    </p>
-                  </div>
-                  <PaymentInformation type="exhibition" />
-                </div>
-              )}
+              {/* Payment Information Link Only */}
+              <div className="text-center py-4">
+                <a
+                  href="/payment-instructions"
+                  className="text-primary-600 hover:text-primary-800 underline font-medium"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Pre-Conference Payment & Submission Guidelines →
+                </a>
+              </div>
 
               {/* Terms and Conditions */}
               <div className="space-y-4">

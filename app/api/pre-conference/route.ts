@@ -1,6 +1,9 @@
+
 import { NextRequest, NextResponse } from 'next/server'
 import mysql, { Connection } from 'mysql2/promise'
 import { emailService } from '../../../lib/emailService'
+import { promises as fs } from 'fs'
+import path from 'path'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -32,17 +35,39 @@ interface PreConferenceMeetingData {
   paymentAmount: number
 }
 
+
 export async function POST(request: NextRequest) {
   try {
+    // Check content type for multipart/form-data
+    const contentType = request.headers.get('content-type') || '';
+    let data: any = {};
+    let abstractFilePath = '';
 
-    const rawData = await request.json();
-    // Ensure optional fields are always defined
-    const data: PreConferenceMeetingData = {
-      ...rawData,
-      coOrganizers: rawData.coOrganizers ?? '',
-      specialRequirements: rawData.specialRequirements ?? '',
-      paymentAmount: typeof rawData.paymentAmount === 'number' ? rawData.paymentAmount : 0
-    };
+    if (contentType.startsWith('multipart/form-data')) {
+      // Parse multipart form data
+      const formData = await request.formData();
+      // Extract fields
+      data = Object.fromEntries(formData.entries());
+      // Handle file upload
+      const file = formData.get('abstractFile');
+      if (file && typeof file === 'object' && 'arrayBuffer' in file) {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'pre-conference');
+        const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_')}`;
+        abstractFilePath = path.join('uploads', 'pre-conference', fileName);
+        await fs.writeFile(path.join(process.cwd(), 'public', abstractFilePath), buffer);
+        data.abstractFilePath = abstractFilePath;
+      }
+    } else {
+      // fallback for JSON (should not be used by new frontend)
+      const rawData = await request.json();
+      data = {
+        ...rawData,
+        coOrganizers: rawData.coOrganizers ?? '',
+        specialRequirements: rawData.specialRequirements ?? '',
+        paymentAmount: typeof rawData.paymentAmount === 'number' ? rawData.paymentAmount : 0
+      };
+    }
 
     // Validate required fields
     const requiredFields = [
@@ -50,15 +75,21 @@ export async function POST(request: NextRequest) {
       'organizerEmail', 'organizerPhone', 'organization', 'meetingDate',
       'meetingTimeStart', 'meetingTimeEnd', 'expectedAttendees', 'roomSize',
       'locationPreference', 'abstractText', 'keywords'
-    ]
-
+    ];
     for (const field of requiredFields) {
       if (!data[field]) {
         return NextResponse.json(
           { message: `${field} is required` },
           { status: 400 }
-        )
+        );
       }
+    }
+    // If file upload is required, check for it
+    if (!data.abstractFilePath) {
+      return NextResponse.json(
+        { message: 'Abstract file is required' },
+        { status: 400 }
+      );
     }
 
     // Validate email format
@@ -125,13 +156,13 @@ export async function POST(request: NextRequest) {
       }
 
       // Insert the new pre-conference meeting
-  const [result] = await (connection as any).execute(
+      const [result] = await (connection as any).execute(
         `INSERT INTO pre_conference_meetings (
           session_title, session_description, meeting_type, organizer_name, organizer_email,
           organizer_phone, organization, co_organizers, meeting_date, meeting_time_start,
           meeting_time_end, session_duration, expected_attendees, room_size, location_preference, 
-          abstract_text, keywords, special_requirements, payment_amount, approval_status, submitted_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+          abstract_text, keywords, special_requirements, payment_amount, abstract_file_path, approval_status, submitted_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
         [
           data.sessionTitle,
           data.sessionDescription,
@@ -152,9 +183,10 @@ export async function POST(request: NextRequest) {
           data.keywords,
           data.specialRequirements || '',
           data.paymentAmount,
+          data.abstractFilePath || '',
           'pending'
         ]
-      )
+      );
 
       const insertResult = result as mysql.ResultSetHeader
       

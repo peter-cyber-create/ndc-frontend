@@ -18,7 +18,14 @@ export default function PaymentInstructionsPage() {
             Payment Instructions
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Complete your conference registration, sponsorship, or exhibition application by following these payment instructions.
+            Complete your conference registration, sponsorship, exhibition, or <span className="font-semibold text-primary-700">pre-conference meeting</span> application by following these payment and submission instructions.
+          </p>
+        </div>
+        {/* Pre-Conference Section Heading */}
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold text-primary-700 mb-4">Pre-Conference Meeting Payment & Submission Guidelines</h2>
+          <p className="text-lg text-gray-700 max-w-3xl mx-auto mb-2">
+            Please review the following payment and submission requirements for pre-conference meetings and organized sessions. Payment must be received within five business days of your request. Rooms will not be assigned until payment is received.
           </p>
         </div>
 
