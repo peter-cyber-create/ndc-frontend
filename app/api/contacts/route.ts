@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import mysql from 'mysql2/promise'
+import { emailService } from '../../../lib/emailService'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -25,12 +26,23 @@ export async function POST(request: NextRequest) {
     `, [name, email, safePhone, safeOrganization, safeInquiryType, message])
     
     await connection.end()
-    
+
+    // Send confirmation email
+    try {
+      await emailService.sendEmail({
+        to: email,
+        subject: 'Contact Form Received',
+        html: `<p>Dear ${name},<br>Your message has been received. We will get back to you soon.<br>Thank you!</p>`
+      })
+    } catch (emailError) {
+      console.error('Failed to send contact confirmation email:', emailError)
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Contact form submitted successfully'
     })
-    
+
   } catch (error) {
     console.error('Error submitting contact:', error)
     return NextResponse.json({ error: "Failed to submit contact" }, { status: 500 })

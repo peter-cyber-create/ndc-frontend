@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import mysql from 'mysql2/promise'
 import path from 'path'
 import { writeFile, mkdir } from 'fs/promises'
+import { emailService } from '../../../lib/emailService'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -48,6 +49,17 @@ export async function POST(request: NextRequest) {
     )
 
     await connection.end()
+
+    // Send confirmation email
+    try {
+      await emailService.sendEmail({
+        to: email,
+        subject: 'Exhibitor Application Received',
+        html: `<p>Dear ${contact_person},<br>Your exhibition application has been received. We will contact you soon.<br>Thank you!</p>`
+      })
+    } catch (emailError) {
+      console.error('Failed to send exhibitor confirmation email:', emailError)
+    }
 
     return NextResponse.json({
       success: true,

@@ -218,6 +218,15 @@ export default function AboutPage() {
             Be part of this historic gathering as we work together toward unified action against communicable and non-communicable diseases. 
             Together, we can build a healthier, more resilient Uganda.
           </p>
+          {/* Abstract Submission Poster */}
+          <div className="flex justify-center mb-8">
+            <img 
+              src="/images/Abstracts Submission extended Poster-v1.png"
+              alt="Abstract Submission Extended Poster"
+              className="max-w-full h-auto rounded-lg shadow-lg border border-white"
+              style={{ maxHeight: '420px' }}
+            />
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/register" className="bg-white text-primary-600 px-8 py-3 rounded-lg font-bold hover:bg-primary-50 transition-colors shadow-lg">
               Register Now

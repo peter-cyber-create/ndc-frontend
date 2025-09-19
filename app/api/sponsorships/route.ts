@@ -1,7 +1,9 @@
+
 import { NextRequest, NextResponse } from "next/server"
 import mysql from 'mysql2/promise'
 import { writeFile } from 'fs/promises'
 import { join } from 'path'
+import { emailService } from '../../../lib/emailService'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -33,12 +35,23 @@ export async function POST(request: NextRequest) {
     `, [company_name, contact_person, email, phone, selected_package])
     
     await connection.end()
-    
+
+    // Send confirmation email
+    try {
+      await emailService.sendEmail({
+        to: email,
+        subject: 'Sponsorship Application Received',
+        html: `<p>Dear ${contact_person},<br>Your sponsorship application has been received. We will contact you soon.<br>Thank you!</p>`
+      })
+    } catch (emailError) {
+      console.error('Failed to send sponsorship confirmation email:', emailError)
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Sponsorship application submitted successfully'
     })
-    
+
   } catch (error) {
     console.error('Error submitting sponsorship:', error)
     return NextResponse.json({ error: "Failed to submit sponsorship" }, { status: 500 })
