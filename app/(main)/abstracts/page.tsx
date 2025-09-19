@@ -306,6 +306,7 @@ export default function AbstractsPage() {
 
         {/* Important Information Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+          {/* Important Deadlines Card */}
           <Card className="border-0 shadow-lg bg-gradient-to-br from-primary-600 to-primary-700 text-white">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center text-lg">
@@ -318,136 +319,14 @@ export default function AbstractsPage() {
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Submission Deadline</span>
-                    <span className={`font-bold ${daysUntilDeadline > 0 ? 'text-yellow-300' : 'text-red-400'}`}>
-                      {daysUntilDeadline > 0 ? `${daysUntilDeadline} days left` : 'Deadline passed'}
-                    </span>
+                    <span className={`font-bold ${daysUntilDeadline > 0 ? 'text-yellow-300' : 'text-red-400'}`}>{daysUntilDeadline > 0 ? `${daysUntilDeadline} days left` : 'Deadline passed'}</span>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-600 to-green-700 text-white">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center text-lg">
-                <CheckCircle className="h-5 w-5 mr-3" />
-                Payment Information
-              </CardTitle>
-              <CardDescription className="text-green-100">
-                Complete your payment to secure your spot
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Total Fee Information */}
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                  <div className="flex items-start">
-                    <CheckCircle className="h-6 w-6 text-green-400 mr-3 mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="text-xl font-bold text-white mb-2">Total Fee: $6000 USD</h4>
-                      <p className="text-green-100 text-sm">
-                        Based on USD $2000 per hour (3-hour minimum session). Payment must be received within five business days.
-                      </p>
-                      <div className="bg-yellow-100 border-l-4 border-yellow-500 p-3 mt-3">
-                        <div className="flex items-start">
-                          <AlertCircle className="h-4 w-4 text-yellow-600 mr-2 mt-1 flex-shrink-0" />
-                          <p className="text-yellow-800 font-semibold text-xs">
-                            Rooms will not be assigned until payment is received.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bank Transfer Details */}
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                  <div className="flex items-start">
-                    <Upload className="h-5 w-5 text-green-400 mr-3 mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="text-lg font-bold text-white mb-3">Bank Transfer Details</h4>
-                      <div className="grid grid-cols-1 gap-3">
-                        {/* UGX Account */}
-                        <div className="bg-white rounded-lg p-3 border border-green-200">
-                          <h5 className="font-semibold text-gray-900 mb-2 text-sm">UGX Account</h5>
-                          <div className="space-y-1 text-xs">
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Account Title:</span>
-                              <span className="font-mono text-gray-900">MU SPH Research Account</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Account Number:</span>
-                              <span className="font-mono text-gray-900">9030005611449</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Bank:</span>
-                              <span className="font-mono text-gray-900">Stanbic Bank Uganda Limited</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Swift Code:</span>
-                              <span className="font-mono text-gray-900">SBICUGKX</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* USD Account */}
-                        <div className="bg-white rounded-lg p-3 border border-green-200">
-                          <h5 className="font-semibold text-gray-900 mb-2 text-sm">USD Account</h5>
-                          <div className="space-y-1 text-xs">
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Intermediary Bank:</span>
-                              <span className="font-mono text-gray-900">Citibank New York</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">USD Account:</span>
-                              <span className="font-mono text-gray-900">36110279</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">SWIFT:</span>
-                              <span className="font-mono text-gray-900">CITIUS33</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">ABA Number:</span>
-                              <span className="font-mono text-gray-900">021000089</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Important Payment Instructions */}
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                  <div className="flex items-start">
-                    <AlertCircle className="h-5 w-5 text-yellow-400 mr-3 mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="text-lg font-bold text-white mb-2">Important Instructions</h4>
-                      <ul className="text-green-100 space-y-1 text-sm">
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Use your full name as payment reference</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Upload payment proof immediately after transfer</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Payment must be made within 24 hours</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Contact us if you need assistance</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
+          {/* Review Process Card */}
           <Card className="border-0 shadow-lg bg-gradient-to-br from-primary-600 to-primary-700 text-white">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center text-lg">
@@ -468,7 +347,25 @@ export default function AbstractsPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Submission Requirements Card */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-100 to-blue-200 text-blue-900">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-lg">
+                <AlertCircle className="h-5 w-5 mr-3 text-blue-600" />
+                Submission Requirements
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-sm text-blue-800 list-disc pl-6 space-y-1">
+                <li>Maximum 300 words</li>
+                <li>Maximum file size: 2MB</li>
+                <li>PDF, DOC, or DOCX format</li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
+
 
         {/* Main Content - Single Column Layout */}
         <div className="max-w-4xl mx-auto">
