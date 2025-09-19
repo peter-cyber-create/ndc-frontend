@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import { 
   Search, Filter, Eye, Trash2, CheckCircle, XCircle, 
-  Clock, AlertCircle, User, Mail, Building, Phone, Calendar
+  Clock, AlertCircle, User, Mail, Building, Phone, Calendar,
+  Download, RefreshCw
 } from 'lucide-react'
 
 interface Contact {
@@ -37,6 +38,17 @@ export default function ContactsPage() {
   useEffect(() => {
     loadContacts()
   }, [])
+
+  // Auto-refresh data every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!loading && !error) {
+        loadContacts()
+      }
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(interval)
+  }, [loading, error])
 
   const loadContacts = async () => {
     try {
@@ -144,6 +156,33 @@ export default function ContactsPage() {
     setViewOpen(true)
   }
 
+  const exportToCSV = () => {
+    const data = filteredContacts.map(contact => ({
+      'ID': contact.id,
+      'Name': contact.name,
+      'Email': contact.email,
+      'Phone': contact.phone || 'N/A',
+      'Organization': contact.organization,
+      'Inquiry Type': contact.inquiry_type,
+      'Status': contact.status,
+      'Submitted Date': new Date(contact.created_at).toLocaleDateString(),
+      'Message Preview': contact.message.substring(0, 100) + (contact.message.length > 100 ? '...' : '')
+    }))
+
+    const csvContent = [
+      Object.keys(data[0]).join(','),
+      ...data.map(row => Object.values(row).map(val => `"${val}"`).join(','))
+    ].join('\n')
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `contacts_${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -175,8 +214,28 @@ export default function ContactsPage() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Contacts</h1>
-        <p className="text-gray-600">Manage contact inquiries</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Contacts</h1>
+            <p className="text-gray-600">Manage contact inquiries</p>
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={exportToCSV}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </button>
+            <button
+              onClick={loadContacts}
+              className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}

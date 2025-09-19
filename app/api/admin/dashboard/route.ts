@@ -32,6 +32,9 @@ export async function GET() {
     const exhibitorsArray = exhibitors as any[]
     const preConferenceArray = preConference as any[]
     
+    console.log("DEBUG: Total pre-conference from DB:", preConferenceArray.length);
+    console.log("DEBUG: Pre-conference statuses:", preConferenceArray.map((p: any) => p.approval_status));
+    
     const stats = {
       totalRegistrations: registrationsArray.length,
       totalAbstracts: abstractsArray.length,
@@ -66,9 +69,9 @@ export async function GET() {
       },
       
       preConferenceByStatus: {
-        pending: preConferenceArray.filter((p: any) => p.status === 'pending').length,
-        approved: preConferenceArray.filter((p: any) => p.status === 'approved').length,
-        rejected: preConferenceArray.filter((p: any) => p.status === 'rejected').length,
+        pending: preConferenceArray.filter((p: any) => p.approval_status === 'pending').length,
+        approved: preConferenceArray.filter((p: any) => p.approval_status === 'approved').length,
+        rejected: preConferenceArray.filter((p: any) => p.approval_status === 'rejected').length,
       },
       
       // Recent activity
@@ -137,6 +140,12 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       data: stats
+    }, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     })
   } catch (error) {
     console.error('Error fetching dashboard data:', error)

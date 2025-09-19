@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { 
   Search, Filter, Download, Eye, Trash2, CheckCircle, XCircle, 
   Clock, AlertCircle, User, Mail, Building, Phone, Calendar,
-  Package, ExternalLink, DollarSign, Award
+  Package, ExternalLink, DollarSign, Award, RefreshCw
 } from 'lucide-react'
 
 interface Exhibitor {
@@ -58,6 +58,17 @@ export default function ExhibitorsPage() {
   useEffect(() => {
     loadExhibitors()
   }, [])
+
+  // Auto-refresh data every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!loading && !error) {
+        loadExhibitors()
+      }
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(interval)
+  }, [loading, error])
 
   const loadExhibitors = async () => {
     try {
@@ -228,13 +239,75 @@ export default function ExhibitorsPage() {
     )
   }
 
+  const exportToCSV = () => {
+    if (exhibitors.length === 0) {
+      alert('No data to export')
+      return
+    }
+
+    const csvData = exhibitors.map(exhibitor => ({
+      'ID': exhibitor.id,
+      'Company Name': exhibitor.company_name,
+      'Contact Person': exhibitor.contact_person,
+      'Email': exhibitor.email,
+      'Phone': exhibitor.phone,
+      'Address': exhibitor.address || '',
+      'City': exhibitor.city || '',
+      'Country': exhibitor.country || '',
+      'Selected Package': exhibitor.selected_package,
+      'Exhibition Amount (UGX)': getExhibitionAmount(exhibitor.selected_package),
+      'Booth Preference': exhibitor.booth_preference || '',
+      'Special Requirements': exhibitor.special_requirements || '',
+      'Additional Info': exhibitor.additional_info || '',
+      'Status': exhibitor.status,
+      'Submitted At': new Date(exhibitor.submitted_at).toLocaleDateString(),
+      'Payment Proof': exhibitor.payment_proof_url ? 'Yes' : 'No'
+    }))
+
+    const headers = Object.keys(csvData[0])
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => headers.map(header => `"${row[header]}"`).join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `exhibitors_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Exhibition Management</h1>
-          <p className="text-gray-600 mt-2">Manage and review exhibition applications</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Exhibition Management</h1>
+              <p className="text-gray-600 mt-2">Manage and review exhibition applications</p>
+            </div>
+            <div className="flex space-x-2">
+              <button
+                onClick={exportToCSV}
+                className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export CSV
+              </button>
+              <button
+                onClick={loadExhibitors}
+                className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Stats */}

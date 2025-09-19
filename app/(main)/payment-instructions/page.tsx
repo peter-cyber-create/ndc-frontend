@@ -105,15 +105,101 @@ export default function PaymentInstructionsPage() {
             <CardHeader className="bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-t-lg">
               <CardTitle className="flex items-center text-2xl">
                 <CheckCircle className="h-8 w-8 mr-3" />
-                Payment Guidelines
+                Payment Information
               </CardTitle>
               <CardDescription className="text-primary-100 text-lg">
-                Important information for successful payment
+                Complete your payment to secure your spot
               </CardDescription>
             </CardHeader>
             <CardContent className="p-8">
               <div className="space-y-6">
-                {/* Important Instructions */}
+                {/* Total Fee Information */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200">
+                  <div className="flex items-start">
+                    <CreditCard className="h-8 w-8 text-green-600 mr-4 mt-1 flex-shrink-0" />
+                    <div>
+                      <h4 className="text-2xl font-bold text-green-800 mb-3">Total Fee: $6000 USD</h4>
+                      <p className="text-green-700 text-lg mb-2">
+                        Based on USD $2000 per hour (3-hour minimum session). Payment must be received within five business days of receipt of request.
+                      </p>
+                      <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mt-4">
+                        <div className="flex items-start">
+                          <AlertCircle className="h-6 w-6 text-yellow-600 mr-3 mt-1 flex-shrink-0" />
+                          <p className="text-yellow-800 font-semibold">
+                            Important: Rooms will not be assigned until payment is received.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bank Transfer Details */}
+                <div className="bg-blue-50 rounded-xl p-6 border-2 border-blue-200">
+                  <div className="flex items-start">
+                    <Banknote className="h-6 w-6 text-blue-600 mr-3 mt-1 flex-shrink-0" />
+                    <div>
+                      <h4 className="text-lg font-bold text-blue-800 mb-3">Bank Transfer Details</h4>
+                      <div className="grid grid-cols-1 gap-4">
+                        {/* UGX Account */}
+                        <div className="bg-white rounded-lg p-4 border border-blue-200">
+                          <h5 className="font-semibold text-gray-900 mb-2">UGX Account</h5>
+                          <div className="space-y-1 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Account Title:</span>
+                              <span className="font-mono text-gray-900">MU SPH Research Account</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Account Number:</span>
+                              <span className="font-mono text-gray-900">9030005611449</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Bank:</span>
+                              <span className="font-mono text-gray-900">Stanbic Bank Uganda Limited</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Branch:</span>
+                              <span className="font-mono text-gray-900">Corporate Branch</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Swift Code:</span>
+                              <span className="font-mono text-gray-900">SBICUGKX</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* USD Account */}
+                        <div className="bg-white rounded-lg p-4 border border-blue-200">
+                          <h5 className="font-semibold text-gray-900 mb-2">USD Account</h5>
+                          <div className="space-y-1 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Intermediary Bank:</span>
+                              <span className="font-mono text-gray-900">Citibank New York</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Address:</span>
+                              <span className="font-mono text-gray-900">New York, NY</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">USD Account:</span>
+                              <span className="font-mono text-gray-900">36110279</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">SWIFT:</span>
+                              <span className="font-mono text-gray-900">CITIUS33</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">ABA Number:</span>
+                              <span className="font-mono text-gray-900">021000089</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Important Payment Instructions */}
                 <div className="bg-yellow-50 rounded-xl p-6 border-2 border-yellow-200">
                   <div className="flex items-start">
                     <AlertCircle className="h-6 w-6 text-yellow-600 mr-3 mt-1 flex-shrink-0" />
@@ -141,6 +227,19 @@ export default function PaymentInstructionsPage() {
                   </div>
                 </div>
 
+                {/* Payment Confirmation */}
+                <div className="bg-green-50 rounded-xl p-6 border-2 border-green-200">
+                  <div className="flex items-start">
+                    <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-1 flex-shrink-0" />
+                    <div>
+                      <h4 className="text-lg font-bold text-green-800 mb-2">Payment Confirmation</h4>
+                      <p className="text-green-700">
+                        Your payment will be verified within 24-48 hours. You'll receive a confirmation email once approved.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Processing Time */}
                 <div className="bg-blue-50 rounded-xl p-6 border-2 border-blue-200">
                   <div className="flex items-start">
@@ -149,19 +248,6 @@ export default function PaymentInstructionsPage() {
                       <h4 className="text-lg font-bold text-blue-800 mb-2">Processing Time</h4>
                       <p className="text-blue-700">
                         Payment verification typically takes 1-2 business days. You can track your application status in your email.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Confirmation */}
-                <div className="bg-green-50 rounded-xl p-6 border-2 border-green-200">
-                  <div className="flex items-start">
-                    <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="text-lg font-bold text-green-800 mb-2">Payment Confirmation</h4>
-                      <p className="text-green-700">
-                        Your payment will be verified within 24-48 hours. You'll receive a confirmation email once approved.
                       </p>
                     </div>
                   </div>
@@ -283,7 +369,7 @@ export default function PaymentInstructionsPage() {
                   <Phone className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Phone Support</h3>
-                <p className="text-gray-300">+256 700 000 000</p>
+                <p className="text-gray-300">0800-100-066</p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">

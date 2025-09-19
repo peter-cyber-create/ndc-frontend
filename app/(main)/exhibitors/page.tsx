@@ -238,7 +238,6 @@ export default function ExhibitorsPage() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Important Dates:</h3>
                   <ul className="list-disc list-inside space-y-2 text-gray-700">
                     <li><strong>Submission Deadline:</strong> 12th October 2025</li>
-                    <li><strong>Notification of Acceptance:</strong> 25th October 2025</li>
                   </ul>
                 </div>
                 

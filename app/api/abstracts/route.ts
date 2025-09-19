@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
     const position = formData.get('position') as string
     const district = formData.get('district') as string
     const coAuthors = formData.get('co_authors') as string
-    const abstractSummary = formData.get('abstract_summary') as string
     const keywords = formData.get('keywords') as string
     const background = formData.get('background') as string
     const methods = formData.get('methods') as string
@@ -55,7 +54,6 @@ export async function POST(request: NextRequest) {
       institution: !!institution,
       position: !!position,
       district: !!district,
-      abstractSummary: !!abstractSummary,
       keywords: !!keywords,
       background: !!background,
       methods: !!methods,
@@ -66,7 +64,7 @@ export async function POST(request: NextRequest) {
     })
     
     if (!title || !presentationType || !conferenceTrack || !firstName || !lastName || 
-        !email || !phone || !institution || !position || !district || !abstractSummary || 
+        !email || !phone || !institution || !position || !district || 
         !keywords || !background || !methods || !findings || !conclusion || !consentToPublish || !file) {
       return NextResponse.json(
         { error: 'All required fields must be filled and abstract file must be uploaded' },
@@ -131,14 +129,14 @@ export async function POST(request: NextRequest) {
     const [result] = await (connection as any).execute(
       `INSERT INTO abstracts 
        (title, presentation_type, category, subcategory, primary_author, co_authors, 
-        abstract_summary, keywords, background, methods, findings, conclusion, 
+        keywords, background, methods, findings, conclusion, 
         implications, file_url, conflict_of_interest, ethical_approval, 
         consent_to_publish, author_phone, corresponding_author, corresponding_email, 
         corresponding_phone) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title, presentationType, conferenceTrack, subcategory, primaryAuthor, coAuthors,
-        abstractSummary, keywords, background, methods, findings, conclusion,
+        keywords, background, methods, findings, conclusion,
         policyImplications, fileUrl, conflictOfInterest, ethicalApproval,
         consentToPublish, phone, `${firstName} ${lastName}`, email, phone
       ]

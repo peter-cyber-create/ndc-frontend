@@ -44,6 +44,17 @@ export default function AbstractsPage() {
     loadAbstracts()
   }, [])
 
+  // Auto-refresh data every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!loading && !error) {
+        loadAbstracts()
+      }
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(interval)
+  }, [loading, error])
+
   const loadAbstracts = async () => {
     try {
       setLoading(true)
@@ -142,6 +153,35 @@ export default function AbstractsPage() {
     setViewOpen(true)
   }
 
+  const exportToCSV = () => {
+    const data = filteredAbstracts.map(abstract => ({
+      'ID': abstract.id,
+      'Title': abstract.title,
+      'Primary Author': abstract.primary_author,
+      'Corresponding Author': abstract.corresponding_author || 'N/A',
+      'Email': abstract.corresponding_email,
+      'Phone': abstract.author_phone || abstract.corresponding_phone || 'N/A',
+      'Organization': abstract.organization,
+      'Category': abstract.category,
+      'Status': abstract.status,
+      'Submitted Date': new Date(abstract.created_at).toLocaleDateString(),
+      'Has File': abstract.file_url ? 'Yes' : 'No'
+    }))
+
+    const csvContent = [
+      Object.keys(data[0]).join(','),
+      ...data.map(row => Object.values(row).map(val => `"${val}"`).join(','))
+    ].join('\n')
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `abstracts_${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'accepted':
@@ -218,13 +258,22 @@ export default function AbstractsPage() {
             <h1 className="text-3xl font-bold text-gray-900">Abstracts</h1>
             <p className="text-gray-600">Manage conference abstracts</p>
           </div>
-          <button
-            onClick={loadAbstracts}
-            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={exportToCSV}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </button>
+            <button
+              onClick={loadAbstracts}
+              className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </button>
+          </div>
         </div>
       </div>
 

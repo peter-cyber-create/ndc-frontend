@@ -19,6 +19,7 @@ interface Registration {
   registrationType: string
   status: string
   paymentProofUrl: string
+  passportPhotoUrl: string
   createdAt: string
   updatedAt: string
 }
@@ -43,6 +44,17 @@ export default function RegistrationsPage() {
   useEffect(() => {
     loadRegistrations()
   }, [])
+
+  // Auto-refresh data every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!loading && !error) {
+        loadRegistrations()
+      }
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(interval)
+  }, [loading, error])
 
   const loadRegistrations = async () => {
     try {
@@ -199,6 +211,71 @@ export default function RegistrationsPage() {
     setViewOpen(true)
   }
 
+  const exportToCSV = () => {
+    const getRegistrationCost = (type: string): string => {
+      const costs: { [key: string]: string } = {
+        'undergrad': 'UGX 100,000',
+        'grad': 'UGX 150,000',
+        'local': 'UGX 350,000',
+        'international': 'USD 300',
+        'online': 'UGX 180,000'
+      }
+      return costs[type] || 'N/A'
+    }
+
+    const data = filteredRegistrations.map(reg => ({
+      'ID': reg.id,
+      'First Name': reg.firstName,
+      'Last Name': reg.lastName,
+      'Email': reg.email,
+      'Phone': reg.phone,
+      'Institution': reg.institution,
+      'Position': reg.position,
+      'Registration Type': reg.registrationType,
+      'Cost': getRegistrationCost(reg.registrationType),
+      'Status': reg.status,
+      'Created At': new Date(reg.createdAt).toLocaleDateString(),
+      'Updated At': reg.updatedAt ? new Date(reg.updatedAt).toLocaleDateString() : 'N/A'
+    }))
+
+    const csvContent = [
+      Object.keys(data[0]).join(','),
+      ...data.map(row => Object.values(row).map(val => `"${val}"`).join(','))
+    ].join('\n')
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `registrations_${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleDownloadPassportPhoto = async (passportPhotoUrl: string, registration: Registration) => {
+    try {
+      const personName = `${registration.firstName}_${registration.lastName}`
+      const response = await fetch(`/api/uploads/passport-photo/download?file=${encodeURIComponent(passportPhotoUrl)}&name=${encodeURIComponent(personName)}&type=PassportPhoto`)
+
+      if (!response.ok) {
+        throw new Error(`Failed to download file: ${response.statusText}`)
+      }
+
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${personName}_passport_photo.jpg`
+      link.click()
+      URL.revokeObjectURL(url)
+      
+      success('Passport photo downloaded successfully')
+    } catch (error) {
+      console.error('Error downloading passport photo:', error)
+      errorToast('Failed to download passport photo')
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -235,13 +312,22 @@ export default function RegistrationsPage() {
             <h1 className="text-3xl font-bold text-gray-900">Registrations</h1>
             <p className="text-gray-600">Manage conference registrations</p>
           </div>
-          <button
-            onClick={loadRegistrations}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={exportToCSV}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </button>
+            <button
+              onClick={loadRegistrations}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </button>
+          </div>
         </div>
       </div>
 
@@ -387,6 +473,16 @@ export default function RegistrationsPage() {
                       >
                         <Eye className="h-4 w-4" />
                       </button>
+                      
+                      {registration.passportPhotoUrl && (
+                        <button
+                          onClick={() => handleDownloadPassportPhoto(registration.passportPhotoUrl, registration)}
+                          className="text-purple-600 hover:text-purple-900"
+                          title="Download Passport Photo"
+                        >
+                          <Download className="h-4 w-4" />
+                        </button>
+                      )}
                       
                       {registration.status === 'pending' && (
                         <>

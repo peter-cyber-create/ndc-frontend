@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { Eye, Check, X, DollarSign, Calendar, Users, MapPin, Clock } from 'lucide-react'
+import { Eye, Check, X, DollarSign, Calendar, Users, MapPin, Clock, Download, RefreshCw } from 'lucide-react'
 
 interface PreConferenceMeeting {
   id: number
@@ -58,9 +58,25 @@ export default function AdminPreConferencePage() {
   const [isProcessing, setIsProcessing] = useState(false)
   const { success, error } = useToast()
 
+  // API URL - use relative path for production
+  const API_URL = typeof window !== 'undefined' && window.location.hostname === 'conference.health.go.ug' 
+    ? 'https://conference.health.go.ug' 
+    : 'http://localhost:3000'
+
   useEffect(() => {
     fetchMeetings()
   }, [filter, pagination.page])
+
+  // Auto-refresh data every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!loading && !isProcessing) {
+        fetchMeetings()
+      }
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(interval)
+  }, [loading, isProcessing, filter, pagination.page])
 
   const fetchMeetings = async () => {
     setLoading(true)
@@ -74,7 +90,7 @@ export default function AdminPreConferencePage() {
         queryParams.append('status', filter)
       }
 
-      const response = await fetch(`/api/pre-conference?${queryParams}`)
+      const response = await fetch(`${API_URL}/api/admin/pre-conference?${queryParams}`)
       if (response.ok) {
         const data = await response.json()
         setMeetings(data.meetings)
@@ -93,7 +109,7 @@ export default function AdminPreConferencePage() {
   const handleStatusUpdate = async (meetingId: number, newStatus: string, notes?: string) => {
     setIsProcessing(true)
     try {
-      const response = await fetch(`/api/admin/pre-conference/${meetingId}`, {
+      const response = await fetch(`${API_URL}/api/admin/pre-conference/${meetingId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +141,7 @@ export default function AdminPreConferencePage() {
   const handlePaymentStatusUpdate = async (meetingId: number, paymentStatus: string) => {
     setIsProcessing(true)
     try {
-      const response = await fetch(`/api/admin/pre-conference/${meetingId}`, {
+      const response = await fetch(`${API_URL}/api/admin/pre-conference/${meetingId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -376,12 +392,75 @@ export default function AdminPreConferencePage() {
     </div>
   )
 
+  const exportToCSV = () => {
+    if (meetings.length === 0) {
+      error('No data to export')
+      return
+    }
+
+    const csvData = meetings.map(meeting => ({
+      'ID': meeting.id,
+      'Session Title': meeting.session_title,
+      'Organizer Name': meeting.organizer_name,
+      'Organizer Email': meeting.organizer_email,
+      'Organization': meeting.organization,
+      'Meeting Type': meeting.meeting_type,
+      'Meeting Date': meeting.meeting_date,
+      'Start Time': meeting.meeting_time_start,
+      'End Time': meeting.meeting_time_end,
+      'Expected Attendees': meeting.expected_attendees,
+      'Room Size': meeting.room_size,
+      'Location Preference': meeting.location_preference,
+      'Payment Amount (UGX)': meeting.payment_amount,
+      'Payment Status': meeting.payment_status,
+      'Approval Status': meeting.approval_status,
+      'Submitted At': new Date(meeting.submitted_at).toLocaleDateString()
+    }))
+
+    const headers = Object.keys(csvData[0])
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => headers.map(header => `"${row[header]}"`).join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `pre_conference_meetings_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Pre-Conference Meetings Management</h1>
-          <p className="text-gray-600">Review and manage pre-conference meeting submissions</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Pre-Conference Meetings Management</h1>
+              <p className="text-gray-600">Review and manage pre-conference meeting submissions</p>
+            </div>
+            <div className="flex space-x-2">
+              <Button
+                onClick={exportToCSV}
+                className="flex items-center bg-green-600 hover:bg-green-700"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export CSV
+              </Button>
+              <Button
+                onClick={fetchMeetings}
+                variant="outline"
+                className="flex items-center"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Filters */}

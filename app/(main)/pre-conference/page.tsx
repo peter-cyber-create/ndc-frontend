@@ -143,7 +143,7 @@ export default function PreConferencePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -158,83 +158,19 @@ export default function PreConferencePage() {
           </p>
         </div>
 
-        {/* Guidelines Section */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-2xl text-blue-700">Submission Guidelines</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-semibold text-lg mb-3">Submission Requirements</h3>
-                <ul className="space-y-2 text-gray-700">
-                  <li>• Submissions should be in the form of a <strong>250-word abstract</strong></li>
-                  <li>• Include a title, the names and affiliations of all authors</li>
-                  <li>• Include 3-5 keywords</li>
-                  <li>• Maximum of 200 attendees per session</li>
-                  <li>• Sessions available 9am to 4pm EAT</li>
-                  <li>• <strong>2-3 hour minimum</strong> required to book meeting space</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-3">Important Dates</h3>
-                <ul className="space-y-2 text-gray-700">
-                  <li>• <strong>Submission Deadline:</strong> 30th September 2025</li>
-                  <li>• <strong>Notification of Acceptance:</strong> 13th October 2025</li>
-                  <li>• <strong>Available Dates:</strong> November 3rd - 4th, 2025</li>
-                  <li>• <strong>Location:</strong> Munyonyo Speke Resort / Virtual</li>
-                </ul>
-                
-                <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                  <p className="text-orange-800 text-sm font-medium">
-                    {daysUntilDeadline > 0 ? (
-                      <>⚠️ <strong>Deadline Approaching:</strong> Only {daysUntilDeadline} days remaining until the submission deadline (September 30th, 2025)</>
-                    ) : (
-                      <>🚫 <strong>Deadline Passed:</strong> The submission deadline (September 30th, 2025) has passed</>
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400">
-              <h4 className="font-semibold text-blue-800 mb-2">Payment & Booking Information:</h4>
-              <ul className="text-blue-700 space-y-1">
-                <li>• <strong>Cost:</strong> USD $2000 per hour</li>
-                <li>• Payment must be received within five business days of receipt of request</li>
-                <li>• Rooms will not be assigned until payment is received</li>
-                <li>• Bookings are based on number of attendees (Max of 200)</li>
-              </ul>
-            </div>
-            
-            <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400">
-              <h4 className="font-semibold text-yellow-800 mb-2">Cancellation Policy:</h4>
-              <ul className="text-yellow-700 space-y-1">
-                <li>• $100 US cancellation fee per meeting applies to all cancellations made by October 29</li>
-                <li>• No fees will be refunded for cancellations received after October 29</li>
-              </ul>
-            </div>
-            
-            <div className="mt-4 p-4 bg-green-50 border-l-4 border-green-400">
-              <h4 className="font-semibold text-green-800 mb-2">How to Submit:</h4>
-              <p className="text-green-700">
-                Please email your abstract to <strong>moh.conference@health.go.ug</strong> with the subject line 
-                "Submission for [Session Title]" or use the online form below.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Registration Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl text-green-700">Submit Your Proposal</CardTitle>
-            <CardDescription>
-              Complete the form below to submit your pre-conference meeting proposal. All fields marked with * are required.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Two Column Layout */}
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Left Column - Submission Form */}
+          <div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl text-green-700">Submit Your Proposal</CardTitle>
+                <CardDescription>
+                  Complete the form below to submit your pre-conference meeting proposal. All fields marked with * are required.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900">Session Information</h3>
@@ -556,18 +492,106 @@ export default function PreConferencePage() {
               </div>
 
               {/* Submit Button */}
-              <div className="pt-6">
+              <div className="pt-6 space-y-4">
+                <div className="text-center">
+                  <a
+                    href="/payment-instructions"
+                    className="text-primary-600 hover:text-primary-800 underline font-medium"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Payment Information & Account Numbers →
+                  </a>
+                </div>
                 <Button
                   type="submit"
                   className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Pre-Conference Proposal'}
+                  {isSubmitting ? 'Submitting...' : 'Submit Proposal'}
                 </Button>
               </div>
             </form>
           </CardContent>
         </Card>
+          </div>
+
+          {/* Right Column - Guidelines and Payment Information */}
+          <div className="space-y-6">
+            {/* Submission Guidelines */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl text-blue-700">Submission Guidelines</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h3 className="font-semibold text-lg mb-3">Submission Requirements</h3>
+                  <ul className="space-y-2 text-gray-700">
+                    <li>• Submissions should be in the form of a <strong>250-word abstract</strong></li>
+                    <li>• Include a title, the names and affiliations of all authors</li>
+                    <li>• Include 3-5 keywords</li>
+                    <li>• Maximum of 200 attendees per session</li>
+                    <li>• Sessions available 9am to 4pm EAT</li>
+                    <li>• <strong>2-3 hour minimum</strong> required to book meeting space</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-lg mb-3">Important Dates</h3>
+                  <ul className="space-y-2 text-gray-700">
+                    <li>• <strong>Submission Deadline:</strong> 30th September 2025</li>
+                    <li>• <strong>Available Dates:</strong> November 3rd - 4th, 2025</li>
+                    <li>• <strong>Location:</strong> Munyonyo Speke Resort / Virtual</li>
+                  </ul>
+                  
+                  <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                    <p className="text-orange-800 text-sm font-medium">
+                      {daysUntilDeadline > 0 ? (
+                        <>⚠️ <strong>Deadline Approaching:</strong> Only {daysUntilDeadline} days remaining until the submission deadline (September 30th, 2025)</>
+                      ) : (
+                        <>🚫 <strong>Deadline Passed:</strong> The submission deadline (September 30th, 2025) has passed</>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Payment Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl text-green-700">Payment & Booking Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-blue-50 border-l-4 border-blue-400">
+                  <h4 className="font-semibold text-blue-800 mb-2">Pricing:</h4>
+                  <ul className="text-blue-700 space-y-1">
+                    <li>• <strong>Cost:</strong> USD $2000 per hour</li>
+                    <li>• Payment must be received within five business days of receipt of request</li>
+                    <li>• Rooms will not be assigned until payment is received</li>
+                    <li>• Bookings are based on number of attendees (Max of 200)</li>
+                  </ul>
+                </div>
+                
+                <div className="p-4 bg-yellow-50 border-l-4 border-yellow-400">
+                  <h4 className="font-semibold text-yellow-800 mb-2">Cancellation Policy:</h4>
+                  <ul className="text-yellow-700 space-y-1">
+                    <li>• $100 US cancellation fee per meeting applies to all cancellations made by October 29</li>
+                    <li>• No fees will be refunded for cancellations received after October 29</li>
+                  </ul>
+                </div>
+                
+                <div className="p-4 bg-green-50 border-l-4 border-green-400">
+                  <h4 className="font-semibold text-green-800 mb-2">How to Submit:</h4>
+                  <p className="text-green-700">
+                    Please email your abstract to <strong>moh.conference@health.go.ug</strong> with the subject line 
+                    "Submission for [Session Title]" or use the online form below.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   )

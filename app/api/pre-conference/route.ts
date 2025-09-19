@@ -34,7 +34,15 @@ interface PreConferenceMeetingData {
 
 export async function POST(request: NextRequest) {
   try {
-    const data: PreConferenceMeetingData = await request.json()
+
+    const rawData = await request.json();
+    // Ensure optional fields are always defined
+    const data: PreConferenceMeetingData = {
+      ...rawData,
+      coOrganizers: rawData.coOrganizers ?? '',
+      specialRequirements: rawData.specialRequirements ?? '',
+      paymentAmount: typeof rawData.paymentAmount === 'number' ? rawData.paymentAmount : 0
+    };
 
     // Validate required fields
     const requiredFields = [
@@ -105,7 +113,7 @@ export async function POST(request: NextRequest) {
     try {
       // Check if email already has a pending or approved submission
   const [existingRecords] = await (connection as any).execute(
-        'SELECT id FROM pre_conference_meetings WHERE organizer_email = ? AND status IN (?, ?)',
+        'SELECT id FROM pre_conference_meetings WHERE organizer_email = ? AND approval_status IN (?, ?)',
         [data.organizerEmail, 'pending', 'approved']
       )
 
@@ -122,7 +130,7 @@ export async function POST(request: NextRequest) {
           session_title, session_description, meeting_type, organizer_name, organizer_email,
           organizer_phone, organization, co_organizers, meeting_date, meeting_time_start,
           meeting_time_end, session_duration, expected_attendees, room_size, location_preference, 
-          abstract_text, keywords, special_requirements, payment_amount, status, created_at
+          abstract_text, keywords, special_requirements, payment_amount, approval_status, submitted_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
         [
           data.sessionTitle,
@@ -133,7 +141,7 @@ export async function POST(request: NextRequest) {
           data.organizerPhone,
           data.organization,
           data.coOrganizers || '',
-          data.meetingDate,
+          data.meetingDate === '2025-11-03' ? 'november_3' : data.meetingDate === '2025-11-04' ? 'november_4' : 'both_days',
           data.meetingTimeStart,
           data.meetingTimeEnd,
           parseInt(data.sessionDuration) || 3,

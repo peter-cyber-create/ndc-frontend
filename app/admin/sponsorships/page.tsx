@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { 
   Search, Filter, Eye, Trash2, CheckCircle, XCircle, 
   Clock, AlertCircle, User, Mail, Building, Phone, Calendar,
-  Package, Star, Award, Shield, Zap, Download
+  Package, Star, Award, Shield, Zap, Download, RefreshCw
 } from 'lucide-react'
 
 interface Sponsorship {
@@ -39,6 +39,17 @@ export default function SponsorshipsPage() {
   useEffect(() => {
     loadSponsorships()
   }, [])
+
+  // Auto-refresh data every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!loading && !error) {
+        loadSponsorships()
+      }
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(interval)
+  }, [loading, error])
 
   const loadSponsorships = async () => {
     try {
@@ -243,11 +254,66 @@ export default function SponsorshipsPage() {
     )
   }
 
+  const exportToCSV = () => {
+    if (sponsorships.length === 0) {
+      alert('No data to export')
+      return
+    }
+
+    const csvData = sponsorships.map(sponsorship => ({
+      'ID': sponsorship.id,
+      'Company Name': sponsorship.company_name,
+      'Contact Person': sponsorship.contact_person,
+      'Email': sponsorship.email,
+      'Phone': sponsorship.phone,
+      'Selected Package': sponsorship.selected_package,
+      'Status': sponsorship.status,
+      'Submitted At': new Date(sponsorship.submitted_at).toLocaleDateString(),
+      'Payment Proof': sponsorship.payment_proof_url ? 'Yes' : 'No'
+    }))
+
+    const headers = Object.keys(csvData[0])
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => headers.map(header => `"${row[header]}"`).join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `sponsorships_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Sponsorships</h1>
-        <p className="text-gray-600">Manage sponsorship applications</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Sponsorships</h1>
+            <p className="text-gray-600">Manage sponsorship applications</p>
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={exportToCSV}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </button>
+            <button
+              onClick={loadSponsorships}
+              className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}

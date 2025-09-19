@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
         position,
         registrationType,
         paymentProofUrl,
+        passportPhotoUrl,
         status,
         createdAt,
         updatedAt
