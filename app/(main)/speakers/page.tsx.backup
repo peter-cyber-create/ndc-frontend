@@ -4,11 +4,11 @@ import { User, Award, Building, Mail, Twitter, Linkedin, ExternalLink } from 'lu
 const speakers = [
   {
     id: 1,
-    name: "Dr. Jane Ruth Aceng",
+    name: "Dr. Charles Olaro",
     title: "Minister of Health",
     organization: "Ministry of Health Uganda",
     bio: "Leading Uganda's health sector transformation with focus on digital health integration and universal health coverage.",
-    image: "/images/speakers/dr-jane-ruth-aceng.jpg",
+    image: "/images/charles.jpeg",
     social: {
       twitter: "#",
       linkedin: "#"
@@ -16,11 +16,11 @@ const speakers = [
   },
   {
     id: 2,
-    name: "Prof. Francis Omaswa",
+    name: "Dr. Diana Atwine",
     title: "Executive Director",
     organization: "African Centre for Global Health and Social Transformation",
     bio: "Pioneer in global health systems strengthening and advocate for health workforce development across Africa.",
-    image: "/images/speakers/prof-francis-omaswa.jpg",
+    image: "/images/diana.jpeg",
     social: {
       twitter: "#",
       linkedin: "#"
@@ -32,7 +32,7 @@ const speakers = [
     title: "Permanent Secretary",
     organization: "Ministry of Health Uganda",
     bio: "Championing health policy reforms and digital health initiatives to improve healthcare delivery in Uganda.",
-    image: "/images/speakers/dr-diana-atwine.jpg",
+    image: "/images/ruth.jpeg",
     social: {
       twitter: "#",
       linkedin: "#"

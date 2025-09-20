@@ -1,4 +1,4 @@
-# 🚀 **ENHANCED FEATURES - National Digital Health Conference 2025**
+# 🚀 **ENHANCED FEATURES - NACNDC & JASHConference 2025**
 
 ## ✅ **ADVANCED PAYMENT MANAGEMENT & AUDIT SYSTEM**
 
@@ -150,7 +150,7 @@
 
 ## 🎉 **CONCLUSION**
 
-**Your National Digital Health Conference 2025 application now has:**
+**Your NACNDC & JASHConference 2025 application now has:**
 
 ✅ **Advanced Payment Management** with comprehensive audit capabilities  
 ✅ **Stunning Countdown Clock** with modern animations and responsive design  

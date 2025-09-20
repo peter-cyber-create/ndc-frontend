@@ -1,4 +1,4 @@
--- National Digital Health Conference 2025 Database Schema
+-- NACNDC & JASHConference 2025 Database Schema
 -- Created for NACNDC & JASH Conference 2025
 
 -- Create database

@@ -1,4 +1,4 @@
-# ✅ National Digital Health Conference 2025 - Setup Complete!
+# ✅ NACNDC & JASHConference 2025 - Setup Complete!
 
 ## 🎉 **ALL ERRORS FIXED & DATABASE CONFIGURED!**
 
@@ -153,7 +153,7 @@ If you encounter any issues:
 
 ---
 
-**🎉 Your National Digital Health Conference 2025 application is now PERFECT and ready for use!**
+**🎉 Your NACNDC & JASHConference 2025 application is now PERFECT and ready for use!**
 
 
 

@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { 
   FileText, Upload, Calendar, AlertCircle, CheckCircle, 
-  Loader2, Clock, Users, Award, Target, Shield, Globe, Building2, Phone
+  Loader2, Clock, Users, Award, Target, Shield, Globe, Building2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -28,6 +28,7 @@ interface FormData {
   position: string
   district: string
   co_authors: string
+  abstract_summary: string
   keywords: string
   background: string
   methods: string
@@ -55,7 +56,7 @@ const conferenceTracks = [
   },
   {
     value: 'digital-health',
-    label: 'Health Data and Innovation',
+    label: 'Digital Health, Data, and Innovation',
     description: 'Harnessing digital tools, AI, and data systems to transform public health delivery and surveillance.',
     subcategories: [
       'Health Information Systems',
@@ -131,7 +132,6 @@ export default function AbstractsPage() {
   const router = useRouter()
   const { success, error: showError } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [daysUntilDeadline, setDaysUntilDeadline] = useState(0)
   const [formData, setFormData] = useState<FormData>({
     title: '',
     presentation_type: '',
@@ -145,6 +145,7 @@ export default function AbstractsPage() {
     position: '',
     district: '',
     co_authors: '',
+    abstract_summary: '',
     keywords: '',
     background: '',
     methods: '',
@@ -156,18 +157,6 @@ export default function AbstractsPage() {
     ethical_approval: false,
     consent_to_publish: false
   })
-
-  // Calculate days until deadlines
-  useEffect(() => {
-    const calculateDaysUntil = (targetDate: string) => {
-      const target = new Date(targetDate + 'T23:59:59')
-      const now = new Date()
-      const timeDiff = target.getTime() - now.getTime()
-      return Math.max(0, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)))
-    }
-
-    setDaysUntilDeadline(calculateDaysUntil('2025-09-30'))
-  }, [])
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -204,21 +193,14 @@ export default function AbstractsPage() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Check if deadline has passed
-    if (daysUntilDeadline <= 0) {
-      showError('Submission Failed: The abstract submission deadline has passed.')
-      setIsSubmitting(false)
-      return
-    }
-
     // Validate required fields
     if (!formData.title || !formData.presentation_type || !formData.conference_track || 
         !formData.subcategory || !formData.firstName || !formData.lastName || !formData.email || 
         !formData.phone || !formData.institution || !formData.position || 
-        !formData.district || !formData.keywords ||
+        !formData.district || !formData.abstract_summary || !formData.keywords ||
         !formData.background || !formData.methods || !formData.findings || 
         !formData.conclusion || !formData.consent_to_publish || !formData.abstract_file) {
-      showError('Submission Failed: Please fill in all required fields marked with * and upload your abstract file.')
+      showError('Please fill in all required fields marked with * and upload your abstract file.')
       setIsSubmitting(false)
       return
     }
@@ -237,6 +219,7 @@ export default function AbstractsPage() {
       formDataToSend.append('position', formData.position)
       formDataToSend.append('district', formData.district)
       formDataToSend.append('co_authors', formData.co_authors)
+      formDataToSend.append('abstract_summary', formData.abstract_summary)
       formDataToSend.append('keywords', formData.keywords)
       formDataToSend.append('background', formData.background)
       formDataToSend.append('methods', formData.methods)
@@ -259,7 +242,7 @@ export default function AbstractsPage() {
       const result = await response.json()
 
       if (response.ok) {
-        success('Submission Successful! Abstract submitted successfully. We will review it and get back to you by September 25, 2025.')
+        success('Abstract submitted successfully! We will review it and get back to you by September 25, 2025.')
         setFormData({
           title: '',
           presentation_type: '',
@@ -273,6 +256,7 @@ export default function AbstractsPage() {
           position: '',
           district: '',
           co_authors: '',
+          abstract_summary: '',
           keywords: '',
           background: '',
           methods: '',
@@ -285,11 +269,11 @@ export default function AbstractsPage() {
           consent_to_publish: false
         })
       } else {
-        const errorMessage = result.error || result.message || 'Please check your information and try again.'
-        showError('Submission Failed: ' + errorMessage)
+        const errorMessage = result.error || result.message || 'Abstract submission failed. Please try again.'
+        showError(errorMessage)
       }
     } catch (error) {
-      showError('Submission Failed: Could not connect to the server. Please check your connection and try again.')
+      showError('Could not connect to the server. Please try again later.')
     } finally {
       setIsSubmitting(false)
     }
@@ -301,12 +285,11 @@ export default function AbstractsPage() {
         {/* Simple Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Abstract Submission Form</h1>
-          <p className="text-lg text-gray-600">National Conference 2025</p>
+          <p className="text-lg text-gray-600">NACNDC & JASHConference 2025</p>
         </div>
 
         {/* Important Information Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
-          {/* Important Deadlines Card */}
           <Card className="border-0 shadow-lg bg-gradient-to-br from-primary-600 to-primary-700 text-white">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center text-lg">
@@ -319,14 +302,44 @@ export default function AbstractsPage() {
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Submission Deadline</span>
-                    <span className={`font-bold ${daysUntilDeadline > 0 ? 'text-yellow-300' : 'text-red-400'}`}>{daysUntilDeadline > 0 ? `${daysUntilDeadline} days left` : 'Deadline passed'}</span>
+                    <span className="font-bold text-yellow-300">September 30, 2025</span>
+                  </div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Notification Date</span>
+                    <span className="font-bold text-green-300">September 25, 2025</span>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Review Process Card */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-slate-700 to-slate-800 text-white">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-lg">
+                <Target className="h-5 w-5 mr-3" />
+                Submission Requirements
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg p-2">
+                  <CheckCircle className="h-4 w-4 text-green-400 mr-2" />
+                  <span className="text-sm">Maximum 300 words</span>
+                </div>
+                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg p-2">
+                  <CheckCircle className="h-4 w-4 text-green-400 mr-2" />
+                  <span className="text-sm">Maximum file size: 2MB</span>
+                </div>
+                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg p-2">
+                  <CheckCircle className="h-4 w-4 text-green-400 mr-2" />
+                  <span className="text-sm">PDF, DOC, or DOCX format</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="border-0 shadow-lg bg-gradient-to-br from-primary-600 to-primary-700 text-white">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center text-lg">
@@ -344,37 +357,21 @@ export default function AbstractsPage() {
                   <div className="w-6 h-6 bg-white text-primary-600 rounded-full flex items-center justify-center mr-3 text-xs font-bold">2</div>
                   <span className="text-sm">Expert Review</span>
                 </div>
+                <div className="flex items-center">
+                  <div className="w-6 h-6 bg-white text-primary-600 rounded-full flex items-center justify-center mr-3 text-xs font-bold">3</div>
+                  <span className="text-sm">Notification</span>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Submission Requirements Card */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-100 to-blue-200 text-blue-900">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center text-lg">
-                <AlertCircle className="h-5 w-5 mr-3 text-blue-600" />
-                Submission Requirements
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm text-blue-800 list-disc pl-6 space-y-1">
-                <li>Maximum 300 words</li>
-                <li>Maximum file size: 2MB</li>
-                <li>PDF, DOC, or DOCX format</li>
-              </ul>
             </CardContent>
           </Card>
         </div>
 
-
-        {/* Main Content - Single Column Layout */}
-        <div className="max-w-4xl mx-auto">
-          {/* Form */}
-          <Card className="border-0 shadow-xl bg-white">
-              <CardHeader className="bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-t-lg">
-                <CardTitle className="flex items-center text-xl">
-                  <FileText className="h-6 w-6 mr-3" />
-                  Abstract Submission Form
+        {/* Main Submission Form */}
+        <Card className="border-0 shadow-xl bg-white">
+          <CardHeader className="bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-t-lg">
+            <CardTitle className="flex items-center text-xl">
+              <FileText className="h-6 w-6 mr-3" />
+              Abstract Submission Form
             </CardTitle>
             <CardDescription className="text-primary-100">
               Complete all required fields below. All submissions are subject to review by the Scientific Committee.
@@ -586,6 +583,20 @@ export default function AbstractsPage() {
                 
                 <div className="space-y-4">
                   <div className="space-y-2">
+                    <Label htmlFor="abstract_summary" className="text-sm font-medium text-gray-700">Abstract Summary *</Label>
+                    <Textarea
+                      id="abstract_summary"
+                      name="abstract_summary"
+                      value={formData.abstract_summary}
+                      onChange={handleInputChange}
+                      required
+                      rows={4}
+                      className="text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                      placeholder="Provide a concise summary of your research (100-150 words)"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="keywords" className="text-sm font-medium text-gray-700">Keywords *</Label>
                     <Input
                       id="keywords"
@@ -680,81 +691,32 @@ export default function AbstractsPage() {
                   Document Upload
                 </h3>
                 
-                <div className="space-y-4">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div className="flex items-start">
-                      <AlertCircle className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <h4 className="text-sm font-semibold text-blue-800 mb-2">Required Documents</h4>
-                        <ul className="text-sm text-blue-700 space-y-1">
-                          <li>• Abstract document (PDF, DOC, or DOCX)</li>
-                          <li>• Maximum file size: 2MB</li>
-                          <li>• File must be clearly named and readable</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="abstract_file" className="text-sm font-medium text-gray-700">Upload Abstract Document *</Label>
-                    <div 
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-all duration-200 bg-gray-50 hover:bg-primary-50 cursor-pointer"
-                      onClick={() => document.getElementById('abstract_file')?.click()}
+                <div className="space-y-2">
+                  <Label htmlFor="abstract_file" className="text-sm font-medium text-gray-700">Upload Abstract Document</Label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors bg-gray-50 hover:bg-primary-50">
+                    <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600 mb-4">
+                      PDF, DOC, or DOCX files only. Maximum size: 2MB
+                    </p>
+                    <input
+                      type="file"
+                      id="abstract_file"
+                      name="abstract_file"
+                      onChange={handleFileChange}
+                      accept=".pdf,.doc,.docx"
+                      className="hidden"
+                    />
+                    <Label
+                      htmlFor="abstract_file"
+                      className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 cursor-pointer transition-all duration-200 transform hover:scale-105 shadow-md"
                     >
-                      <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600 mb-2 font-medium">
-                        Click to upload or drag and drop your file here
+                      Choose File
+                    </Label>
+                    {formData.abstract_file && (
+                      <p className="text-sm text-green-600 mt-3 font-medium">
+                        Selected: {formData.abstract_file.name}
                       </p>
-                      <p className="text-gray-500 text-sm mb-4">
-                        PDF, DOC, or DOCX files only • Maximum size: 2MB
-                      </p>
-                      <input
-                        type="file"
-                        id="abstract_file"
-                        name="abstract_file"
-                        onChange={handleFileChange}
-                        accept=".pdf,.doc,.docx"
-                        className="hidden"
-                      />
-                      <Label
-                        htmlFor="abstract_file"
-                        className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 cursor-pointer transition-all duration-200 transform hover:scale-105 shadow-md"
-                      >
-                        <Upload className="h-4 w-4 mr-2" />
-                        Choose File
-                      </Label>
-                      {formData.abstract_file && (
-                        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                          <div className="flex items-center justify-center">
-                            <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                            <div className="text-left">
-                              <p className="text-sm font-medium text-green-800">
-                                File selected: {formData.abstract_file.name}
-                              </p>
-                              <p className="text-xs text-green-600">
-                                Size: {(formData.abstract_file.size / 1024 / 1024).toFixed(2)} MB
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Upload Tips */}
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <div className="flex items-start">
-                      <AlertCircle className="h-5 w-5 text-yellow-600 mr-3 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <h4 className="text-sm font-semibold text-yellow-800 mb-2">Upload Tips</h4>
-                        <ul className="text-sm text-yellow-700 space-y-1">
-                          <li>• Ensure your document is properly formatted and proofread</li>
-                          <li>• Use a clear, descriptive filename</li>
-                          <li>• Check that all images and tables are visible</li>
-                          <li>• Remove any personal information if not required</li>
-                        </ul>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -833,7 +795,6 @@ export default function AbstractsPage() {
             </form>
           </CardContent>
         </Card>
-        </div>
       </div>
     </div>
   )

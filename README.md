@@ -1,4 +1,4 @@
-# National Digital Health Conference 2025
+# NACNDC & JASHConference 2025
 
 A modern, responsive web application for the National Annual Communicable and Non-Communicable Diseases (NACNDC) and 19th Joint Scientific Health (JASH) Conference 2025.
 
@@ -205,7 +205,7 @@ The application uses a consistent design system with:
 
 ## 📄 License
 
-This project is proprietary software developed for the National Digital Health Conference 2025.
+This project is proprietary software developed for the NACNDC & JASHConference 2025.
 
 ## 🤝 Support
 

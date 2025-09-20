@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Test script for National Digital Health Conference 2025
+# Test script for NACNDC & JASHConference 2025
 # This script tests all functionality to ensure everything is working
 
-echo "🧪 Testing National Digital Health Conference 2025 Application"
+echo "🧪 Testing NACNDC & JASHConference 2025 Application"
 echo "=============================================================="
 
 # Colors for output
@@ -97,7 +97,7 @@ print_test $? "Environment variables configured"
 echo ""
 echo "🎉 Testing completed!"
 echo "===================="
-echo "Your National Digital Health Conference 2025 application is ready!"
+echo "Your NACNDC & JASHConference 2025 application is ready!"
 echo ""
 echo "To start the application:"
 echo "  npm run dev"

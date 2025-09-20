@@ -45,7 +45,7 @@ const partners = [
   {
     name: 'Infectious Diseases Research Organisation',
     logo: '/images/partners/IDRC-Logo-480.png',
-    description: 'Canadian Crown corporation supporting research in developing countries to create lasting change.',
+    description: 'Leading research organization focused on infectious diseases and health system strengthening.',
     website: '#'
   }
 ]

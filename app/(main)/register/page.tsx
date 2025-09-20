@@ -25,15 +25,13 @@ interface FormData {
   city: string
   selected_package: string
   paymentProof: File | null
-  passportPhoto: File | null
 }
 
 const registrationTypes = [
   {
     id: 'undergrad',
     name: 'Undergraduate Student',
-    price: 100000,
-    currency: 'UGX',
+    price: 50,
     description: 'For undergraduate students',
     icon: Users,
     color: 'blue',
@@ -42,8 +40,7 @@ const registrationTypes = [
   {
     id: 'grad',
     name: 'Graduate Student',
-    price: 150000,
-    currency: 'UGX',
+    price: 75,
     description: 'For graduate students',
     icon: Award,
     color: 'green',
@@ -52,9 +49,8 @@ const registrationTypes = [
   {
     id: 'local',
     name: 'Local Professional',
-    price: 350000,
-    currency: 'UGX',
-    description: 'For Uganda / East Africa participants (non-students)',
+    price: 100,
+    description: 'For local healthcare professionals',
     icon: Building,
     color: 'purple',
     features: ['Full conference access', 'All meals included', 'Certificate', 'Networking', 'Workshop access']
@@ -62,9 +58,8 @@ const registrationTypes = [
   {
     id: 'international',
     name: 'International Professional',
-    price: 300,
-    currency: 'USD',
-    description: 'For international delegates',
+    price: 200,
+    description: 'For international participants',
     icon: Target,
     color: 'orange',
     features: ['Full conference access', 'All meals included', 'Certificate', 'Networking', 'Workshop access', 'Cultural tour']
@@ -72,8 +67,7 @@ const registrationTypes = [
   {
     id: 'online',
     name: 'Virtual Attendance',
-    price: 180000,
-    currency: 'UGX',
+    price: 25,
     description: 'Online participation only',
     icon: Heart,
     color: 'pink',
@@ -95,8 +89,7 @@ export default function RegisterPage() {
     country: '',
     city: '',
     selected_package: 'local',
-    paymentProof: null,
-    passportPhoto: null
+    paymentProof: null
   })
 
   const [submitResult, setSubmitResult] = useState<{
@@ -128,14 +121,6 @@ export default function RegisterPage() {
     }))
   }
 
-  const handlePassportPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null
-    setFormData((prev: any) => ({
-      ...prev,
-      passportPhoto: file
-    }))
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -144,8 +129,8 @@ export default function RegisterPage() {
     // Validate required fields
     if (!formData.firstName || !formData.lastName || !formData.email || 
         !formData.phone || !formData.institution || !formData.position || 
-        !formData.country || !formData.city || !formData.selected_package || !formData.paymentProof || !formData.passportPhoto) {
-      error('Please fill in all required fields and upload both payment proof and passport photo.')
+        !formData.country || !formData.city || !formData.selected_package || !formData.paymentProof) {
+      error('Please fill in all required fields and upload payment proof.')
       setIsSubmitting(false)
       return
     }
@@ -162,7 +147,6 @@ export default function RegisterPage() {
       formDataToSend.append('city', formData.city)
       formDataToSend.append('registrationType', formData.selected_package)
       formDataToSend.append('paymentProof', formData.paymentProof)
-      formDataToSend.append('passportPhoto', formData.passportPhoto)
 
       const response = await fetch('/api/registrations', {
         method: 'POST',
@@ -172,7 +156,7 @@ export default function RegisterPage() {
       const result = await response.json()
 
       if (response.ok) {
-        success('Submission Successful! Registration submitted successfully. We will review your payment and contact you within 24-48 hours.')
+        success('Registration successful! We will review your payment and get back to you within 24-48 hours.')
         setFormData({
           firstName: '',
           lastName: '',
@@ -183,15 +167,14 @@ export default function RegisterPage() {
           country: '',
           city: '',
           selected_package: 'local',
-          paymentProof: null,
-          passportPhoto: null
+          paymentProof: null
         })
       } else {
-        const errorMessage = result.error || result.message || 'Please check your information and try again.'
-        error('Submission Failed: ' + errorMessage)
+        const errorMessage = result.error || result.message || 'Registration failed. Please try again.'
+        error(errorMessage)
       }
     } catch (err) {
-      error('Submission Failed: Could not connect to the server. Please check your connection and try again.')
+      error('Could not connect to the server. Please try again later.')
     } finally {
       setIsSubmitting(false)
     }
@@ -205,7 +188,7 @@ export default function RegisterPage() {
         {/* Simple Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Registration Form</h1>
-          <p className="text-lg text-gray-600">National Conference 2025</p>
+          <p className="text-lg text-gray-600">NACNDC & JASHConference 2025</p>
         </div>
 
         {/* Registration Packages */}
@@ -237,7 +220,7 @@ export default function RegisterPage() {
                     </div>
                     <CardTitle className="text-lg">{type.name}</CardTitle>
                     <CardDescription className="text-sm">{type.description}</CardDescription>
-                    <div className="text-2xl font-bold text-gray-900 mt-2">{type.currency} {type.price.toLocaleString()}</div>
+                    <div className="text-2xl font-bold text-gray-900 mt-2">${type.price}</div>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <ul className="space-y-2 text-sm text-gray-600">
@@ -303,7 +286,7 @@ export default function RegisterPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xl font-bold text-primary-600">{selectedPackage.currency} {selectedPackage.price.toLocaleString()}</div>
+                        <div className="text-xl font-bold text-primary-600">${selectedPackage.price}</div>
                         <div className="text-xs text-gray-500">Total Amount</div>
                       </div>
                     </div>
@@ -478,44 +461,6 @@ export default function RegisterPage() {
                       {formData.paymentProof && (
                         <p className="text-sm text-green-600 mt-3 font-medium">
                           Selected: {formData.paymentProof.name}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Passport Photo Upload */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <Upload className="h-5 w-5 mr-2 text-primary-600" />
-                    Passport Photo
-                  </h3>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="passportPhoto" className="text-sm font-medium text-gray-700">Passport Photo *</Label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors bg-gray-50 hover:bg-primary-50">
-                      <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600 mb-4">
-                        JPG or PNG files only. Maximum size: 5MB
-                      </p>
-                      <input
-                        type="file"
-                        id="passportPhoto"
-                        name="passportPhoto"
-                        onChange={handlePassportPhotoChange}
-                        accept=".jpg,.jpeg,.png"
-                        required
-                        className="hidden"
-                      />
-                      <Label
-                        htmlFor="passportPhoto"
-                        className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 cursor-pointer transition-all duration-200 transform hover:scale-105 shadow-md"
-                      >
-                        Choose Photo
-                      </Label>
-                      {formData.passportPhoto && (
-                        <p className="text-sm text-green-600 mt-3 font-medium">
-                          Selected: {formData.passportPhoto.name}
                         </p>
                       )}
                     </div>

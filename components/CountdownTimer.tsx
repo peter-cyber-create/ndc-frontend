@@ -49,7 +49,11 @@ const CountdownTimer: React.FC = () => {
               Conference Started!
             </h3>
           </div>
+<<<<<<< Updated upstream
           <p className="text-green-100 text-lg mb-2">The National Conference 2025 is now live!</p>
+=======
+          <p className="text-green-100 text-lg mb-2">The NACNDC & JASHConference 2025 is now live!</p>
+>>>>>>> Stashed changes
           <div className="flex items-center justify-center text-green-200">
             <Sparkles className="h-5 w-5 mr-2 animate-spin" />
             <span className="text-sm font-medium">Join us now for an amazing experience!</span>

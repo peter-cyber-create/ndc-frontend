@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# National Digital Health Conference 2025 - Deployment Script
+# NACNDC & JASHConference 2025 - Deployment Script
 # This script deploys the Next.js application to production
 
 set -e  # Exit on any error
 
-echo "🚀 Starting deployment of National Digital Health Conference 2025..."
+echo "🚀 Starting deployment of NACNDC & JASHConference 2025..."
 
 # Colors for output
 RED='\033[0;31m'

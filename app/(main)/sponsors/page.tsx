@@ -13,7 +13,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import PaymentInformation from '@/components/PaymentInformation'
-import { useToast } from '@/hooks/useToast'
 
 interface FormData {
   organizationName: string
@@ -71,7 +70,6 @@ const sponsorshipPackages = [
 export default function SponsorsPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { success, error } = useToast()
   const [formData, setFormData] = useState<FormData>({
     organizationName: '',
     contactPerson: '',
@@ -85,6 +83,12 @@ export default function SponsorsPage() {
     paymentProof: null,
     additionalInfo: ''
   })
+
+  const [submitResult, setSubmitResult] = useState<{
+    type: 'success' | 'error' | null;
+    title: string;
+    message: string;
+  }>({ type: null, title: '', message: '' })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -112,12 +116,17 @@ export default function SponsorsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitResult({ type: null, title: '', message: '' })
 
     // Validate required fields
     if (!formData.organizationName || !formData.contactPerson || !formData.email || 
         !formData.phone || !formData.address || !formData.city || !formData.country || 
         !formData.selected_package || !formData.paymentProof) {
-      error('Submission Failed: Please fill in all required fields and upload payment proof.')
+      setSubmitResult({
+        type: 'error',
+        title: 'Missing Information',
+        message: 'Please fill in all required fields and upload payment proof.'
+      })
       setIsSubmitting(false)
       return
     }
@@ -144,7 +153,11 @@ export default function SponsorsPage() {
       const result = await response.json()
 
       if (response.ok) {
-        success('Submission Successful! Sponsorship application submitted successfully. We will review your payment and contact you within 24-48 hours.')
+        setSubmitResult({
+          type: 'success',
+          title: 'Sponsorship Application Submitted!',
+          message: 'Thank you for your sponsorship application! We will review your payment and get back to you within 24-48 hours.'
+        })
         setFormData({
           organizationName: '',
           contactPerson: '',
@@ -159,11 +172,19 @@ export default function SponsorsPage() {
           additionalInfo: ''
         })
       } else {
-        const errorMessage = result.error || result.message || 'Please check your information and try again.'
-        error('Submission Failed: ' + errorMessage)
+        const errorMessage = result.error || result.message || 'Sponsorship application failed. Please try again.'
+        setSubmitResult({
+          type: 'error',
+          title: 'Application Failed',
+          message: errorMessage
+        })
       }
-    } catch (err) {
-      error('Submission Failed: Could not connect to the server. Please check your connection and try again.')
+    } catch (error) {
+      setSubmitResult({
+        type: 'error',
+        title: 'Network Error',
+        message: 'Could not connect to the server. Please try again later.'
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -177,7 +198,7 @@ export default function SponsorsPage() {
         {/* Simple Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Sponsorship Application Form</h1>
-          <p className="text-lg text-gray-600">National Conference 2025</p>
+          <p className="text-lg text-gray-600">NACNDC & JASHConference 2025</p>
         </div>
 
         {/* Sponsorship Packages */}
@@ -240,6 +261,26 @@ export default function SponsorsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-8">
+              {submitResult.type && (
+                <div className={`mb-6 p-4 rounded-lg border-2 ${
+                  submitResult.type === 'success' 
+                    ? 'bg-green-50 border-green-200 text-green-800' 
+                    : 'bg-red-50 border-red-200 text-red-800'
+                }`}>
+                  <div className="flex items-center">
+                    {submitResult.type === 'success' ? (
+                      <CheckCircle className="h-5 w-5 mr-3" />
+                    ) : (
+                      <AlertCircle className="h-5 w-5 mr-3" />
+                    )}
+                    <div>
+                      <h3 className="font-semibold">{submitResult.title}</h3>
+                      <p className="text-sm">{submitResult.message}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Selected Package Display */}
                 {selectedPackage && (
