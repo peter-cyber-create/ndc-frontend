@@ -83,16 +83,19 @@ export default function SpeakersPage() {
           {speakers.map((speaker) => (
             <div key={speaker.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
               {/* Speaker Image */}
-              <div className="relative h-64 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
+              <div className="relative h-64 flex items-center justify-center bg-gradient-to-br from-primary-100 to-primary-200">
                 {['/images/charles.jpeg','/images/diana.jpeg','/images/ruth.jpeg'].includes(speaker.image) ? (
-                  <img
-                    src={speaker.image}
-                    alt={speaker.name}
-                    className="w-32 h-32 object-cover rounded-full border-4 border-primary-200 shadow-lg z-10"
-                  />
+                  <div className="relative w-36 h-36 flex items-center justify-center">
+                    <img
+                      src={speaker.image}
+                      alt={speaker.name}
+                      className="w-36 h-36 object-cover rounded-full border-4 border-primary-400 shadow-xl z-10 transition-transform duration-300 hover:scale-105 bg-white"
+                    />
+                    <span className="absolute bottom-2 right-2 bg-primary-600 text-white text-xs px-2 py-1 rounded-full shadow">Keynote</span>
+                  </div>
                 ) : (
-                  <div className="w-32 h-32 bg-primary-600 rounded-full flex items-center justify-center">
-                    <User className="h-16 w-16 text-white" />
+                  <div className="w-32 h-32 bg-primary-200 rounded-full flex items-center justify-center border-2 border-primary-100">
+                    <User className="h-16 w-16 text-primary-400" />
                   </div>
                 )}
                 <div className="absolute top-4 right-4">

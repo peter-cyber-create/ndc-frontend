@@ -16,13 +16,7 @@ const partners = [
     name: 'Jhpiego',
     logo: '/images/partners/Jhpiego Logo.PNG',
     description: 'Jhpiego is a global non-profit health organization affiliated with Johns Hopkins University, dedicated to improving the health of women and families worldwide.',
-    website: 'https://www.jhpiego.org/'
-  },
-  {
-    name: 'Jhpiego',
-    logo: '/images/partners/Jhpiego Logo.PNG',
-    description: 'Jhpiego is a global non-profit health organization affiliated with Johns Hopkins University, dedicated to improving the health of women and families worldwide.',
-    website: 'https://www.jhpiego.org/'
+    website: ''
   },
   {
     name: 'UgandaCares',
@@ -154,7 +148,7 @@ export default function PartnersPage() {
                   </div>
                 </div>
                 <h3 className="font-semibold text-lg text-gray-900 mb-2">{partner.name}</h3>
-                {partner.website && partner.website !== '#' && (
+                {partner.website && partner.website !== '#' && partner.name !== 'Jhpiego' && (
                   <Button variant="outline" size="sm" className="mt-2">
                     <ExternalLink className="h-4 w-4 mr-1" />
                     Visit Website
