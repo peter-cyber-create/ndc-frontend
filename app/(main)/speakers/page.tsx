@@ -83,12 +83,18 @@ export default function SpeakersPage() {
           {speakers.map((speaker) => (
             <div key={speaker.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
               {/* Speaker Image */}
-              <div className="relative h-64 bg-gradient-to-br from-primary-100 to-primary-200">
-                <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative h-64 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
+                {['/images/charles.jpeg','/images/diana.jpeg','/images/ruth.jpeg'].includes(speaker.image) ? (
+                  <img
+                    src={speaker.image}
+                    alt={speaker.name}
+                    className="w-32 h-32 object-cover rounded-full border-4 border-primary-200 shadow-lg z-10"
+                  />
+                ) : (
                   <div className="w-32 h-32 bg-primary-600 rounded-full flex items-center justify-center">
                     <User className="h-16 w-16 text-white" />
                   </div>
-                </div>
+                )}
                 <div className="absolute top-4 right-4">
                   <Award className="h-6 w-6 text-primary-600" />
                 </div>
