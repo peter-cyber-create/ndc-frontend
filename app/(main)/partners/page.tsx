@@ -19,6 +19,18 @@ const partners = [
     website: 'https://www.jhpiego.org/'
   },
   {
+    name: 'Jhpiego',
+    logo: '/images/partners/Jhpiego Logo.PNG',
+    description: 'Jhpiego is a global non-profit health organization affiliated with Johns Hopkins University, dedicated to improving the health of women and families worldwide.',
+    website: 'https://www.jhpiego.org/'
+  },
+  {
+    name: 'UgandaCares',
+    logo: '/images/partners/UgandaCares.png',
+    description: 'UgandaCares is a leading provider of HIV/AIDS prevention, care, and treatment services in Uganda, supporting thousands of individuals and families.',
+    website: '#'
+  },
+  {
     name: 'Infectious Diseases Institute (IDI)',
     logo: '/images/partners/IDI MAK Logo - Copy.png',
     description: 'The Infectious Diseases Institute (IDI) is a leading non-profit national organisation entirely owned by Makerere University. Founded in 2002, IDI is committed to strengthening health systems through research and capacity building to free Africa from the burden of infectious diseases and other emerging and re-emerging health challenges.',
