@@ -91,7 +91,7 @@ export default function SpeakersPage() {
                       alt={speaker.name}
                       className="w-56 h-56 object-cover rounded-full border-4 border-primary-400 shadow-2xl z-10 bg-white"
                     />
-                    <span className="absolute bottom-2 right-2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full shadow">Keynote</span>
+                    {/* badge removed as requested */}
                   </div>
                 ) : (
                   <div className="w-44 h-44 bg-primary-200 rounded-full flex items-center justify-center border-2 border-primary-100">
