@@ -1,61 +1,104 @@
 import { NextRequest, NextResponse } from "next/server"
 import mysql from 'mysql2/promise'
 
-const dbConfig = {
+// Create a pooled connection for better performance under load
+const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'user',
   password: process.env.DB_PASSWORD || 'toor',
   database: process.env.DB_NAME || 'conf',
   port: 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+})
+
+// Cache presence of optional columns to avoid information_schema on every request
+let hasCrossCuttingThemesColumn: boolean | undefined
+async function ensureColumnPresenceCached(): Promise<void> {
+  if (typeof hasCrossCuttingThemesColumn !== 'undefined') return
+  try {
+    const [rows] = await pool.execute(
+      `SELECT COUNT(*) as count FROM information_schema.columns WHERE table_name = 'abstracts' AND column_name = 'cross_cutting_themes'`
+    ) as any
+    hasCrossCuttingThemesColumn = rows[0]?.count > 0
+  } catch {
+    hasCrossCuttingThemesColumn = false
+  }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    console.log('Starting abstracts API request...')
-    const connection = await mysql.createConnection(dbConfig)
-    console.log('Database connection established')
-    
-    // Check if cross_cutting_themes column exists
-    const [crossCuttingCheck] = await (connection as any).execute(`
-      SELECT COUNT(*) as count FROM information_schema.columns 
-      WHERE table_name = 'abstracts' AND column_name = 'cross_cutting_themes'
-    `)
-    const hasCrossCutting = (crossCuttingCheck as any[])[0].count > 0
-    console.log('Cross cutting check completed, has column:', hasCrossCutting)
-    
-    const crossCuttingField = hasCrossCutting ? 'cross_cutting_themes,' : ''
-    const [rows] = await (connection as any).execute(`
-      SELECT id, title, presentation_type, category, subcategory, ${crossCuttingField}
-             primary_author, co_authors, abstract_summary, keywords, background,
-             methods, findings, conclusion, implications, conflict_of_interest,
-             ethical_approval, consent_to_publish, file_url, status, admin_notes,
-             reviewer_comments, reviewed_by, reviewed_at, created_at, updated_at,
-             author_phone, author_address, corresponding_author, corresponding_email, corresponding_phone
-      FROM abstracts ORDER BY created_at DESC
-    `)
-    
-    console.log('Query completed, rows returned:', (rows as any[]).length)
-    console.log('First 5 IDs:', (rows as any[]).slice(0, 5).map(r => r.id))
-    console.log('Last 5 IDs:', (rows as any[]).slice(-5).map(r => r.id))
-    
-    await connection.end()
-    console.log('Database connection closed')
-    
+    // Pagination and filtering
+    const { searchParams } = new URL(request.url)
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
+    const pageSizeRaw = parseInt(searchParams.get('pageSize') || '20', 10)
+    const pageSize = Math.min(Math.max(1, pageSizeRaw), 100)
+    const status = searchParams.get('status') || ''
+    const sort = searchParams.get('sort') || 'created_at'
+    const order = (searchParams.get('order') || 'DESC').toUpperCase() === 'ASC' ? 'ASC' : 'DESC'
+
+    await ensureColumnPresenceCached()
+
+    const offset = (page - 1) * pageSize
+
+    // Columns: omit large text fields for listing view to reduce payload
+    const baseColumns = [
+      'id', 'title', 'presentation_type', 'category', 'subcategory',
+      'primary_author', 'co_authors', 'abstract_summary', 'keywords',
+      'status', 'reviewed_by', 'reviewed_at', 'created_at', 'updated_at'
+    ]
+
+    const selectColumns = hasCrossCuttingThemesColumn
+      ? baseColumns.concat(['cross_cutting_themes']).join(', ')
+      : baseColumns.join(', ')
+
+    // Basic whitelist for sorting
+    const sortable = new Set(['created_at', 'updated_at', 'title', 'status'])
+    const sortColumn = sortable.has(sort) ? sort : 'created_at'
+
+    const whereClauses: string[] = []
+    const params: any[] = []
+    if (status) {
+      whereClauses.push('status = ?')
+      params.push(status)
+    }
+    const whereSql = whereClauses.length ? `WHERE ${whereClauses.join(' AND ')}` : ''
+
+    // Total count (for pagination UI)
+    const [countRows] = await pool.execute(
+      `SELECT COUNT(*) as total FROM abstracts ${whereSql}`,
+      params
+    ) as any
+    const total = countRows[0]?.total ?? 0
+
+    // Paged query
+    const [rows] = await pool.execute(
+      `SELECT ${selectColumns} FROM abstracts ${whereSql} ORDER BY ${sortColumn} ${order} LIMIT ? OFFSET ?`,
+      [...params, pageSize, offset]
+    )
+
     const response = NextResponse.json({
       success: true,
-      data: rows
+      data: rows,
+      meta: {
+        page,
+        pageSize,
+        total,
+        totalPages: Math.ceil(total / pageSize)
+      }
     })
-    
-    // Add cache-control headers to prevent caching
+
+    // Prevent caching
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
     response.headers.set('Pragma', 'no-cache')
     response.headers.set('Expires', '0')
-    
-    console.log('Response created with no-cache headers, sending...')
     return response
-    
   } catch (error) {
     console.error('Error fetching abstracts:', error)
-    return NextResponse.json({ error: "Failed to fetch abstracts" }, { status: 500, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0" } })
+    return NextResponse.json(
+      { error: 'Failed to fetch abstracts' },
+      { status: 500, headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0' } }
+    )
   }
 }

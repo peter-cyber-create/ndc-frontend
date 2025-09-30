@@ -5,7 +5,7 @@ const speakers = [
   {
     id: 1,
     name: "Dr. Charles Olaro",
-    title: "Minister of Health",
+    title: "Director General",
     organization: "Ministry of Health Uganda",
     bio: "Leading Uganda's health sector transformation with focus on universal health coverage and health system strengthening.",
     image: "/images/charles.jpeg",
@@ -29,7 +29,7 @@ const speakers = [
   {
     id: 3,
     name: "Dr. Jane Ruth Aceng Ocero",
-    title: "Director General",
+    title: "Minister of Health",
     organization: "Ministry of Health Uganda",
     bio: "Leading public health initiatives and health system strengthening across Uganda's healthcare facilities.",
     image: "/images/ruth.jpeg",
