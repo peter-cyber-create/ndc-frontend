@@ -7,60 +7,44 @@ const speakers = [
     name: "Dr. Charles Olaro",
     title: "Director General",
     organization: "Ministry of Health Uganda",
-    bio: "Leading Uganda's health sector transformation with focus on universal health coverage and health system strengthening.",
+    // bio: "Leading Uganda's health sector transformation with focus on universal health coverage and health system strengthening.",
     image: "/images/charles.jpeg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    // social: {
+    //   twitter: "#",
+    //   linkedin: "#"
+    // }
   },
   {
     id: 2,
     name: "Dr. Diana Atwine",
     title: "Permanent Secretary",
     organization: "Ministry of Health Uganda",
-    bio: "Championing health policy reforms and healthcare delivery improvements in Uganda.",
-    image: "/images/diana.jpeg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    // bio: "Championing health policy reforms and healthcare delivery improvements in Uganda.",
+    image: "/images/diana.jpeg"
   },
   {
     id: 3,
     name: "Dr. Jane Ruth Aceng Ocero",
     title: "Minister of Health",
     organization: "Ministry of Health Uganda",
-    bio: "Leading public health initiatives and health system strengthening across Uganda's healthcare facilities.",
-    image: "/images/ruth.jpeg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    // bio: "Leading public health initiatives and health system strengthening across Uganda's healthcare facilities.",
+    image: "/images/ruth.jpeg"
   },
   {
     id: 4,
     name: "Prof. Moses Kamya",
     title: "Principal",
     organization: "Makerere University College of Health Sciences",
-    bio: "Leading researcher in infectious diseases and advocate for evidence-based health interventions in Uganda.",
-    image: "/images/speakers/prof-moses-kamya.jpg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    // bio: "Leading researcher in infectious diseases and advocate for evidence-based health interventions in Uganda.",
+    image: "/images/speakers/prof-moses-kamya.jpg"
   },
   {
     id: 5,
     name: "Dr. Christine Munduru",
     title: "Director General",
     organization: "Uganda National Health Laboratory Services",
-    bio: "Pioneer in laboratory systems strengthening and quality assurance for health diagnostics in Uganda.",
+    // bio: "Pioneer in laboratory systems strengthening and quality assurance for health diagnostics in Uganda.",
     image: "/images/speakers/dr-christine-munduru.jpg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
   }
 ]
 
@@ -114,9 +98,9 @@ export default function SpeakersPage() {
                 <p className="text-gray-700 text-sm leading-relaxed mb-4">{speaker.bio}</p>
 
                 {/* Social Links */}
-                <div className="flex items-center space-x-3">
+                {/*<div className="flex items-center space-x-3">
                   <a
-                    href={speaker.social.twitter}
+                    // href={speaker.social.twitter}
                     className="p-2 text-gray-400 hover:text-blue-500 transition-colors"
                   >
                     <Twitter className="h-5 w-5" />
@@ -133,7 +117,7 @@ export default function SpeakersPage() {
                   >
                     <Mail className="h-5 w-5" />
                   </a>
-                </div>
+                </div> */}
               </div>
             </div>
           ))}
