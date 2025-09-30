@@ -95,7 +95,7 @@ export default function SpeakersPage() {
                   <Building className="h-4 w-4 mr-2" />
                   <span className="text-sm">{speaker.organization}</span>
                 </div>
-                <p className="text-gray-700 text-sm leading-relaxed mb-4">{speaker.bio}</p>
+                {/* <p className="text-gray-700 text-sm leading-relaxed mb-4">{speaker.bio}</p> */}
 
                 {/* Social Links */}
                 {/*<div className="flex items-center space-x-3">
