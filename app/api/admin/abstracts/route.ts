@@ -74,8 +74,8 @@ export async function GET(request: NextRequest) {
 
     // Paged query
     const [rows] = await pool.execute(
-      `SELECT ${selectColumns} FROM abstracts ${whereSql} ORDER BY ${sortColumn} ${order} LIMIT ? OFFSET ?`,
-      [...params, pageSize, offset]
+      `SELECT ${selectColumns} FROM abstracts ${whereSql} ORDER BY ${sortColumn} ${order} LIMIT ${pageSize} OFFSET ${offset}`,
+      params
     )
 
     const response = NextResponse.json({
