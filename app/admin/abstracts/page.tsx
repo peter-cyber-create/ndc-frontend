@@ -34,6 +34,9 @@ export default function AbstractsPage() {
   const [viewOpen, setViewOpen] = useState(false)
   const [selectedAbstract, setSelectedAbstract] = useState<Abstract | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(50)
+  const [totalPages, setTotalPages] = useState(1)
 
   // API URL
   const API_URL = typeof window !== 'undefined' && window.location.hostname === 'conference.health.go.ug' 
@@ -42,7 +45,7 @@ export default function AbstractsPage() {
 
   useEffect(() => {
     loadAbstracts()
-  }, [])
+  }, [page, pageSize])
 
   // Auto-refresh data every 30 seconds
   useEffect(() => {
@@ -59,12 +62,11 @@ export default function AbstractsPage() {
     try {
       setLoading(true)
       setError(null)
-
-      const response = await fetch(`${API_URL}/api/admin/abstracts?t=${Date.now()}`, { cache: "no-store" })
-      
+      const response = await fetch(`${API_URL}/api/admin/abstracts?page=${page}&pageSize=${pageSize}&t=${Date.now()}`, { cache: "no-store" })
       if (response.ok) {
         const data = await response.json()
         setAbstracts(data.data || [])
+        setTotalPages(data.meta?.totalPages || 1)
       } else {
         setError('Failed to load abstracts')
       }
@@ -250,6 +252,49 @@ export default function AbstractsPage() {
     )
   }
 
+  // Pagination Controls
+  const PaginationControls = () => (
+    <div className="flex items-center justify-between py-4">
+      <div className="flex items-center space-x-2">
+        <button
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className={`px-3 py-1 rounded ${page === 1 ? 'bg-gray-200 text-gray-400' : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+        >
+          Prev
+        </button>
+        {[...Array(totalPages)].map((_, idx) => (
+          <button
+            key={idx + 1}
+            onClick={() => setPage(idx + 1)}
+            className={`px-3 py-1 rounded ${page === idx + 1 ? 'bg-primary-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-primary-100'}`}
+          >
+            {idx + 1}
+          </button>
+        ))}
+        <button
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
+          className={`px-3 py-1 rounded ${page === totalPages ? 'bg-gray-200 text-gray-400' : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+        >
+          Next
+        </button>
+      </div>
+      <div className="flex items-center space-x-2">
+        <span className="text-sm text-gray-600">Page Size:</span>
+        <select
+          value={pageSize}
+          onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
+          className="px-2 py-1 border rounded"
+        >
+          {[25, 50, 100, 200].map(size => (
+            <option key={size} value={size}>{size}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+  )
+
   return (
     <div className="p-6">
       <div className="mb-8">
@@ -323,6 +368,9 @@ export default function AbstractsPage() {
           </div>
         </div>
       </div>
+
+      {/* Pagination Controls Above Table */}
+      <PaginationControls />
 
       {/* Results - Table Layout */}
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -448,6 +496,9 @@ export default function AbstractsPage() {
           </table>
         </div>
       </div>
+
+      {/* Pagination Controls Below Table */}
+      <PaginationControls />
 
       {/* Empty State */}
       {filteredAbstracts.length === 0 && (
