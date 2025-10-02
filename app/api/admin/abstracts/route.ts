@@ -46,6 +46,8 @@ export async function GET(request: NextRequest) {
     const baseColumns = [
       'id', 'title', 'presentation_type', 'category', 'subcategory',
       'primary_author', 'co_authors', 'abstract_summary', 'keywords',
+      // include corresponding email and organization so admin can contact submitters
+      'corresponding_email', 'organization',
       'status', 'reviewed_by', 'reviewed_at', 'created_at', 'updated_at'
     ]
 
