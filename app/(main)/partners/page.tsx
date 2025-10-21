@@ -4,6 +4,7 @@ import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Building, Globe, Users, Award, Target, Heart, Shield, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import ScrollReveal from '@/components/ScrollReveal'
 
 const partners = [
   {
@@ -53,6 +54,61 @@ const partners = [
     logo: '/images/partners/IDRC-Logo-480.png',
     description: 'Leading research organization focused on infectious diseases and health system strengthening.',
     website: '#'
+  },
+  // New Partners - Added from recent logos
+  {
+    name: 'GAVI, the Vaccine Alliance',
+    logo: '/images/partners/GAVI logo.jpeg',
+    description: 'GAVI is an international organization that helps vaccinate children in the world\'s poorest countries against deadly and debilitating diseases.',
+    website: 'https://www.gavi.org'
+  },
+  {
+    name: 'The Global Fund to Fight AIDS, Tuberculosis and Malaria',
+    logo: '/images/partners/Global Fund logo.jpeg',
+    description: 'The Global Fund is a partnership designed to accelerate the end of AIDS, tuberculosis and malaria as epidemics.',
+    website: 'https://www.theglobalfund.org'
+  },
+  {
+    name: 'Infectious Diseases Institute (IDI) - Makerere University',
+    logo: '/images/partners/IDI logo.jpeg',
+    description: 'The Infectious Diseases Institute is a leading non-profit national organisation entirely owned by Makerere University, committed to strengthening health systems through research and capacity building.',
+    website: 'https://www.idi.co.ug'
+  },
+  {
+    name: 'Malaria Free Uganda',
+    logo: '/images/partners/MFU logo.jpeg',
+    description: 'Malaria Free Uganda is a leading organization dedicated to eliminating malaria in Uganda through innovative prevention, treatment, and community engagement programs.',
+    website: 'https://www.malariafreeuganda.org'
+  },
+  {
+    name: 'Medical Research Council (MRC) Uganda',
+    logo: '/images/partners/MRC logo.jpeg',
+    description: 'MRC Uganda is a leading research institution conducting high-quality research to improve health outcomes in Uganda and the region.',
+    website: 'https://www.mrcuganda.org'
+  },
+  {
+    name: 'The AIDS Support Organisation (TASO)',
+    logo: '/images/partners/TASO logo.jpeg',
+    description: 'TASO is a leading indigenous organization providing comprehensive HIV/AIDS services in Uganda, supporting thousands of people living with HIV.',
+    website: 'https://www.tasouganda.org'
+  },
+  {
+    name: 'Uganda AIDS Commission (UAC)',
+    logo: '/images/partners/UAC logo.jpeg',
+    description: 'UAC is the national coordinating body for HIV/AIDS activities in Uganda, providing strategic leadership and coordination.',
+    website: 'https://www.aidsuganda.org'
+  },
+  {
+    name: 'UNICEF',
+    logo: '/images/partners/UNCIEF Logo.png',
+    description: 'UNICEF works in over 190 countries and territories to protect the rights of every child, especially the most disadvantaged.',
+    website: 'https://www.unicef.org'
+  },
+  {
+    name: 'World Health Organization (WHO)',
+    logo: '/images/partners/WHO logo.jpeg',
+    description: 'WHO is the directing and coordinating authority on international health work within the United Nations system.',
+    website: 'https://www.who.int'
   }
 ]
 
@@ -118,7 +174,7 @@ const sponsorshipPackages = [
 
 export default function PartnersPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -132,30 +188,26 @@ export default function PartnersPage() {
                 {/* Partners Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {partners.map((partner, index) => (
-            <Card key={index} className="text-center p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-              <CardContent className="pt-6">
-                <div className="mb-4 flex justify-center">
-                  <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                    {partner.logo ? (
-                      <img 
-                        src={partner.logo} 
-                        alt={partner.name}
-                        className="max-w-full max-h-full object-contain"
-                      />
-                    ) : (
-                      <Building className="h-12 w-12 text-gray-400" />
-                    )}
+            <ScrollReveal key={index} delay={index * 100} direction="up">
+              <Card className="group text-center p-8 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 bg-white border-0 shadow-lg hover:border-blue-200">
+                <CardContent className="pt-0">
+                  <div className="mb-6 flex justify-center">
+                    <div className="w-32 h-32 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center overflow-hidden shadow-inner group-hover:shadow-lg transition-all duration-500 group-hover:from-blue-50 group-hover:to-blue-100">
+                      {partner.logo ? (
+                        <img 
+                          src={partner.logo} 
+                          alt={partner.name}
+                          className="max-w-full max-h-full object-contain filter group-hover:brightness-110 transition-all duration-500"
+                        />
+                      ) : (
+                        <Building className="h-16 w-16 text-gray-400 group-hover:text-blue-500 transition-colors duration-500" />
+                      )}
+                    </div>
                   </div>
-                </div>
-                <h3 className="font-semibold text-lg text-gray-900 mb-2">{partner.name}</h3>
-                {partner.website && partner.website !== '#' && partner.name !== 'Jhpiego' && (
-                  <Button variant="outline" size="sm" className="mt-2">
-                    <ExternalLink className="h-4 w-4 mr-1" />
-                    Visit Website
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
+                  <h3 className="font-semibold text-lg text-gray-900 group-hover:text-blue-600 transition-colors duration-300">{partner.name}</h3>
+                </CardContent>
+              </Card>
+            </ScrollReveal>
           ))}
         </div>
 
@@ -173,7 +225,7 @@ export default function PartnersPage() {
               <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white">
                 <CardHeader className="text-center pb-4">
                   <CardTitle className="text-lg font-bold text-gray-900 mb-2">{pkg.name}</CardTitle>
-                  <div className="text-3xl font-bold text-primary-600 mb-2">${pkg.price.toLocaleString()}</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">${pkg.price.toLocaleString()}</div>
                   <p className="text-sm text-gray-600 mb-4">
                     <strong>Ideal for:</strong> {pkg.idealFor}
                   </p>
@@ -182,12 +234,12 @@ export default function PartnersPage() {
                   <ul className="space-y-2 text-sm text-gray-600 mb-6">
                     {pkg.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-start">
-                        <span className="text-primary-600 mr-2">•</span>
+                        <span className="text-blue-600 mr-2">•</span>
                         <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button className="w-full">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
                     Choose This Package
                   </Button>
                 </CardContent>
@@ -206,9 +258,9 @@ export default function PartnersPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-primary-50 to-primary-100 text-center">
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100 text-center">
               <CardContent className="p-8">
-                <div className="w-16 h-16 bg-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Users className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Network Access</h3>
@@ -218,9 +270,9 @@ export default function PartnersPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 text-center">
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-50 to-emerald-100 text-center">
               <CardContent className="p-8">
-                <div className="w-16 h-16 bg-green-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="w-16 h-16 bg-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Target className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Targeted Audience</h3>
@@ -232,7 +284,7 @@ export default function PartnersPage() {
 
             <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-purple-100 text-center">
               <CardContent className="p-8">
-                <div className="w-16 h-16 bg-purple-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Award className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Brand Recognition</h3>
@@ -244,7 +296,7 @@ export default function PartnersPage() {
 
             <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-50 to-orange-100 text-center">
               <CardContent className="p-8">
-                <div className="w-16 h-16 bg-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="w-16 h-16 bg-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Heart className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Social Impact</h3>
@@ -258,17 +310,17 @@ export default function PartnersPage() {
 
         {/* Call to Action */}
         <div className="text-center">
-          <Card className="border-0 shadow-2xl bg-gradient-to-r from-primary-600 to-primary-700 text-white">
+          <Card className="border-0 shadow-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-white">
             <CardContent className="p-12">
               <h2 className="text-3xl font-bold mb-4">Ready to Partner With Us?</h2>
-              <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
+              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
                 Join our mission to advance health innovation and research in Uganda
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild className="bg-white text-primary-600 hover:bg-gray-100">
+                <Button asChild className="bg-white text-blue-600 hover:bg-gray-100">
                   <a href="/contact">Contact Us</a>
                 </Button>
-                <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-primary-600">
+                <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
                   <a href="/sponsors">Register as Sponsor</a>
                 </Button>
               </div>

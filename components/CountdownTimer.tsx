@@ -61,63 +61,63 @@ const CountdownTimer: React.FC = () => {
   }
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white rounded-2xl p-6 shadow-2xl border border-white/10">
+    <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white rounded-xl p-4 shadow-xl border border-white/10">
       {/* Animated background elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-400/10 to-primary-500/10 animate-pulse"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-blue-500/10 animate-pulse"></div>
       
       <div className="relative z-10">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="flex items-center justify-center mb-2">
-            <Calendar className="h-6 w-6 text-white mr-2" />
-            <h3 className="text-xl font-bold text-white">
+        {/* Header - Compact */}
+        <div className="text-center mb-4">
+          <div className="flex items-center justify-center mb-1">
+            <Calendar className="h-4 w-4 text-white mr-2" />
+            <h3 className="text-sm font-bold text-white">
               Conference Countdown
             </h3>
           </div>
-          <p className="text-primary-100 text-sm">November 3, 2025 • 9:00 AM EAT</p>
+          <p className="text-blue-100 text-xs">November 3, 2025 • 9:00 AM EAT</p>
         </div>
         
-        {/* Countdown Grid - Compact Design */}
-        <div className="grid grid-cols-4 gap-3">
+        {/* Countdown Grid - More Compact Design */}
+        <div className="grid grid-cols-4 gap-2">
           <div className="text-center group">
-            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="text-2xl md:text-3xl font-bold text-white mb-1 group-hover:scale-110 transition-transform duration-300">
+            <div className="bg-white/15 backdrop-blur-sm rounded-lg p-3 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="text-lg md:text-xl font-bold text-white mb-1 group-hover:scale-110 transition-transform duration-300">
                 {timeLeft.days.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs text-primary-100 font-medium uppercase tracking-wider">
+              <div className="text-xs text-blue-100 font-medium uppercase tracking-wider">
                 Days
               </div>
             </div>
           </div>
           
           <div className="text-center group">
-            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="text-2xl md:text-3xl font-bold text-white mb-1 group-hover:scale-110 transition-transform duration-300">
+            <div className="bg-white/15 backdrop-blur-sm rounded-lg p-3 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="text-lg md:text-xl font-bold text-white mb-1 group-hover:scale-110 transition-transform duration-300">
                 {timeLeft.hours.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs text-primary-100 font-medium uppercase tracking-wider">
+              <div className="text-xs text-blue-100 font-medium uppercase tracking-wider">
                 Hours
               </div>
             </div>
           </div>
           
           <div className="text-center group">
-            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="text-2xl md:text-3xl font-bold text-white mb-1 group-hover:scale-110 transition-transform duration-300">
+            <div className="bg-white/15 backdrop-blur-sm rounded-lg p-3 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="text-lg md:text-xl font-bold text-white mb-1 group-hover:scale-110 transition-transform duration-300">
                 {timeLeft.minutes.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs text-primary-100 font-medium uppercase tracking-wider">
+              <div className="text-xs text-blue-100 font-medium uppercase tracking-wider">
                 Minutes
               </div>
             </div>
           </div>
           
           <div className="text-center group">
-            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="text-2xl md:text-3xl font-bold text-white mb-1 animate-pulse group-hover:scale-110 transition-transform duration-300">
+            <div className="bg-white/15 backdrop-blur-sm rounded-lg p-3 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="text-lg md:text-xl font-bold text-white mb-1 animate-pulse group-hover:scale-110 transition-transform duration-300">
                 {timeLeft.seconds.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs text-primary-100 font-medium uppercase tracking-wider">
+              <div className="text-xs text-blue-100 font-medium uppercase tracking-wider">
                 Seconds
               </div>
             </div>

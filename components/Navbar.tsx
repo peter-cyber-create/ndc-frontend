@@ -61,7 +61,7 @@ export function Navbar() {
       </div>
       
       <nav className={
-        `floating-nav bg-white sm:bg-white/80 shadow-md sm:backdrop-blur-md border-b border-primary-200 fixed top-[12px] sm:top-[32px] left-0 sm:left-1/2 sm:-translate-x-1/2 rounded-none sm:rounded-2xl max-w-full sm:max-w-[98vw] lg:max-w-[1600px] w-full mx-auto z-40 transition-all duration-300 py-3 sm:py-2 px-0 sm:px-6`
+        `sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 transition-all duration-300 py-3 px-4 sm:px-6`
       }>
       <div className="flex justify-between items-center w-full min-h-[3.5rem] sm:min-h-[4.5rem]">
         <div className="flex items-center flex-shrink-0">
@@ -87,35 +87,41 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-2">
-            {/* Main Navigation Links with special separator after About */}
-            {navigation.map((item, index) => (
+            {/* Main Navigation Links */}
+            {navigation.slice(0, 8).map((item, index) => (
               <React.Fragment key={item.name}>
                 <Link
                   href={item.href}
                   className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${
                     pathname === item.href 
                       ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg scale-105 ring-2 ring-primary-400 font-semibold' 
-                      : shouldUseBlackText 
-                        ? 'text-gray-900 hover:shadow-md' 
-                        : 'text-primary-100'
+                      : 'text-gray-900 hover:shadow-md'
                   }`}
                 >
                   {item.name}
                 </Link>
-                {/* Special separator after About */}
+                {/* Separator after About */}
                 {item.name === 'About' && (
-                  <div className="h-6 w-px bg-gradient-to-b from-primary-300 to-primary-500 mx-2" />
-                )}
-                {/* Special separator between Contact and Exhibitors */}
-                {item.name === 'Contact' && (
-                  <div className="h-6 w-px bg-gradient-to-b from-primary-300 to-primary-500 mx-2" />
-                )}
-                {/* Regular separators for other nav links except the last one */}
-                {item.name !== 'About' && item.name !== 'Contact' && index < navigation.length - 1 && (
-                  <div className="h-6 w-px bg-primary-300 mx-1" />
+                  <div className="h-6 w-px bg-gray-300 mx-2" />
                 )}
               </React.Fragment>
             ))}
+          </div>
+
+          {/* Priority CTAs - Always visible */}
+          <div className="hidden lg:flex items-center space-x-3 ml-4">
+            <Link
+              href="/register"
+              className="btn-primary text-sm px-4 py-2 min-h-[40px]"
+            >
+              Register Now
+            </Link>
+            <Link
+              href="/abstracts"
+              className="btn-secondary text-sm px-4 py-2 min-h-[40px]"
+            >
+              Submit Abstract
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -143,12 +149,35 @@ export function Navbar() {
             {/* Mobile menu */}
             <div className="lg:hidden absolute left-0 right-0 top-full mt-2 mx-2 sm:mx-4 bg-white rounded-xl shadow-2xl z-50 border-2 border-primary-200 max-h-[85vh] overflow-y-auto">
               <div className="p-3 sm:p-4 space-y-1">
+                {/* Priority CTAs - Mobile */}
+                <div className="space-y-2 mb-4 pb-4 border-b border-gray-200">
+                  <div className="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-2 px-3">
+                    Quick Actions
+                  </div>
+                  <div className="flex flex-col space-y-2">
+                    <Link
+                      href="/register"
+                      className="btn-primary text-sm px-4 py-3 min-h-[48px] justify-center"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Register Now
+                    </Link>
+                    <Link
+                      href="/abstracts"
+                      className="btn-secondary text-sm px-4 py-3 min-h-[48px] justify-center"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Submit Abstract
+                    </Link>
+                  </div>
+                </div>
+
                 {/* Main Navigation */}
                 <div className="space-y-1 mb-3">
                   <div className="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-2 px-3">
                     Navigation
                   </div>
-                  {navigation.map((item) => (
+                  {navigation.slice(0, 8).map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}

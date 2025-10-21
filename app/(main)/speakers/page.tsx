@@ -1,5 +1,11 @@
+'use client'
+
+import React from 'react'
+import { Card, CardContent } from '@/components/ui/card'
+import { User, Award, Building, ExternalLink, Mail } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { User, Award, Building, Mail, Twitter, Linkedin, ExternalLink } from 'lucide-react'
+import ScrollReveal from '@/components/ScrollReveal'
 
 const speakers = [
   {
@@ -61,12 +67,48 @@ const speakers = [
       twitter: "#",
       linkedin: "#"
     }
+  },
+  {
+    id: 6,
+    name: "Dr. Sarah Opendi",
+    title: "Former State Minister",
+    organization: "Ministry of Health Uganda",
+    bio: "Experienced health policy maker and advocate for women's health and reproductive rights in Uganda.",
+    image: "/images/speakers/dr-sarah-opendi.jpg",
+    social: {
+      twitter: "#",
+      linkedin: "#"
+    }
+  },
+  {
+    id: 7,
+    name: "Prof. Pontiano Kaleebu",
+    title: "Director",
+    organization: "Uganda Virus Research Institute",
+    bio: "Leading virologist and researcher in infectious diseases, particularly HIV/AIDS and emerging viral threats.",
+    image: "/images/speakers/prof-pontiano-kaleebu.jpg",
+    social: {
+      twitter: "#",
+      linkedin: "#"
+    }
+  },
+  {
+    id: 8,
+    name: "Dr. Rhoda Wanyenze",
+    title: "Dean",
+    organization: "Makerere University School of Public Health",
+    bio: "Public health expert and advocate for health equity and gender-responsive health systems in Uganda.",
+    image: "/images/speakers/dr-rhoda-wanyenze.jpg",
+    social: {
+      twitter: "#",
+      linkedin: "#"
+    }
   }
 ]
 
 export default function SpeakersPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-50 py-16">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -74,101 +116,79 @@ export default function SpeakersPage() {
             Conference Speakers
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Meet the distinguished speakers and thought leaders who will share their expertise and insights at the NACNDC & JASHConference 2025.
+            Meet the distinguished speakers and thought leaders who will share their expertise and insights at the NACNDC & JASH Conference 2025.
           </p>
         </div>
 
         {/* Speakers Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {speakers.map((speaker) => (
-            <div key={speaker.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
-              {/* Speaker Image */}
-              <div className="relative h-80 flex items-center justify-center bg-gradient-to-br from-primary-100 to-primary-200">
-                {['/images/charles.jpeg','/images/diana.jpeg','/images/ruth.jpeg'].includes(speaker.image) ? (
-                  <div className="relative w-56 h-56 flex items-center justify-center">
-                    <img
-                      src={speaker.image}
-                      alt={speaker.name}
-                      className="w-56 h-56 object-cover rounded-full border-4 border-primary-400 shadow-2xl z-10 bg-white"
-                    />
-                    <span className="absolute bottom-2 right-2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full shadow">Keynote</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {speakers.map((speaker, index) => (
+            <ScrollReveal key={speaker.id} delay={index * 150} direction="up">
+              <Card className="group bg-white border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 overflow-hidden hover:border-blue-200">
+                <CardContent className="p-0">
+                  {/* Speaker Image */}
+                  <div className="relative h-64 bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-500">
+                    {speaker.image && !speaker.image.includes('speakers/') ? (
+                      <div className="relative w-40 h-40 flex items-center justify-center">
+                        <img
+                          src={speaker.image}
+                          alt={speaker.name}
+                          className="w-40 h-40 object-cover rounded-full border-4 border-white shadow-2xl group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full shadow-lg group-hover:bg-blue-700 transition-colors duration-300">
+                          <Award className="h-3 w-3" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-32 h-32 bg-blue-200 rounded-full flex items-center justify-center border-4 border-white shadow-lg group-hover:bg-blue-300 transition-colors duration-500">
+                        <User className="h-16 w-16 text-blue-600 group-hover:text-blue-700 transition-colors duration-500" />
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="w-44 h-44 bg-primary-200 rounded-full flex items-center justify-center border-2 border-primary-100">
-                    <User className="h-20 w-20 text-primary-400" />
+
+                  {/* Speaker Info */}
+                  <div className="p-6 text-center">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">{speaker.name}</h3>
+                    <p className="text-blue-600 font-semibold text-sm mb-2">{speaker.title}</p>
+                    <div className="flex items-center justify-center text-gray-600 mb-4">
+                      <Building className="h-4 w-4 mr-2" />
+                      <span className="text-sm">{speaker.organization}</span>
+                    </div>
                   </div>
-                )}
-                <div className="absolute top-4 right-4">
-                  <Award className="h-6 w-6 text-primary-600" />
-                </div>
-              </div>
-
-              {/* Speaker Info */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{speaker.name}</h3>
-                <p className="text-primary-600 font-semibold mb-1">{speaker.title}</p>
-                <div className="flex items-center text-gray-600 mb-3">
-                  <Building className="h-4 w-4 mr-2" />
-                  <span className="text-sm">{speaker.organization}</span>
-                </div>
-                <p className="text-gray-700 text-sm leading-relaxed mb-4">{speaker.bio}</p>
-
-                {/* Social Links */}
-                <div className="flex items-center space-x-3">
-                  <a
-                    href={speaker.social.twitter}
-                    className="p-2 text-gray-400 hover:text-blue-500 transition-colors"
-                  >
-                    <Twitter className="h-5 w-5" />
-                  </a>
-                  <a
-                    href={speaker.social.linkedin}
-                    className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
-                  >
-                    <Linkedin className="h-5 w-5" />
-                  </a>
-                  <a
-                    href={`mailto:${speaker.name.toLowerCase().replace(/\s+/g, '.')}@moh.go.ug`}
-                    className="p-2 text-gray-400 hover:text-primary-600 transition-colors"
-                  >
-                    <Mail className="h-5 w-5" />
-                  </a>
-                </div>
-              </div>
-            </div>
+                </CardContent>
+              </Card>
+            </ScrollReveal>
           ))}
         </div>
 
         {/* Call to Action */}
         <div className="mt-16 text-center">
-          <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Want to be a Speaker?
-            </h2>
-            <p className="text-gray-600 mb-6">
-              We're always looking for passionate health professionals to share their knowledge and experiences.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/abstracts"
-                className="btn-primary"
-              >
-                <ExternalLink className="h-5 w-5 mr-2" />
-                Submit Abstract
-              </Link>
-              <Link
-                href="/contact"
-                className="btn-outline"
-              >
-                <Mail className="h-5 w-5 mr-2" />
-                Contact Us
-              </Link>
-            </div>
-          </div>
+          <Card className="bg-white border-0 shadow-2xl max-w-4xl mx-auto">
+            <CardContent className="p-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Want to be a Speaker?
+              </h2>
+              <p className="text-lg text-gray-600 mb-8">
+                We're always looking for passionate health professionals to share their knowledge and experiences.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                  <Link href="/abstracts">
+                    <ExternalLink className="h-5 w-5 mr-2" />
+                    Submit Abstract
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                  <Link href="/contact">
+                    <Mail className="h-5 w-5 mr-2" />
+                    Contact Us
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
   )
 }
-
-

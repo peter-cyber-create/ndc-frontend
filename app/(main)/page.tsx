@@ -3,6 +3,10 @@ import { Calendar, MapPin, Users } from 'lucide-react'
 import HomeSlideshow from '../../components/HomeSlideshow'
 import { Navbar } from '../../components/Navbar'
 import CountdownTimer from '../../components/CountdownTimer'
+import SpeakersSlideshow from '../../components/SpeakersSlideshow'
+import { Footer } from '../../components/Footer'
+import AnimatedCounter from '@/components/AnimatedCounter'
+import { useScrollReveal } from '@/hooks/useScrollReveal'
 
 export const metadata = {
   title: 'NATIONAL ANNUAL COMMUNICABLE AND NON COMMUNICABLE DISEASES (NACNDC) AND 19TH JOINT SCIENTIFIC HEALTH(JASH) CONFERENCE 2025',
@@ -25,13 +29,13 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section with Slideshow, Overlay, and Title */}
-      <section className="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[80vh] flex flex-col justify-center items-center overflow-hidden border-b border-primary-900">
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] md:min-h-[90vh] flex flex-col justify-center items-center overflow-hidden border-b border-primary-900">
         <div className="absolute inset-0 z-0 w-full h-full">
           <HomeSlideshow />
           {/* Gradient overlay for readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-transparent" />
         </div>
-        <div className="relative z-10 flex flex-col items-center justify-center w-full h-full pt-16 pb-8 px-3 sm:px-4 md:px-6 animate-fade-in">
+        <div className="relative z-10 flex flex-col items-center justify-center w-full h-full pt-20 pb-8 px-3 sm:px-4 md:px-6 animate-fade-in">
           <h1 className="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-extrabold mb-3 sm:mb-4 tracking-tight leading-tight drop-shadow-xl animate-slide-up text-center max-w-7xl">
             NATIONAL ANNUAL COMMUNICABLE AND NON COMMUNICABLE DISEASES (NACNDC) AND 19TH JOINT SCIENTIFIC HEALTH(JASH) CONFERENCE 2025
           </h1>
@@ -42,8 +46,8 @@ export default function HomePage() {
             3rd - 7th November, 2025 • Speke Resort Munyonyo, Uganda
           </p>
           
-          {/* Countdown Timer */}
-          <div className="mb-6 animate-fade-in delay-300 max-w-2xl w-full px-4">
+          {/* Countdown Timer - Smaller and more compact */}
+          <div className="mb-6 animate-fade-in delay-300 max-w-lg w-full px-4">
             <CountdownTimer />
           </div>
           <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center items-center animate-fade-in delay-300 w-full max-w-lg sm:max-w-none px-4">
@@ -66,10 +70,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Navbar floating above hero */}
-      <div className="absolute top-0 left-0 w-full z-30">
-        <Navbar />
-      </div>
+      {/* Sticky Navigation */}
+      <Navbar />
 
       {/* Official Call for Abstracts section with CRUD-inspired card UI */}
       <section className="relative w-full bg-primary-950 py-16 px-2 sm:px-0 text-white" style={{display: "none"}}>
@@ -142,6 +144,87 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Speakers Slideshow Section */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Meet Our Distinguished Speakers
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Leading health professionals and experts who will share their insights and expertise at the conference.
+            </p>
+          </div>
+          <SpeakersSlideshow />
+          <div className="text-center mt-8">
+            <Link 
+              href="/speakers" 
+              className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-300"
+            >
+              View All Speakers
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Animated Statistics */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Conference Impact
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Join a growing community of health professionals making a difference
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center scroll-reveal">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 hover-lift">
+                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-4xl font-bold text-blue-600 mb-2">
+                  <AnimatedCounter end={500} suffix="+" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Expected Attendees</h3>
+                <p className="text-gray-600">Health professionals from across Uganda</p>
+              </div>
+            </div>
+            
+            <div className="text-center scroll-reveal">
+              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 hover-lift">
+                <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Calendar className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-4xl font-bold text-green-600 mb-2">
+                  <AnimatedCounter end={5} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Conference Days</h3>
+                <p className="text-gray-600">Comprehensive program and networking</p>
+              </div>
+            </div>
+            
+            <div className="text-center scroll-reveal">
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-8 hover-lift">
+                <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MapPin className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-4xl font-bold text-purple-600 mb-2">
+                  <AnimatedCounter end={1} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Premium Venue</h3>
+                <p className="text-gray-600">Speke Resort Munyonyo, Uganda</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <Footer />
     </>
   )
 }
