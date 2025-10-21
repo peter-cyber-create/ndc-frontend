@@ -1,0 +1,59 @@
+
+import { NextRequest, NextResponse } from "next/server"
+import mysql from 'mysql2/promise'
+import { writeFile } from 'fs/promises'
+import { join } from 'path'
+import { emailService } from '../../../lib/emailService'
+
+const dbConfig = {
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'conf',
+  password: process.env.DB_PASSWORD || 'toor',
+  database: process.env.DB_NAME || 'conf',
+  port: 3306,
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const formData = await request.formData()
+    
+    const company_name = formData.get('organizationName') as string
+    const contact_person = formData.get('contactPerson') as string
+    const email = formData.get('email') as string
+    const phone = formData.get('phone') as string
+    const selected_package = formData.get('selected_package') as string
+    const paymentProof = formData.get('paymentProof') as File
+    
+    if (!company_name || !contact_person || !email || !phone || !selected_package) {
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 })
+    }
+
+    const connection = await mysql.createConnection(dbConfig)
+    await (connection as any).execute(`
+      INSERT INTO sponsorships (company_name, contact_person, email, phone, selected_package, status, created_at)
+      VALUES (?, ?, ?, ?, ?, 'pending', NOW())
+    `, [company_name, contact_person, email, phone, selected_package])
+    
+    await connection.end()
+
+    // Send confirmation email
+    try {
+      await emailService.sendEmail({
+        to: email,
+        subject: 'Sponsorship Application Received',
+        html: `<p>Dear ${contact_person},<br>Your sponsorship application has been received. We will contact you soon.<br>Thank you!</p>`
+      })
+    } catch (emailError) {
+      console.error('Failed to send sponsorship confirmation email:', emailError)
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Sponsorship application submitted successfully'
+    })
+
+  } catch (error) {
+    console.error('Error submitting sponsorship:', error)
+    return NextResponse.json({ error: "Failed to submit sponsorship" }, { status: 500 })
+  }
+}
