@@ -210,47 +210,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Speakers Section */}
-      <section className="relative w-full py-14 px-2 sm:px-0 bg-gray-100">
-        <div className="flex justify-center mb-10">
-          <div className="h-1 w-24 bg-gradient-to-r from-primary-500 via-primary-400 to-primary-700 rounded-full opacity-70" />
-        </div>
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-primary-900">Keynote Speakers</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {/* Speaker 1 */}
-            <div className="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 border border-primary-200">
-              <img
-                src="/images/speakers/charles.jpeg"
-                alt="Speaker Charles"
-                className="w-32 h-32 object-cover rounded-full mb-4 border-4 border-primary-100"
-              />
-              <h3 className="text-lg font-bold text-primary-900 mb-1">Dr. Charles</h3>
-              <p className="text-gray-600 text-sm">[Title or Affiliation]</p>
-            </div>
-            {/* Speaker 2 */}
-            <div className="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 border border-primary-200">
-              <img
-                src="/images/speakers/diana.jpeg"
-                alt="Speaker Diana"
-                className="w-32 h-32 object-cover rounded-full mb-4 border-4 border-primary-100"
-              />
-              <h3 className="text-lg font-bold text-primary-900 mb-1">Dr. Diana</h3>
-              <p className="text-gray-600 text-sm">[Title or Affiliation]</p>
-            </div>
-            {/* Speaker 3 */}
-            <div className="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 border border-primary-200">
-              <img
-                src="/images/speakers/ruth.jpeg"
-                alt="Speaker Ruth"
-                className="w-32 h-32 object-cover rounded-full mb-4 border-4 border-primary-100"
-              />
-              <h3 className="text-lg font-bold text-primary-900 mb-1">Dr. Ruth</h3>
-              <p className="text-gray-600 text-sm">[Title or Affiliation]</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
     </div>
   )
