@@ -252,33 +252,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="relative w-full py-14 px-2 sm:px-0 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-6">Join Us in Making a Difference</h2>
-          <p className="text-xl text-primary-100 mb-8 leading-relaxed">
-            Be part of this historic gathering as we work together toward unified action against communicable and non-communicable diseases. 
-            Together, we can build a healthier, more resilient Uganda.
-          </p>
-          {/* Abstract Submission Poster */}
-          <div className="flex justify-center mb-8">
-            <img 
-              src="/images/Abstracts Submission extended Poster-v1.png"
-              alt="Abstract Submission Extended Poster"
-              className="max-w-full h-auto rounded-lg shadow-lg border border-white"
-              style={{ maxHeight: '420px' }}
-            />
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/register" className="bg-white text-primary-600 px-8 py-3 rounded-lg font-bold hover:bg-primary-50 transition-colors shadow-lg">
-              Register Now
-            </a>
-            <a href="/abstracts" className="border-2 border-white text-white px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-primary-600 transition-colors">
-              Submit Abstract
-            </a>
-          </div>
-        </div>
-      </section>
     </div>
   )
 }

@@ -70,7 +70,7 @@ export function Navbar() {
       </div>
       
       <nav className={
-        `fixed top-4 left-4 right-4 z-50 bg-white/95 backdrop-blur-md shadow-lg border border-gray-200/50 rounded-xl transition-all duration-300 py-3 px-4 sm:px-6 hud-overlay cyber-grid ${
+        `fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 backdrop-blur-md shadow-lg border border-gray-200/50 rounded-xl transition-all duration-300 py-3 px-4 sm:px-6 max-w-6xl w-full mx-4 ${
           isScrolled ? 'shadow-2xl bg-white/98' : 'shadow-lg bg-white/95'
         }`
       }>
