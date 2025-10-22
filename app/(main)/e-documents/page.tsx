@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { FileText, Download, Clock, Users, Presentation, BookOpen, Video, Image as ImageIcon } from 'lucide-react'

@@ -50,7 +50,7 @@ export default function ScrollReveal({
 
   return (
     <div
-      ref={ref}
+      ref={ref as React.RefObject<HTMLDivElement>}
       className={`transition-all duration-700 ease-out ${getAnimationClass()} ${className}`}
     >
       {children}

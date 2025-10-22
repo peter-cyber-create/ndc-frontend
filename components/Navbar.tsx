@@ -28,8 +28,7 @@ export function Navbar() {
     { name: 'Exhibitors', href: '/exhibitors' },
     { name: 'Pre-Conference', href: '/pre-conference' },
     { name: 'Register', href: '/register' },
-    { name: 'Abstracts', href: '/abstracts' },
-    { name: 'Conference E-Documents', href: '/e-documents' },
+    { name: 'E-Docs', href: '/e-documents' },
     { name: 'Contact', href: '/contact' },
   ]
 

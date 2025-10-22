@@ -62,7 +62,7 @@ export async function GET(
     const filename = `Payment_Proof_${registration.firstName}_${registration.lastName}.${extension}`
     console.log('Serving file:', filename)
 
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(fileBuffer as BodyInit, {
       status: 200,
       headers: {
         'Content-Type': contentType,
