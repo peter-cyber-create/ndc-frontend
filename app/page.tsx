@@ -46,23 +46,6 @@ export default function HomePage() {
           <div className="mb-6 animate-fade-in delay-300 max-w-2xl w-full px-4">
             <CountdownTimer />
           </div>
-          <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center items-center animate-fade-in delay-300 w-full max-w-lg sm:max-w-none px-4">
-            <Link href="/register" className="relative inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-sm sm:text-base min-h-[52px] border border-primary-600 hover:border-primary-700 w-full xs:w-auto text-center min-w-[160px]">
-              <span className="text-lg">🎫</span>
-              <span className="relative z-10">Register Now</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-            </Link>
-            <Link href="/abstracts" className="relative inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 bg-transparent hover:bg-white/10 text-white border-2 border-white hover:border-white/90 font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-sm sm:text-base min-h-[52px] backdrop-blur-sm w-full xs:w-auto text-center min-w-[160px]">
-              <span className="text-lg">📄</span>
-              <span className="relative z-10">Submit Abstract</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-            </Link>
-            <Link href="/payment-instructions" className="relative inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-sm sm:text-base min-h-[52px] border border-yellow-400 hover:border-yellow-500 w-full xs:w-auto text-center min-w-[160px]">
-              <span className="text-lg">💳</span>
-              <span className="relative z-10">Payment Instructions</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-            </Link>
-          </div>
         </div>
       </section>
 
