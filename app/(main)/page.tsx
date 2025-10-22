@@ -49,27 +49,6 @@ export default function HomePage() {
             3rd - 7th November, 2025 • Speke Resort Munyonyo, Uganda
           </p>
           
-          {/* Countdown Timer - Smaller and more compact */}
-          <div className="mb-6 animate-fade-in delay-300 max-w-lg w-full px-4">
-            <CountdownTimer />
-          </div>
-          <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center items-center animate-fade-in delay-300 w-full max-w-lg sm:max-w-none px-4">
-            <Link href="/register" className="relative inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-sm sm:text-base min-h-[52px] border border-primary-600 hover:border-primary-700 w-full xs:w-auto text-center min-w-[160px]">
-              <span className="text-lg">🎫</span>
-              <span className="relative z-10">Register Now</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-            </Link>
-            <Link href="/abstracts" className="relative inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 bg-transparent hover:bg-white/10 text-white border-2 border-white hover:border-white/90 font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-sm sm:text-base min-h-[52px] backdrop-blur-sm w-full xs:w-auto text-center min-w-[160px]">
-              <span className="text-lg">📄</span>
-              <span className="relative z-10">Submit Abstract</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-            </Link>
-            <Link href="/payment-instructions" className="relative inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-8 sm:py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-sm sm:text-base min-h-[52px] border border-yellow-400 hover:border-yellow-500 w-full xs:w-auto text-center min-w-[160px]">
-              <span className="text-lg">💳</span>
-              <span className="relative z-10">Payment Instructions</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -92,6 +71,23 @@ export default function HomePage() {
             >
               View All Speakers
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Conference Countdown Section */}
+      <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Conference Countdown
+            </h2>
+            <p className="text-xl text-primary-100 mb-8">
+              November 3, 2025 • 9:00 AM EAT
+            </p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <CountdownTimer />
           </div>
         </div>
       </section>

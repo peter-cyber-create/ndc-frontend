@@ -9,7 +9,7 @@ import ScrollReveal from '@/components/ScrollReveal'
 
 const speakers = [
   {
-    id: 1,
+    id: 2,
     name: "Dr. Jane Ruth Aceng Ocero",
     title: "Minister of Health",
     organization: "Ministry of Health Uganda",
@@ -17,7 +17,7 @@ const speakers = [
     image: "/images/speakers/ruth.jpeg"
   },
   {
-    id: 2,
+    id: 3,
     name: "Dr. Diana Atwine",
     title: "Permanent Secretary",
     organization: "Ministry of Health Uganda",
@@ -25,7 +25,7 @@ const speakers = [
     image: "/images/speakers/diana.jpeg"
   },
   {
-    id: 3,
+    id: 4,
     name: "Dr. Charles Olaro",
     title: "Director General",
     organization: "Ministry of Health Uganda",
@@ -33,7 +33,7 @@ const speakers = [
     image: "/images/speakers/charles.jpeg"
   },
   {
-    id: 4,
+    id: 5,
     name: "Dr. Queen Dube",
     title: "Keynote Speaker - Opening Ceremony",
     organization: "NACNDC & JASH Conference 2025",
@@ -41,31 +41,15 @@ const speakers = [
     image: "/images/speakers/Dr. Queen Dube .jpeg"
   },
   {
-    id: 5,
+    id: 1,
     name: "Prof. Francis Omaswa",
-    title: "Guest Speaker - Day 5",
-    organization: "Friday, 7th November 2025",
-    bio: "Renowned guest speaker presenting on the final day of the conference. Prof. Omaswa is a distinguished health professional with extensive experience in global health and health systems strengthening.",
+    title: "Guest of Honor",
+    organization: "NACNDC & JASH Conference 2025",
+    bio: "Distinguished Guest of Honor for the NACNDC & JASH Conference 2025. Prof. Omaswa is a renowned health professional with extensive experience in global health and health systems strengthening.",
     image: "/images/speakers/Prof Omaswa 2.jpg"
   },
   {
     id: 6,
-    name: "Dr. Kazoora Wilson",
-    title: "Clinical Mentor & Quality Improvement Manager",
-    organization: "AIDS Healthcare Foundation (AHF) Uganda Cares",
-    bio: "Medical Doctor with AIDS Healthcare Foundation (AHF) Uganda Cares, serving as a Clinical Mentor and Quality Improvement manager. He holds an MBChB from Mbarara University of Science and Technology and has over eight years of experience in HIV prevention, care, and treatment. Dr. Kazoora provides national mentorship in integrated service delivery, focusing on HIV, NCD, STIs and TB.",
-    image: "/images/speakers/Dr. Kazoora Wilson.jpeg"
-  },
-  {
-    id: 7,
-    name: "Henry Magala",
-    title: "Session Chair - Track Health Policy, Financing and Partnerships",
-    organization: "Monday, 3rd November 2025",
-    bio: "Session Chair for Track Health Policy, Financing and Partnerships on Monday, 3rd November 2025. Henry brings extensive experience in health policy development and health financing strategies.",
-    image: "/images/speakers/henry-magala.jpg"
-  },
-  {
-    id: 8,
     name: "Dr. Alex Riolexus Ario",
     title: "Associate Professor of Infectious Disease Epidemiology",
     organization: "Uganda National Institute of Public Health",
@@ -73,18 +57,34 @@ const speakers = [
     image: "/images/speakers/Dr. Alex Riolexus Ario.jpg"
   },
   {
+    id: 7,
+    name: "Dr. Kazoora Wilson",
+    title: "Clinical Mentor & Quality Improvement Manager",
+    organization: "AIDS Healthcare Foundation (AHF) Uganda Cares",
+    bio: "Medical Doctor with AIDS Healthcare Foundation (AHF) Uganda Cares, serving as a Clinical Mentor and Quality Improvement manager. He holds an MBChB from Mbarara University of Science and Technology and has over eight years of experience in HIV prevention, care, and treatment. Dr. Kazoora provides national mentorship in integrated service delivery, focusing on HIV, NCD, STIs and TB.",
+    image: "/images/speakers/Dr. Kazoora Wilson.jpeg"
+  },
+  {
+    id: 8,
+    name: "Henry Magala",
+    title: "Session Chair - Track Health Policy, Financing and Partnerships",
+    organization: "Monday, 3rd November 2025",
+    bio: "Session Chair for Track Health Policy, Financing and Partnerships on Monday, 3rd November 2025. Henry brings extensive experience in health policy development and health financing strategies.",
+    image: null
+  },
+  {
     id: 9,
     name: "Dr. Rhoda Wanyenze",
     title: "Dean",
     organization: "Makerere University School of Public Health",
     bio: "Public health expert and advocate for health equity and gender-responsive health systems in Uganda. Dr. Wanyenze leads the School of Public Health in advancing public health education and research.",
-    image: "/images/speakers/dr-rhoda-wanyenze.jpg"
+    image: null
   }
 ]
 
 export default function SpeakersPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-16">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-blue-100 to-indigo-100 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -111,9 +111,6 @@ export default function SpeakersPage() {
                           alt={speaker.name}
                           className="w-40 h-40 object-cover rounded-full border-4 border-white shadow-2xl group-hover:scale-110 transition-transform duration-500"
                         />
-                        <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full shadow-lg group-hover:bg-blue-700 transition-colors duration-300">
-                          <Award className="h-3 w-3" />
-                        </div>
                       </div>
                     ) : (
                       <div className="w-32 h-32 bg-blue-200 rounded-full flex items-center justify-center border-4 border-white shadow-lg group-hover:bg-blue-300 transition-colors duration-500">

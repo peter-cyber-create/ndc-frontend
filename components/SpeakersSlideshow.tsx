@@ -8,38 +8,38 @@ import { Button } from '@/components/ui/button'
 const speakers = [
   {
     id: 1,
+    name: "Prof. Francis Omaswa",
+    title: "Guest of Honor",
+    organization: "NACNDC & JASH Conference 2025",
+    image: "/images/speakers/Prof Omaswa 2.jpg"
+  },
+  {
+    id: 2,
     name: "Dr. Jane Ruth Aceng Ocero",
     title: "Minister of Health",
     organization: "Ministry of Health Uganda",
     image: "/images/speakers/ruth.jpeg"
   },
   {
-    id: 2,
+    id: 3,
     name: "Dr. Diana Atwine",
     title: "Permanent Secretary",
     organization: "Ministry of Health Uganda",
     image: "/images/speakers/diana.jpeg"
   },
   {
-    id: 3,
+    id: 4,
     name: "Dr. Charles Olaro",
     title: "Director General",
     organization: "Ministry of Health Uganda",
     image: "/images/speakers/charles.jpeg"
   },
   {
-    id: 4,
+    id: 5,
     name: "Dr. Queen Dube",
     title: "Keynote Speaker - Opening Ceremony",
     organization: "NACNDC & JASH Conference 2025",
     image: "/images/speakers/Dr. Queen Dube .jpeg"
-  },
-  {
-    id: 5,
-    name: "Prof. Francis Omaswa",
-    title: "Guest Speaker - Day 5",
-    organization: "Friday, 7th November 2025",
-    image: "/images/speakers/Prof Omaswa 2.jpg"
   },
   {
     id: 6,
@@ -54,13 +54,6 @@ const speakers = [
     title: "Clinical Mentor & Quality Improvement Manager",
     organization: "AIDS Healthcare Foundation (AHF) Uganda Cares",
     image: "/images/speakers/Dr. Kazoora Wilson.jpeg"
-  },
-  {
-    id: 8,
-    name: "Henry Magala",
-    title: "Session Chair - Track Health Policy, Financing and Partnerships",
-    organization: "Monday, 3rd November 2025",
-    image: "/images/speakers/henry-magala.jpg"
   }
 ]
 
@@ -118,9 +111,6 @@ export default function SpeakersSlideshow() {
                         <User className="h-16 w-16 text-blue-600" />
                       </div>
                     )}
-                    <div className="absolute -top-2 -right-2 bg-blue-600 text-white p-1 rounded-full">
-                      <Award className="h-4 w-4" />
-                    </div>
                   </div>
                 </div>
 

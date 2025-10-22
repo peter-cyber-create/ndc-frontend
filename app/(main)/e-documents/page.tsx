@@ -63,10 +63,10 @@ const documentCategories = [
 
 export default function EDocumentsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-16">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-blue-100 to-indigo-100 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Conference E-Documents
           </h1>
@@ -75,7 +75,7 @@ export default function EDocumentsPage() {
           </p>
           
           {/* Coming Soon Message */}
-          <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white rounded-2xl p-8 max-w-4xl mx-auto shadow-2xl">
+          <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white rounded-2xl p-6 max-w-4xl mx-auto shadow-2xl">
             <div className="flex items-center justify-center mb-4">
               <Clock className="h-12 w-12 text-primary-200 mr-4" />
               <h2 className="text-3xl font-bold">Materials Coming Soon</h2>
@@ -109,7 +109,7 @@ export default function EDocumentsPage() {
         </div>
 
         {/* Document Categories */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {documentCategories.map((category, index) => (
             <ScrollReveal key={category.id} delay={index * 150} direction="up">
               <Card className="group bg-white border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 overflow-hidden hover:border-blue-200">
