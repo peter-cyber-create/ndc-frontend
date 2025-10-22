@@ -70,15 +70,15 @@ export function Navbar() {
       </div>
       
       <nav className={
-        `fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 backdrop-blur-md shadow-lg border border-gray-200/50 rounded-xl transition-all duration-300 py-3 px-4 sm:px-6 max-w-6xl w-full mx-4 ${
+        `fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 backdrop-blur-md shadow-lg border border-gray-200/50 rounded-xl transition-all duration-300 py-3 px-2 sm:px-4 max-w-7xl w-full mx-4 ${
           isScrolled ? 'shadow-2xl bg-white/98' : 'shadow-lg bg-white/95'
         }`
       }>
       <div className="flex justify-between items-center w-full min-h-[3.5rem] sm:min-h-[4.5rem]">
         <div className="flex items-center flex-shrink-0">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center">
+          <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+            <div className="w-8 h-8 flex items-center justify-center">
               <img 
                 src="/images/uganda-coat-of-arms.png" 
                 alt="Uganda Coat of Arms" 
@@ -86,24 +86,24 @@ export function Navbar() {
               />
             </div>
             <div className="flex flex-col min-w-0">
-              <span className={`font-bold text-xs sm:text-sm lg:text-base xl:text-lg leading-tight transition-colors ${shouldUseWhiteText ? 'text-white' : 'text-gray-900'}`}>
+              <span className={`font-bold text-xs leading-tight transition-colors ${shouldUseWhiteText ? 'text-white' : 'text-gray-900'}`}>
                 <span className="block">NACNDC & JASH</span>
                 <span className="block">Conference <span className="font-extrabold">2025</span></span>
               </span>
-              <span className={`text-[10px] sm:text-xs md:text-sm font-medium transition-colors ${shouldUseWhiteText ? 'text-primary-200' : 'text-gray-600'}`}>
+              <span className={`text-[9px] font-medium transition-colors ${shouldUseWhiteText ? 'text-primary-200' : 'text-gray-600'}`}>
                 Ministry of Health Uganda
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-0.5 flex-wrap">
             {/* Main Navigation Links */}
             {navigation.map((item, index) => (
               <React.Fragment key={item.name}>
                 <Link
                   href={item.href}
-                  className={`px-3 py-2 rounded-lg font-medium transition-velocity hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus-lines relative group ${
+                  className={`px-2 py-2 rounded-lg font-medium transition-velocity hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus-lines relative group text-sm ${
                     pathname === item.href 
                       ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg scale-105 ring-2 ring-primary-400 font-semibold glow-primary' 
                       : 'text-gray-900 hover:shadow-md hover:scale-105'
@@ -122,7 +122,7 @@ export function Navbar() {
                 </Link>
                 {/* Separator after About */}
                 {item.name === 'About' && (
-                  <div className="h-6 w-px bg-gray-300 mx-2" />
+                  <div className="h-6 w-px bg-gray-300 mx-1" />
                 )}
               </React.Fragment>
             ))}
