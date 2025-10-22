@@ -97,13 +97,13 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-0.5 flex-wrap">
+          <div className="hidden lg:flex items-center space-x-1">
             {/* Main Navigation Links */}
             {navigation.map((item, index) => (
               <React.Fragment key={item.name}>
                 <Link
                   href={item.href}
-                  className={`px-2 py-2 rounded-lg font-medium transition-velocity hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus-lines relative group text-sm ${
+                  className={`px-3 py-2 rounded-lg font-medium transition-velocity hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus-lines relative group ${
                     pathname === item.href 
                       ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg scale-105 ring-2 ring-primary-400 font-semibold glow-primary' 
                       : 'text-gray-900 hover:shadow-md hover:scale-105'
@@ -122,7 +122,7 @@ export function Navbar() {
                 </Link>
                 {/* Separator after About */}
                 {item.name === 'About' && (
-                  <div className="h-6 w-px bg-gray-300 mx-1" />
+                  <div className="h-6 w-px bg-gray-300 mx-2" />
                 )}
               </React.Fragment>
             ))}
