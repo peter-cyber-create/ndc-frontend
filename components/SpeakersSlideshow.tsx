@@ -107,7 +107,7 @@ export default function SpeakersSlideshow() {
                 {/* Speaker Image */}
                 <div className="w-full md:w-1/3 flex justify-center mb-6 md:mb-0">
                   <div className="relative">
-                    {speaker.image && !speaker.image.includes('speakers/') ? (
+                    {speaker.image ? (
                       <img
                         src={speaker.image}
                         alt={speaker.name}

@@ -104,7 +104,7 @@ export default function SpeakersPage() {
                 <CardContent className="p-0">
                   {/* Speaker Image */}
                   <div className="relative h-64 bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-500">
-                    {speaker.image && !speaker.image.includes('speakers/') ? (
+                    {speaker.image ? (
                       <div className="relative w-40 h-40 flex items-center justify-center">
                         <img
                           src={speaker.image}
