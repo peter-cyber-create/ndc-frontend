@@ -9,7 +9,7 @@ const agenda = [
   {
     id: 1,
     day: 1,
-    date: 'November 3rd',
+    date: 'November 3rd, 2025',
     track: 'Opening & Keynotes',
     events: [
       {
@@ -29,28 +29,83 @@ const agenda = [
         location: 'Main Auditorium',
         room: 'Auditorium A',
         description: 'Opening remarks on integrated health systems and technology in combating diseases',
-        speaker: 'DR JANE RUTH ACENG, Minister for Health',
+        speaker: 'Dr. Jane Ruth Aceng Ocero, Minister of Health',
         icon: Mic,
         color: 'purple',
         type: 'Keynote'
       },
       {
-        time: '15:30 - 17:00',
-        title: 'Innovation Showcase',
-        location: 'Innovation Hub',
-        room: 'Innovation Hall',
-        description: 'Live demonstrations of advanced medical technologies',
-        speaker: 'Technology Partners',
-        icon: BarChart3,
+        time: '9:30 - 10:30',
+        title: 'Keynote Address - Opening Ceremony',
+        location: 'Main Auditorium',
+        room: 'Auditorium A',
+        description: 'Keynote presentation for the opening ceremony',
+        speaker: 'Dr. Queen Dube, Keynote Speaker',
+        icon: Mic,
+        color: 'purple',
+        type: 'Keynote'
+      },
+      {
+        time: '10:30 - 11:00',
+        title: 'Coffee Break',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Networking and refreshments',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '11:00 - 12:30',
+        title: 'Side Event: Unifying Health',
+        location: 'Conference Hall A',
+        room: 'Hall A',
+        description: 'Building an Integrated, Equitable, and Sustainable Health System for Uganda',
+        speaker: 'Dr. Alex Riolexus Ario, Associate Professor',
+        icon: Heart,
         color: 'green',
-        type: 'Exhibition'
+        type: 'Presentation'
+      },
+      {
+        time: '14:00 - 15:30',
+        title: 'Track: Health Policy, Financing and Partnerships',
+        location: 'Conference Hall B',
+        room: 'Hall B',
+        description: 'Session on health policy, financing mechanisms, and partnership strategies',
+        speaker: 'Henry Magala, Session Chair',
+        icon: BarChart3,
+        color: 'orange',
+        type: 'Panel'
+      },
+      {
+        time: '15:30 - 16:00',
+        title: 'Coffee Break',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Afternoon networking and refreshments',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '16:00 - 17:30',
+        title: 'Track: Digital Health & Data Use',
+        location: 'Conference Hall C',
+        room: 'Hall C',
+        description: 'Digital health innovations and data utilization strategies',
+        speaker: 'Dr. Alex Riolexus Ario, Director',
+        icon: Wrench,
+        color: 'purple',
+        type: 'Presentation'
       },
       {
         time: '18:00 - 20:00',
-        title: 'Gala Dinner',
+        title: 'Welcome Reception',
         location: 'Grand Ballroom',
         room: 'Ballroom',
-        description: 'Awards ceremony and gala dinner',
+        description: 'Welcome reception and networking dinner',
         speaker: 'Conference Organizers',
         icon: Utensils,
         color: 'orange',
@@ -61,51 +116,95 @@ const agenda = [
   {
     id: 2,
     day: 2,
-    date: 'November 4th',
+    date: 'November 4th, 2025',
     track: 'Research & Technology',
     events: [
       {
-        time: '9:00 - 9:30',
+        time: '8:00 - 9:00',
         title: 'Morning Networking',
         location: 'Main Lobby',
         room: 'Lobby',
-        description: 'Day 2 networking and coffee',
+        description: 'Day 2 networking and breakfast',
         speaker: 'All Participants',
         icon: Coffee,
         color: 'blue',
         type: 'Networking'
       },
       {
-        time: '9:30 - 11:00',
-        title: 'Research Presentations',
+        time: '9:00 - 10:30',
+        title: 'Track: Diagnostics, AMR & Epidemic Readiness',
         location: 'Main Auditorium',
         room: 'Auditorium A',
-        description: 'Latest research in communicable and non-communicable diseases',
-        speaker: 'Research Panel',
+        description: 'Latest research in diagnostics, antimicrobial resistance, and epidemic preparedness',
+        speaker: 'Dr. Alex Riolexus Ario, Director',
         icon: BarChart3,
         color: 'green',
         type: 'Presentation'
       },
       {
-        time: '11:30 - 12:30',
-        title: 'Technology Panel',
+        time: '10:30 - 11:00',
+        title: 'Coffee Break',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Morning refreshments and networking',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '11:00 - 12:30',
+        title: 'Track: Health Systems & Policy',
         location: 'Conference Hall A',
         room: 'Hall A',
-        description: 'Digital health innovations and implementations',
-        speaker: 'Tech Industry Leaders',
-        icon: Wrench,
+        description: 'Health systems strengthening and policy development',
+        speaker: 'Dr. Diana Atwine, Permanent Secretary',
+        icon: Users,
         color: 'purple',
         type: 'Panel'
       },
       {
-        time: '14:00 - 15:30',
-        title: 'Workshop Sessions',
-        location: 'Various Rooms',
-        room: 'Multiple',
-        description: 'Interactive workshops on health system strengthening',
-        speaker: 'Workshop Facilitators',
-        icon: Users,
+        time: '12:30 - 14:00',
+        title: 'Lunch Break',
+        location: 'Dining Hall',
+        room: 'Dining Hall',
+        description: 'Lunch and networking',
+        speaker: 'All Participants',
+        icon: Utensils,
         color: 'orange',
+        type: 'Social'
+      },
+      {
+        time: '14:00 - 15:30',
+        title: 'Track: Environmental Health & Climate Change',
+        location: 'Conference Hall B',
+        room: 'Hall B',
+        description: 'Environmental health challenges and climate change impacts',
+        speaker: 'Dr. Charles Olaro, Director General',
+        icon: Heart,
+        color: 'green',
+        type: 'Presentation'
+      },
+      {
+        time: '15:30 - 16:00',
+        title: 'Coffee Break',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Afternoon refreshments',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '16:00 - 17:30',
+        title: 'Track: Health Innovations',
+        location: 'Conference Hall C',
+        room: 'Hall C',
+        description: 'Innovative health technologies and solutions',
+        speaker: 'Dr. Kazoora Wilson, Clinical Mentor',
+        icon: Wrench,
+        color: 'purple',
         type: 'Workshop'
       }
     ]
@@ -113,46 +212,249 @@ const agenda = [
   {
     id: 3,
     day: 3,
-    date: 'November 5th',
+    date: 'November 5th, 2025',
     track: 'Partnerships & Action',
     events: [
       {
-        time: '9:00 - 9:30',
-        title: 'Morning Session',
+        time: '8:00 - 9:00',
+        title: 'Morning Networking',
         location: 'Main Lobby',
         room: 'Lobby',
-        description: 'Final day coffee and conversations',
+        description: 'Day 3 networking and breakfast',
         speaker: 'All Participants',
         icon: Coffee,
         color: 'blue',
         type: 'Networking'
       },
       {
-        time: '9:30 - 10:30',
-        title: 'Keynote: Health Systems Strengthening',
+        time: '9:00 - 10:30',
+        title: 'Track: Health Policy, Financing and Partnerships',
         location: 'Main Auditorium',
         room: 'Auditorium A',
-        description: 'Strategies for continental expansion and impact',
-        speaker: 'Maria Santos, CEO of PanAfrican Health Network',
+        description: 'Advanced strategies in health policy and financing',
+        speaker: 'Henry Magala, Session Chair',
+        icon: BarChart3,
+        color: 'orange',
+        type: 'Panel'
+      },
+      {
+        time: '10:30 - 11:00',
+        title: 'Coffee Break',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Morning refreshments',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '11:00 - 12:30',
+        title: 'Track: Digital Health & Data Use',
+        location: 'Conference Hall A',
+        room: 'Hall A',
+        description: 'Digital transformation in healthcare delivery',
+        speaker: 'Dr. Alex Riolexus Ario, Director',
+        icon: Wrench,
+        color: 'purple',
+        type: 'Presentation'
+      },
+      {
+        time: '12:30 - 14:00',
+        title: 'Lunch Break',
+        location: 'Dining Hall',
+        room: 'Dining Hall',
+        description: 'Lunch and networking',
+        speaker: 'All Participants',
+        icon: Utensils,
+        color: 'orange',
+        type: 'Social'
+      },
+      {
+        time: '14:00 - 15:30',
+        title: 'Track: Health Systems & Policy',
+        location: 'Conference Hall B',
+        room: 'Hall B',
+        description: 'Health system strengthening and policy implementation',
+        speaker: 'Dr. Diana Atwine, Permanent Secretary',
+        icon: Users,
+        color: 'purple',
+        type: 'Workshop'
+      },
+      {
+        time: '15:30 - 16:00',
+        title: 'Coffee Break',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Afternoon refreshments',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '16:00 - 17:30',
+        title: 'Track: Health Innovations',
+        location: 'Conference Hall C',
+        room: 'Hall C',
+        description: 'Innovative approaches to health challenges',
+        speaker: 'Dr. Kazoora Wilson, Clinical Mentor',
+        icon: Wrench,
+        color: 'purple',
+        type: 'Workshop'
+      }
+    ]
+  },
+  {
+    id: 4,
+    day: 4,
+    date: 'November 6th, 2025',
+    track: 'Research & Innovation',
+    events: [
+      {
+        time: '8:00 - 9:00',
+        title: 'Morning Networking',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Day 4 networking and breakfast',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '9:00 - 10:30',
+        title: 'Track: Diagnostics, AMR & Epidemic Readiness',
+        location: 'Main Auditorium',
+        room: 'Auditorium A',
+        description: 'Advanced diagnostics and epidemic preparedness strategies',
+        speaker: 'Dr. Alex Riolexus Ario, Director',
+        icon: BarChart3,
+        color: 'green',
+        type: 'Presentation'
+      },
+      {
+        time: '10:30 - 11:00',
+        title: 'Coffee Break',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Morning refreshments',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '11:00 - 12:30',
+        title: 'Track: Environmental Health & Climate Change',
+        location: 'Conference Hall A',
+        room: 'Hall A',
+        description: 'Climate change impacts on health systems',
+        speaker: 'Dr. Charles Olaro, Director General',
+        icon: Heart,
+        color: 'green',
+        type: 'Presentation'
+      },
+      {
+        time: '12:30 - 14:00',
+        title: 'Lunch Break',
+        location: 'Dining Hall',
+        room: 'Dining Hall',
+        description: 'Lunch and networking',
+        speaker: 'All Participants',
+        icon: Utensils,
+        color: 'orange',
+        type: 'Social'
+      },
+      {
+        time: '14:00 - 15:30',
+        title: 'Track: Health Innovations',
+        location: 'Conference Hall B',
+        room: 'Hall B',
+        description: 'Cutting-edge health technologies and innovations',
+        speaker: 'Dr. Kazoora Wilson, Clinical Mentor',
+        icon: Wrench,
+        color: 'purple',
+        type: 'Workshop'
+      },
+      {
+        time: '15:30 - 16:00',
+        title: 'Coffee Break',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Afternoon refreshments',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '16:00 - 17:30',
+        title: 'Track: Health Policy, Financing and Partnerships',
+        location: 'Conference Hall C',
+        room: 'Hall C',
+        description: 'Partnership strategies and financing mechanisms',
+        speaker: 'Henry Magala, Session Chair',
+        icon: BarChart3,
+        color: 'orange',
+        type: 'Panel'
+      }
+    ]
+  },
+  {
+    id: 5,
+    day: 5,
+    date: 'November 7th, 2025',
+    track: 'Closing & Future Directions',
+    events: [
+      {
+        time: '8:00 - 9:00',
+        title: 'Morning Networking',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Final day networking and breakfast',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
+      },
+      {
+        time: '9:00 - 10:30',
+        title: 'Guest Speaker Presentation',
+        location: 'Main Auditorium',
+        room: 'Auditorium A',
+        description: 'Special guest speaker presentation',
+        speaker: 'Prof. Francis Omaswa, Guest Speaker',
         icon: Mic,
         color: 'purple',
         type: 'Keynote'
       },
       {
-        time: '10:30 - 12:00',
-        title: 'Partnership & Collaboration Sessions',
-        location: 'Multiple Rooms',
-        room: 'Conference Rooms',
-        description: 'Structured meetings for potential partnerships',
-        speaker: 'Partnership Facilitators',
-        icon: Users,
-        color: 'green',
-        type: 'Workshop'
+        time: '10:30 - 11:00',
+        title: 'Coffee Break',
+        location: 'Main Lobby',
+        room: 'Lobby',
+        description: 'Morning refreshments',
+        speaker: 'All Participants',
+        icon: Coffee,
+        color: 'blue',
+        type: 'Networking'
       },
       {
-        time: '12:00 - 13:00',
+        time: '11:00 - 12:30',
+        title: 'Conference Outcomes & Next Steps',
+        location: 'Main Auditorium',
+        room: 'Auditorium A',
+        description: 'Summary of key insights and action items',
+        speaker: 'Dr. Jane Ruth Aceng Ocero, Minister of Health',
+        icon: BarChart3,
+        color: 'green',
+        type: 'Presentation'
+      },
+      {
+        time: '12:30 - 14:00',
         title: 'Working Lunch: Action Planning',
-        location: 'Conference Rooms',
+        location: 'Dining Hall',
         room: 'Dining Hall',
         description: 'Planning next steps and commitments',
         speaker: 'All Participants',
@@ -161,23 +463,12 @@ const agenda = [
         type: 'Workshop'
       },
       {
-        time: '13:00 - 14:30',
-        title: 'Conference Outcomes & Next Steps',
-        location: 'Main Auditorium',
-        room: 'Auditorium A',
-        description: 'Summary of key insights and action items',
-        speaker: 'Conference Organizers',
-        icon: BarChart3,
-        color: 'green',
-        type: 'Presentation'
-      },
-      {
-        time: '14:30 - 15:00',
+        time: '14:00 - 15:00',
         title: 'Closing Ceremony',
         location: 'Main Auditorium',
         room: 'Auditorium A',
         description: 'Final remarks and conference conclusion',
-        speaker: 'Conference Organizers',
+        speaker: 'Dr. Diana Atwine, Permanent Secretary',
         icon: Award,
         color: 'purple',
         type: 'Closing'
@@ -197,9 +488,9 @@ const agenda = [
   }
 ]
 
-const tracks = ['All', 'Opening & Keynotes', 'Research & Technology', 'Partnerships & Action']
+const tracks = ['All', 'Opening & Keynotes', 'Research & Technology', 'Partnerships & Action', 'Research & Innovation', 'Closing & Future Directions']
 const types = ['All', 'Keynote', 'Presentation', 'Panel', 'Workshop', 'Networking', 'Exhibition', 'Social', 'Registration', 'Closing']
-const rooms = ['All', 'Auditorium A', 'Hall A', 'Lobby', 'Innovation Hall', 'Ballroom', 'Conference Rooms', 'Dining Hall', 'Multiple']
+const rooms = ['All', 'Auditorium A', 'Hall A', 'Hall B', 'Hall C', 'Lobby', 'Ballroom', 'Dining Hall', 'Multiple']
 
 const getColorClasses = (color: string) => {
   switch (color) {

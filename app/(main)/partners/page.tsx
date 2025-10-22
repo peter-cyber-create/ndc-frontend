@@ -15,7 +15,7 @@ const partners = [
   },
   {
     name: 'Jhpiego',
-    logo: '/images/Jhpiego Logo.PNG',
+    logo: '/images/partners/Jhpiego Logo.PNG',
     description: 'Jhpiego is a global non-profit health organization affiliated with Johns Hopkins University, dedicated to improving the health of women and families worldwide.',
     website: ''
   },

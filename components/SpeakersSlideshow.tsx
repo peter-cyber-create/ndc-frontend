@@ -8,45 +8,59 @@ import { Button } from '@/components/ui/button'
 const speakers = [
   {
     id: 1,
-    name: "Dr. Charles Olaro",
+    name: "Dr. Jane Ruth Aceng Ocero",
     title: "Minister of Health",
     organization: "Ministry of Health Uganda",
-    image: "/images/charles.jpeg"
+    image: "/images/speakers/ruth.jpeg"
   },
   {
     id: 2,
     name: "Dr. Diana Atwine",
     title: "Permanent Secretary",
     organization: "Ministry of Health Uganda",
-    image: "/images/diana.jpeg"
+    image: "/images/speakers/diana.jpeg"
   },
   {
     id: 3,
-    name: "Dr. Jane Ruth Aceng Ocero",
+    name: "Dr. Charles Olaro",
     title: "Director General",
     organization: "Ministry of Health Uganda",
-    image: "/images/ruth.jpeg"
+    image: "/images/speakers/charles.jpeg"
   },
   {
     id: 4,
-    name: "Prof. Moses Kamya",
-    title: "Principal",
-    organization: "Makerere University College of Health Sciences",
-    image: "/images/speakers/prof-moses-kamya.jpg"
+    name: "Dr. Queen Dube",
+    title: "Keynote Speaker - Opening Ceremony",
+    organization: "NACNDC & JASH Conference 2025",
+    image: "/images/speakers/Dr. Queen Dube .jpeg"
   },
   {
     id: 5,
-    name: "Dr. Christine Munduru",
-    title: "Director General",
-    organization: "Uganda National Health Laboratory Services",
-    image: "/images/speakers/dr-christine-munduru.jpg"
+    name: "Prof. Francis Omaswa",
+    title: "Guest Speaker - Day 5",
+    organization: "Friday, 7th November 2025",
+    image: "/images/speakers/Prof Omaswa 2.jpg"
   },
   {
     id: 6,
-    name: "Dr. Sarah Opendi",
-    title: "Former State Minister",
-    organization: "Ministry of Health Uganda",
-    image: "/images/speakers/dr-sarah-opendi.jpg"
+    name: "Dr. Alex Riolexus Ario",
+    title: "Associate Professor of Infectious Disease Epidemiology",
+    organization: "Uganda National Institute of Public Health",
+    image: "/images/speakers/Dr. Alex Riolexus Ario.jpg"
+  },
+  {
+    id: 7,
+    name: "Dr. Kazoora Wilson",
+    title: "Clinical Mentor & Quality Improvement Manager",
+    organization: "AIDS Healthcare Foundation (AHF) Uganda Cares",
+    image: "/images/speakers/Dr. Kazoora Wilson.jpeg"
+  },
+  {
+    id: 8,
+    name: "Henry Magala",
+    title: "Session Chair - Track Health Policy, Financing and Partnerships",
+    organization: "Monday, 3rd November 2025",
+    image: "/images/speakers/henry-magala.jpg"
   }
 ]
 
@@ -119,7 +133,15 @@ export default function SpeakersSlideshow() {
                     <span className="text-sm">{speaker.organization}</span>
                   </div>
                   <p className="text-gray-600 text-sm leading-relaxed max-w-md mx-auto md:mx-0">
-                    Distinguished speaker bringing expertise and insights to the NACNDC & JASH Conference 2025.
+                    {speaker.title.includes('Keynote') && 'Distinguished keynote speaker for the opening ceremony of the NACNDC & JASH Conference 2025.'}
+                    {speaker.title.includes('Guest Speaker') && 'Renowned guest speaker presenting on the final day of the conference.'}
+                    {speaker.title.includes('Session Chair') && 'Session Chair for Track Health Policy, Financing and Partnerships.'}
+                    {speaker.title.includes('Minister') && 'Leading Uganda\'s health sector transformation with focus on universal health coverage.'}
+                    {speaker.title.includes('Permanent Secretary') && 'Championing health policy reforms and healthcare delivery improvements in Uganda.'}
+                    {speaker.title.includes('Director General') && 'Leading public health initiatives and health system strengthening across Uganda.'}
+                    {speaker.title.includes('Associate Professor') && 'Medical Doctor and Public Health Specialist with extensive experience in infectious disease epidemiology.'}
+                    {speaker.title.includes('Clinical Mentor') && 'Medical Doctor with extensive experience in HIV prevention, care, and treatment.'}
+                    {!speaker.title.includes('Keynote') && !speaker.title.includes('Guest Speaker') && !speaker.title.includes('Session Chair') && !speaker.title.includes('Minister') && !speaker.title.includes('Permanent Secretary') && !speaker.title.includes('Director General') && !speaker.title.includes('Associate Professor') && !speaker.title.includes('Clinical Mentor') && 'Distinguished speaker bringing expertise and insights to the NACNDC & JASH Conference 2025.'}
                   </p>
                 </div>
               </div>
@@ -161,3 +183,4 @@ export default function SpeakersSlideshow() {
     </div>
   )
 }
+

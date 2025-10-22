@@ -1,1 +1,0 @@
-const { name, email, phone, organization, inquiry_type, subject, message } = await request.json()

@@ -8,6 +8,8 @@ import { Menu, X } from 'lucide-react'
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+  const [showFocusLines, setShowFocusLines] = useState(false)
   const pathname = usePathname()
   
   // Only use white text on homepage when not scrolled, black everywhere else by default
@@ -27,6 +29,7 @@ export function Navbar() {
     { name: 'Pre-Conference', href: '/pre-conference' },
     { name: 'Register', href: '/register' },
     { name: 'Abstracts', href: '/abstracts' },
+    { name: 'Conference E-Documents', href: '/e-documents' },
     { name: 'Contact', href: '/contact' },
   ]
 
@@ -51,6 +54,13 @@ export function Navbar() {
     }
   }, [])
 
+  // Handle focus lines animation
+  const handleItemHover = (itemName: string) => {
+    setHoveredItem(itemName)
+    setShowFocusLines(true)
+    setTimeout(() => setShowFocusLines(false), 500)
+  }
+
   return (
     <>
       {/* Uganda Flag Stripe */}
@@ -61,7 +71,9 @@ export function Navbar() {
       </div>
       
       <nav className={
-        `sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 transition-all duration-300 py-3 px-4 sm:px-6`
+        `fixed top-4 left-4 right-4 z-50 bg-white/95 backdrop-blur-md shadow-lg border border-gray-200/50 rounded-xl transition-all duration-300 py-3 px-4 sm:px-6 hud-overlay cyber-grid ${
+          isScrolled ? 'shadow-2xl bg-white/98' : 'shadow-lg bg-white/95'
+        }`
       }>
       <div className="flex justify-between items-center w-full min-h-[3.5rem] sm:min-h-[4.5rem]">
         <div className="flex items-center flex-shrink-0">
@@ -86,19 +98,28 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-2">
+          <div className="hidden lg:flex items-center space-x-1">
             {/* Main Navigation Links */}
-            {navigation.slice(0, 8).map((item, index) => (
+            {navigation.map((item, index) => (
               <React.Fragment key={item.name}>
                 <Link
                   href={item.href}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 ${
+                  className={`px-3 py-2 rounded-lg font-medium transition-velocity hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus-lines relative group ${
                     pathname === item.href 
-                      ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg scale-105 ring-2 ring-primary-400 font-semibold' 
-                      : 'text-gray-900 hover:shadow-md'
+                      ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg scale-105 ring-2 ring-primary-400 font-semibold glow-primary' 
+                      : 'text-gray-900 hover:shadow-md hover:scale-105'
                   }`}
+                  onMouseEnter={() => handleItemHover(item.name)}
+                  onMouseLeave={() => setHoveredItem(null)}
                 >
                   {item.name}
+                  {/* Speed Lines Effect */}
+                  {hoveredItem === item.name && showFocusLines && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 border-t-2 border-r-2 border-primary-500 opacity-60 animate-blink" />
+                  )}
+                  {hoveredItem === item.name && showFocusLines && (
+                    <div className="absolute -bottom-1 -left-1 w-2 h-2 border-b-2 border-l-2 border-primary-500 opacity-60 animate-blink animation-delay-150" />
+                  )}
                 </Link>
                 {/* Separator after About */}
                 {item.name === 'About' && (
@@ -108,21 +129,6 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Priority CTAs - Always visible */}
-          <div className="hidden lg:flex items-center space-x-3 ml-4">
-            <Link
-              href="/register"
-              className="btn-primary text-sm px-4 py-2 min-h-[40px]"
-            >
-              Register Now
-            </Link>
-            <Link
-              href="/abstracts"
-              className="btn-secondary text-sm px-4 py-2 min-h-[40px]"
-            >
-              Submit Abstract
-            </Link>
-          </div>
 
           {/* Mobile menu button */}
           <button
@@ -149,35 +155,13 @@ export function Navbar() {
             {/* Mobile menu */}
             <div className="lg:hidden absolute left-0 right-0 top-full mt-2 mx-2 sm:mx-4 bg-white rounded-xl shadow-2xl z-50 border-2 border-primary-200 max-h-[85vh] overflow-y-auto">
               <div className="p-3 sm:p-4 space-y-1">
-                {/* Priority CTAs - Mobile */}
-                <div className="space-y-2 mb-4 pb-4 border-b border-gray-200">
-                  <div className="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-2 px-3">
-                    Quick Actions
-                  </div>
-                  <div className="flex flex-col space-y-2">
-                    <Link
-                      href="/register"
-                      className="btn-primary text-sm px-4 py-3 min-h-[48px] justify-center"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Register Now
-                    </Link>
-                    <Link
-                      href="/abstracts"
-                      className="btn-secondary text-sm px-4 py-3 min-h-[48px] justify-center"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Submit Abstract
-                    </Link>
-                  </div>
-                </div>
 
                 {/* Main Navigation */}
                 <div className="space-y-1 mb-3">
                   <div className="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-2 px-3">
                     Navigation
                   </div>
-                  {navigation.slice(0, 8).map((item) => (
+                  {navigation.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}

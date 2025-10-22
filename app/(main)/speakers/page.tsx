@@ -10,99 +10,75 @@ import ScrollReveal from '@/components/ScrollReveal'
 const speakers = [
   {
     id: 1,
-    name: "Dr. Charles Olaro",
+    name: "Dr. Jane Ruth Aceng Ocero",
     title: "Minister of Health",
     organization: "Ministry of Health Uganda",
-    bio: "Leading Uganda's health sector transformation with focus on universal health coverage and health system strengthening.",
-    image: "/images/charles.jpeg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    bio: "Leading Uganda's health sector transformation with focus on universal health coverage and health system strengthening. Dr. Aceng has been instrumental in driving health policy reforms and improving healthcare delivery across Uganda.",
+    image: "/images/speakers/ruth.jpeg"
   },
   {
     id: 2,
     name: "Dr. Diana Atwine",
     title: "Permanent Secretary",
     organization: "Ministry of Health Uganda",
-    bio: "Championing health policy reforms and healthcare delivery improvements in Uganda.",
-    image: "/images/diana.jpeg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    bio: "Championing health policy reforms and healthcare delivery improvements in Uganda. Dr. Atwine plays a crucial role in implementing health sector strategies and ensuring effective health service delivery.",
+    image: "/images/speakers/diana.jpeg"
   },
   {
     id: 3,
-    name: "Dr. Jane Ruth Aceng Ocero",
+    name: "Dr. Charles Olaro",
     title: "Director General",
     organization: "Ministry of Health Uganda",
-    bio: "Leading public health initiatives and health system strengthening across Uganda's healthcare facilities.",
-    image: "/images/ruth.jpeg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    bio: "Leading public health initiatives and health system strengthening across Uganda's healthcare facilities. Dr. Olaro oversees the implementation of public health programs and health system reforms.",
+    image: "/images/speakers/charles.jpeg"
   },
   {
     id: 4,
-    name: "Prof. Moses Kamya",
-    title: "Principal",
-    organization: "Makerere University College of Health Sciences",
-    bio: "Leading researcher in infectious diseases and advocate for evidence-based health interventions in Uganda.",
-    image: "/images/speakers/prof-moses-kamya.jpg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    name: "Dr. Queen Dube",
+    title: "Keynote Speaker - Opening Ceremony",
+    organization: "NACNDC & JASH Conference 2025",
+    bio: "Distinguished keynote speaker for the opening ceremony of the NACNDC & JASH Conference 2025. Dr. Dube brings extensive expertise in health policy and will set the tone for the conference proceedings.",
+    image: "/images/speakers/Dr. Queen Dube .jpeg"
   },
   {
     id: 5,
-    name: "Dr. Christine Munduru",
-    title: "Director General",
-    organization: "Uganda National Health Laboratory Services",
-    bio: "Pioneer in laboratory systems strengthening and quality assurance for health diagnostics in Uganda.",
-    image: "/images/speakers/dr-christine-munduru.jpg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    name: "Prof. Francis Omaswa",
+    title: "Guest Speaker - Day 5",
+    organization: "Friday, 7th November 2025",
+    bio: "Renowned guest speaker presenting on the final day of the conference. Prof. Omaswa is a distinguished health professional with extensive experience in global health and health systems strengthening.",
+    image: "/images/speakers/Prof Omaswa 2.jpg"
   },
   {
     id: 6,
-    name: "Dr. Sarah Opendi",
-    title: "Former State Minister",
-    organization: "Ministry of Health Uganda",
-    bio: "Experienced health policy maker and advocate for women's health and reproductive rights in Uganda.",
-    image: "/images/speakers/dr-sarah-opendi.jpg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    name: "Dr. Kazoora Wilson",
+    title: "Clinical Mentor & Quality Improvement Manager",
+    organization: "AIDS Healthcare Foundation (AHF) Uganda Cares",
+    bio: "Medical Doctor with AIDS Healthcare Foundation (AHF) Uganda Cares, serving as a Clinical Mentor and Quality Improvement manager. He holds an MBChB from Mbarara University of Science and Technology and has over eight years of experience in HIV prevention, care, and treatment. Dr. Kazoora provides national mentorship in integrated service delivery, focusing on HIV, NCD, STIs and TB.",
+    image: "/images/speakers/Dr. Kazoora Wilson.jpeg"
   },
   {
     id: 7,
-    name: "Prof. Pontiano Kaleebu",
-    title: "Director",
-    organization: "Uganda Virus Research Institute",
-    bio: "Leading virologist and researcher in infectious diseases, particularly HIV/AIDS and emerging viral threats.",
-    image: "/images/speakers/prof-pontiano-kaleebu.jpg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    name: "Henry Magala",
+    title: "Session Chair - Track Health Policy, Financing and Partnerships",
+    organization: "Monday, 3rd November 2025",
+    bio: "Session Chair for Track Health Policy, Financing and Partnerships on Monday, 3rd November 2025. Henry brings extensive experience in health policy development and health financing strategies.",
+    image: "/images/speakers/henry-magala.jpg"
   },
   {
     id: 8,
+    name: "Dr. Alex Riolexus Ario",
+    title: "Associate Professor of Infectious Disease Epidemiology",
+    organization: "Uganda National Institute of Public Health",
+    bio: "Medical Doctor and Public Health Specialist who has worked in various capacities in Uganda government and agencies including as Hospital Superintendent and District Health Officer as well as Health Advisor, Health Sector Support Program, Ministry of Health. He also worked as Care and Treatment Manager in the Uganda Ministry of Health, STD/AIDS Control Programme. Served/serves as a member in numerous Continental, Regional and National Technical Working Groups, Steering Committees and Boards. Member, Tripartite One Health Field Epidemiology Technical Advisory Group, FAO/WOAH/WHO; Member, Scientific Advisory Committee on Malaria Epidemics, Uganda; Board Member, Africa CDC's Journal of Public Health in Africa; Member, Africa Continental Mortality Surveillance Task Force; Chair, East Africa Mortality Surveillance Task Force; Member, Africa COVID-19 Surveillance Task Force; Deputy Chair, Uganda National COVID-19 Inter-Agency Technical Task Force; Member, Advisory Committee, Koffi Annan Global Health Leadership Program; Member, Pandemics: Emergence, Spread and Response Advisory Committee, London School of Tropical Hygiene and Medicine; Member, Technical Advisory Group, African Epidemic Service; Member, IANPHI Integrated Disease Surveillance Technical Committee; Member, Policy Advisory Stakeholders Group (PAS-G) – EPSILON Initiative, Science for Africa Foundation and Pandemic Science Institute; Chair Eastern Africa Regional Technical Advisory Committee (ReTAC), Africa CDC; Chair, International Association of National Public Health Institutes, Africa Network. Dr. Ario is currently the Program Director of the Uganda Public Health Fellowship Program and Director, Uganda National Institute of Public Health.",
+    image: "/images/speakers/Dr. Alex Riolexus Ario.jpg"
+  },
+  {
+    id: 9,
     name: "Dr. Rhoda Wanyenze",
     title: "Dean",
     organization: "Makerere University School of Public Health",
-    bio: "Public health expert and advocate for health equity and gender-responsive health systems in Uganda.",
-    image: "/images/speakers/dr-rhoda-wanyenze.jpg",
-    social: {
-      twitter: "#",
-      linkedin: "#"
-    }
+    bio: "Public health expert and advocate for health equity and gender-responsive health systems in Uganda. Dr. Wanyenze leads the School of Public Health in advancing public health education and research.",
+    image: "/images/speakers/dr-rhoda-wanyenze.jpg"
   }
 ]
 
@@ -154,6 +130,9 @@ export default function SpeakersPage() {
                       <Building className="h-4 w-4 mr-2" />
                       <span className="text-sm">{speaker.organization}</span>
                     </div>
+                    <p className="text-gray-600 text-xs leading-relaxed line-clamp-4 group-hover:line-clamp-none transition-all duration-300">
+                      {speaker.bio}
+                    </p>
                   </div>
                 </CardContent>
               </Card>

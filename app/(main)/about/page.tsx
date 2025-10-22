@@ -221,7 +221,7 @@ export default function AboutPage() {
             {/* Speaker 1 */}
             <div className="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 border border-primary-200">
               <img
-                src="/images/charles.jpeg"
+                src="/images/speakers/charles.jpeg"
                 alt="Speaker Charles"
                 className="w-32 h-32 object-cover rounded-full mb-4 border-4 border-primary-100"
               />
@@ -231,7 +231,7 @@ export default function AboutPage() {
             {/* Speaker 2 */}
             <div className="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 border border-primary-200">
               <img
-                src="/images/diana.jpeg"
+                src="/images/speakers/diana.jpeg"
                 alt="Speaker Diana"
                 className="w-32 h-32 object-cover rounded-full mb-4 border-4 border-primary-100"
               />
@@ -241,7 +241,7 @@ export default function AboutPage() {
             {/* Speaker 3 */}
             <div className="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 border border-primary-200">
               <img
-                src="/images/ruth.jpeg"
+                src="/images/speakers/ruth.jpeg"
                 alt="Speaker Ruth"
                 className="w-32 h-32 object-cover rounded-full mb-4 border-4 border-primary-100"
               />

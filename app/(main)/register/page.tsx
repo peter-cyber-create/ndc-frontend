@@ -9,6 +9,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { AnimatedInput } from '@/components/ui/animated-input'
+import { AnimatedButton } from '@/components/ui/animated-button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import PaymentInformation from '@/components/PaymentInformation'
@@ -319,27 +321,29 @@ export default function RegisterPage() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">First Name *</Label>
-                      <Input
+                      <AnimatedInput
                         id="firstName"
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
                         required
-                        className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                        label="First Name *"
+                        glitchEffect={true}
+                        className="h-12 text-base"
                         placeholder="Enter your first name"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">Last Name *</Label>
-                      <Input
+                      <AnimatedInput
                         id="lastName"
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
                         required
-                        className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                        label="Last Name *"
+                        glitchEffect={true}
+                        className="h-12 text-base"
                         placeholder="Enter your last name"
                       />
                     </div>
@@ -347,29 +351,31 @@ export default function RegisterPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address *</Label>
-                      <Input
+                      <AnimatedInput
                         id="email"
                         name="email"
                         type="email"
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                        label="Email Address *"
+                        glitchEffect={true}
+                        className="h-12 text-base"
                         placeholder="Enter your email address"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone Number *</Label>
-                      <Input
+                      <AnimatedInput
                         id="phone"
                         name="phone"
                         type="tel"
                         value={formData.phone}
                         onChange={handleInputChange}
                         required
-                        className="h-12 text-base border-2 border-gray-300 focus:border-primary-600 rounded-lg transition-all duration-200 hover:border-primary-400"
+                        label="Phone Number *"
+                        glitchEffect={true}
+                        className="h-12 text-base"
                         placeholder="Include country code (e.g., +256)"
                       />
                     </div>
@@ -524,10 +530,15 @@ export default function RegisterPage() {
 
                 {/* Submit Button */}
                 <div className="pt-4 flex justify-center">
-                  <Button
+                  <AnimatedButton
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-80 h-14 text-lg font-bold bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white rounded-xl shadow-xl transform hover:scale-105 hover:shadow-2xl transition-all duration-300 border-2 border-primary-600 hover:border-primary-700"
+                    variant="energy"
+                    size="xl"
+                    energyCharge={true}
+                    explosionEffect={true}
+                    loading={isSubmitting}
+                    className="w-80 h-14 text-lg font-bold"
                   >
                     {isSubmitting ? (
                       <>
@@ -540,7 +551,7 @@ export default function RegisterPage() {
                         Submit Registration
                       </>
                     )}
-                  </Button>
+                  </AnimatedButton>
                 </div>
                 
                 <p className="text-center text-gray-600 mt-4 text-sm">

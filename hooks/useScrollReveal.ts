@@ -79,3 +79,4 @@ export function useStaggeredReveal(itemCount: number, delay: number = 100) {
 
   return [refs, visibleItems] as const
 }
+

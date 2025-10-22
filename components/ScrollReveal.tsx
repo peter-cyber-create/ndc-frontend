@@ -57,3 +57,4 @@ export default function ScrollReveal({
     </div>
   )
 }
+

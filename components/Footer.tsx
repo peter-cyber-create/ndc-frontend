@@ -2,8 +2,16 @@ import Link from 'next/link'
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="bg-gray-900 text-white relative hud-overlay cyber-grid">
+      {/* HUD Scan Lines */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent animate-hud-scan" />
+        <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent animate-hud-scan animation-delay-500" />
+        <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent animate-hud-scan animation-delay-1000" />
+        <div className="absolute top-3/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent animate-hud-scan animation-delay-1500" />
+      </div>
+      
+      <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-2">
@@ -29,11 +37,11 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link href="/about" className="text-gray-300 hover:text-primary-400 transition-colors">About Conference</Link></li>
-              <li><Link href="/agenda" className="text-gray-300 hover:text-primary-400 transition-colors">Agenda</Link></li>
-              <li><Link href="/speakers" className="text-gray-300 hover:text-primary-400 transition-colors">Speakers</Link></li>
-              <li><Link href="/partners" className="text-gray-300 hover:text-primary-400 transition-colors">Partners</Link></li>
-              <li><Link href="/register" className="text-gray-300 hover:text-primary-400 transition-colors">Register</Link></li>
+              <li><Link href="/about" className="text-gray-300 hover:text-primary-400 transition-velocity hover:glow-cyan">About Conference</Link></li>
+              <li><Link href="/agenda" className="text-gray-300 hover:text-primary-400 transition-velocity hover:glow-cyan">Agenda</Link></li>
+              <li><Link href="/speakers" className="text-gray-300 hover:text-primary-400 transition-velocity hover:glow-cyan">Speakers</Link></li>
+              <li><Link href="/partners" className="text-gray-300 hover:text-primary-400 transition-velocity hover:glow-cyan">Partners</Link></li>
+              <li><Link href="/register" className="text-gray-300 hover:text-primary-400 transition-velocity hover:glow-cyan">Register</Link></li>
             </ul>
           </div>
 
@@ -41,10 +49,10 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-lg mb-4">Support</h3>
             <ul className="space-y-2">
-              <li><Link href="/contact" className="text-gray-300 hover:text-primary-400 transition-colors">Contact Us</Link></li>
-              <li><Link href="#" className="text-gray-300 hover:text-primary-400 transition-colors">Privacy Policy</Link></li>
-              <li><Link href="#" className="text-gray-300 hover:text-primary-400 transition-colors">Terms of Service</Link></li>
-              <li><Link href="#" className="text-gray-300 hover:text-primary-400 transition-colors">FAQ</Link></li>
+              <li><Link href="/contact" className="text-gray-300 hover:text-primary-400 transition-velocity hover:glow-cyan">Contact Us</Link></li>
+              <li><Link href="#" className="text-gray-300 hover:text-primary-400 transition-velocity hover:glow-cyan">Privacy Policy</Link></li>
+              <li><Link href="#" className="text-gray-300 hover:text-primary-400 transition-velocity hover:glow-cyan">Terms of Service</Link></li>
+              <li><Link href="#" className="text-gray-300 hover:text-primary-400 transition-velocity hover:glow-cyan">FAQ</Link></li>
             </ul>
           </div>
         </div>
@@ -55,11 +63,6 @@ export function Footer() {
           <p className="text-gray-400 text-sm">
             © 2025 NACNDC & JASHConference 2025. All rights reserved.
           </p>
-          <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">Twitter</a>
-            <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">LinkedIn</a>
-            <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">Facebook</a>
-          </div>
         </div>
       </div>
     </footer>
