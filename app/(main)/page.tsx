@@ -75,6 +75,22 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Conference Countdown Section */}
+      <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Conference Countdown
+            </h2>
+            <p className="text-xl text-primary-100 mb-8">
+              November 3, 2025 • 9:00 AM EAT
+            </p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <CountdownTimer />
+          </div>
+        </div>
+      </section>
 
       {/* Side Event Section */}
       <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
@@ -145,22 +161,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Conference Countdown Section */}
-      <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Conference Countdown
-            </h2>
-            <p className="text-xl text-primary-100 mb-8">
-              November 3, 2025 • 9:00 AM EAT
-            </p>
-          </div>
-          <div className="max-w-4xl mx-auto">
-            <CountdownTimer />
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <Footer />
