@@ -465,7 +465,7 @@ export default function RegisterPage() {
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors bg-gray-50 hover:bg-primary-50">
                       <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-600 mb-4">
-                        PDF, JPG, or PNG files only. Maximum size: 5MB
+                        PDF, JPG, or PNG files only. Maximum size: 0.9MB
                       </p>
                       <input
                         type="file"
@@ -503,7 +503,7 @@ export default function RegisterPage() {
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors bg-gray-50 hover:bg-primary-50">
                       <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-600 mb-4">
-                        JPG or PNG files only. Maximum size: 5MB
+                        JPG or PNG files only. Maximum size: 0.9MB
                       </p>
                       <input
                         type="file"
