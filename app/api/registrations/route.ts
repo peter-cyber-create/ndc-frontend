@@ -4,9 +4,11 @@ import { writeFile } from 'fs/promises'
 import { join } from 'path'
 import { emailService } from '../../../lib/emailService'
 
+export const dynamic = 'force-dynamic'
+
 const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'conf',
+  host: process.env.DB_HOST || '127.0.0.1',
+  user: process.env.DB_USER || 'user',
   password: process.env.DB_PASSWORD || 'toor',
   database: process.env.DB_NAME || 'conf',
   port: 3306,
@@ -130,9 +132,18 @@ export async function POST(request: NextRequest) {
     
   } catch (error) {
     console.error('Error saving registration:', error)
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : 'Unknown'
+    })
+    
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
-      { error: `Failed to submit registration: ${errorMessage}` },
+      { 
+        error: `Failed to submit registration: ${errorMessage}`,
+        details: process.env.NODE_ENV === 'development' ? error : undefined
+      },
       { status: 500 }
     )
   }
