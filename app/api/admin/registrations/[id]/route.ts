@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import mysql from 'mysql2/promise'
+import { unlink } from 'fs/promises'
+import { join } from 'path'
+import { existsSync } from 'fs'
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -18,9 +21,9 @@ export async function DELETE(
     
     const registrationId = params.id
     
-    // Check if registration exists
+    // Get registration details including file paths before deletion
     const [existing] = await (connection as any).execute(
-      'SELECT id FROM registrations WHERE id = ?',
+      'SELECT id, paymentProofUrl, passportPhotoUrl FROM registrations WHERE id = ?',
       [registrationId]
     )
     
@@ -32,7 +35,44 @@ export async function DELETE(
       )
     }
     
-    // Delete the registration
+    const registration = existing[0]
+    
+    // Delete associated files
+    const filesToDelete = []
+    
+    if (registration.paymentProofUrl) {
+      filesToDelete.push(registration.paymentProofUrl)
+    }
+    
+    if (registration.passportPhotoUrl) {
+      filesToDelete.push(registration.passportPhotoUrl)
+    }
+    
+    // Delete files from filesystem
+    for (const filePath of filesToDelete) {
+      try {
+        let fullPath: string
+        
+        if (filePath.startsWith('/uploads/')) {
+          const cleanPath = filePath.startsWith('/') ? filePath.substring(1) : filePath
+          fullPath = join(process.cwd(), cleanPath)
+        } else if (filePath.startsWith('uploads/')) {
+          fullPath = join(process.cwd(), filePath)
+        } else {
+          fullPath = join(process.cwd(), filePath)
+        }
+        
+        if (existsSync(fullPath)) {
+          await unlink(fullPath)
+          console.log(`Deleted file: ${fullPath}`)
+        }
+      } catch (fileError) {
+        console.error(`Error deleting file ${filePath}:`, fileError)
+        // Continue with database deletion even if file deletion fails
+      }
+    }
+    
+    // Delete the registration from database
     await (connection as any).execute(
       'DELETE FROM registrations WHERE id = ?',
       [registrationId]
@@ -42,7 +82,7 @@ export async function DELETE(
     
     return NextResponse.json({
       success: true,
-      message: 'Registration deleted successfully'
+      message: 'Registration and associated files deleted successfully'
     })
     
   } catch (error) {
