@@ -56,10 +56,10 @@ export default function HomePage() {
       <section className="py-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4">
               Meet Our Distinguished Speakers
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-base text-gray-600 max-w-3xl mx-auto">
               Leading health professionals and experts who will share their insights and expertise at the conference.
             </p>
           </div>
@@ -67,7 +67,7 @@ export default function HomePage() {
           <div className="text-center mt-8">
             <Link 
               href="/speakers" 
-              className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-300"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-300"
             >
               View All Speakers
             </Link>
@@ -79,10 +79,10 @@ export default function HomePage() {
       <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-4">
               Conference Countdown
             </h2>
-            <p className="text-xl text-primary-100 mb-8">
+            <p className="text-lg text-primary-100 mb-8">
               November 3, 2025 • 9:00 AM EAT
             </p>
           </div>
@@ -96,10 +96,10 @@ export default function HomePage() {
       <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-4">
               Side Event - 3rd November 2025
             </h2>
-            <p className="text-xl text-primary-100 max-w-4xl mx-auto">
+            <p className="text-lg text-primary-100 max-w-4xl mx-auto">
               "Unifying Health: Building an Integrated, Equitable, and Sustainable Health System for Uganda"
             </p>
           </div>
@@ -110,10 +110,10 @@ export default function HomePage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4">
               Conference Impact
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-base text-gray-600 max-w-3xl mx-auto">
               Join a growing community of health professionals making a difference
             </p>
           </div>

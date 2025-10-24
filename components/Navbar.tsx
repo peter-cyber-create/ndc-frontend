@@ -26,7 +26,7 @@ export function Navbar() {
     { name: 'Partners', href: '/partners' },
     { name: 'Sponsors', href: '/sponsors' },
     { name: 'Exhibitors', href: '/exhibitors' },
-    { name: 'Pre-Conference', href: '/pre-conference' },
+    { name: 'Pre Agenda', href: '/pre-conference' },
     { name: 'Register', href: '/register' },
     { name: 'E-Docs', href: '/e-documents' },
     { name: 'Contact', href: '/contact' },
