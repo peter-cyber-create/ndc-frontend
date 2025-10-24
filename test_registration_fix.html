@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Test</title>
+</head>
+<body>
+    <h1>Registration System Test</h1>
+    
+    <form id="testForm" enctype="multipart/form-data">
+        <div>
+            <label>First Name:</label>
+            <input type="text" name="firstName" value="Test" required>
+        </div>
+        <div>
+            <label>Last Name:</label>
+            <input type="text" name="lastName" value="User" required>
+        </div>
+        <div>
+            <label>Email:</label>
+            <input type="email" name="email" value="test@example.com" required>
+        </div>
+        <div>
+            <label>Phone:</label>
+            <input type="tel" name="phone" value="+256123456789" required>
+        </div>
+        <div>
+            <label>Institution:</label>
+            <input type="text" name="institution" value="Test University" required>
+        </div>
+        <div>
+            <label>Position:</label>
+            <input type="text" name="position" value="Student" required>
+        </div>
+        <div>
+            <label>Country:</label>
+            <input type="text" name="country" value="Uganda" required>
+        </div>
+        <div>
+            <label>City:</label>
+            <input type="text" name="city" value="Kampala" required>
+        </div>
+        <div>
+            <label>Registration Type:</label>
+            <input type="text" name="registrationType" value="local" required>
+        </div>
+        <div>
+            <label>Payment Proof:</label>
+            <input type="file" name="paymentProof" required>
+        </div>
+        <div>
+            <label>Passport Photo:</label>
+            <input type="file" name="passportPhoto" required>
+        </div>
+        <button type="submit">Test Registration</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            
+            try {
+                console.log('Sending form data...');
+                console.log('FormData entries:', Array.from(formData.entries()));
+                
+                const response = await fetch('/api/registrations', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>Response Status: ${response.status}</h3>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                `;
+                
+                console.log('Response:', result);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h3>Error</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -22,11 +22,20 @@ module.exports = {
         SMTP_USER: 'moh.conference@health.go.ug',
         SMTP_PASSWORD: 'Ministry@2025',
         SMTP_FROM_NAME: 'Conference 2025'
-      }
-      // Optional: uncomment if you want to run multiple instances
-      // instances: 1,
-      // exec_mode: 'fork',
-      // watch: false,
+      },
+      // Enable auto-reload for development
+      watch: true,
+      watch_delay: 1000,
+      ignore_watch: [
+        'node_modules',
+        'uploads',
+        '.git',
+        '*.log'
+      ],
+      // Restart on file changes
+      autorestart: true,
+      max_restarts: 10,
+      min_uptime: '10s'
     }
   ]
 }

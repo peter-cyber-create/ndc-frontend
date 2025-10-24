@@ -169,6 +169,7 @@ export default function RegisterPage() {
       const response = await fetch('/api/registrations', {
         method: 'POST',
         body: formDataToSend,
+        // Don't set Content-Type header - let browser set it automatically with boundary
       })
 
       const result = await response.json()

@@ -15,6 +15,7 @@ const dbConfig = {
 export async function POST(request: NextRequest) {
   try {
     console.log('Registration API called')
+    console.log('Content-Type:', request.headers.get('content-type'))
     
     const formData = await request.formData()
     console.log('Form data received:', Object.fromEntries(formData.entries()))
