@@ -18,6 +18,18 @@ export async function POST(request: NextRequest) {
   try {
     console.log('Registration API called')
     console.log('Content-Type:', request.headers.get('content-type'))
+    console.log('Request method:', request.method)
+    console.log('Request URL:', request.url)
+    
+    // Check if content type is correct
+    const contentType = request.headers.get('content-type')
+    if (!contentType || (!contentType.includes('multipart/form-data') && !contentType.includes('application/x-www-form-urlencoded'))) {
+      console.error('Invalid Content-Type:', contentType)
+      return NextResponse.json(
+        { error: 'Content-Type must be multipart/form-data for file uploads' },
+        { status: 400 }
+      )
+    }
     
     const formData = await request.formData()
     console.log('Form data received:', Object.fromEntries(formData.entries()))
