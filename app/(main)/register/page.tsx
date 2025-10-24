@@ -124,6 +124,17 @@ export default function RegisterPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null
+    
+    // Check file size (2MB = 2 * 1024 * 1024 bytes)
+    if (file && file.size > 2 * 1024 * 1024) {
+      setSubmitResult({
+        type: 'error',
+        title: 'File Too Large',
+        message: 'Payment proof file must be smaller than 2MB. Please compress your file and try again.'
+      })
+      return
+    }
+    
     setFormData((prev: any) => ({
       ...prev,
       paymentProof: file
@@ -132,6 +143,17 @@ export default function RegisterPage() {
 
   const handlePassportPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null
+    
+    // Check file size (2MB = 2 * 1024 * 1024 bytes)
+    if (file && file.size > 2 * 1024 * 1024) {
+      setSubmitResult({
+        type: 'error',
+        title: 'File Too Large',
+        message: 'Passport photo must be smaller than 2MB. Please compress your file and try again.'
+      })
+      return
+    }
+    
     setFormData((prev: any) => ({
       ...prev,
       passportPhoto: file

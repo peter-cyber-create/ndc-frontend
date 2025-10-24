@@ -64,6 +64,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Validate file sizes (2MB = 2 * 1024 * 1024 bytes)
+    if (paymentProof && paymentProof.size > 2 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: 'Payment proof file must be smaller than 2MB. Please compress your file and try again.' },
+        { status: 400 }
+      )
+    }
+    
+    if (passportPhoto && passportPhoto.size > 2 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: 'Passport photo must be smaller than 2MB. Please compress your file and try again.' },
+        { status: 400 }
+      )
+    }
+
     // Handle payment proof upload
     let paymentProofUrl = null
     if (paymentProof && paymentProof.size > 0) {
