@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import mysql, { Pool } from 'mysql2/promise'
 
+export const dynamic = 'force-dynamic'
+
 // Create a pooled connection for better performance under load
 const pool: Pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
